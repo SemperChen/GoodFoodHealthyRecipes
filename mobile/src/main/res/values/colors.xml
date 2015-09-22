@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="theme_colorWhite">#FFFFFF</color>
+    <color name="colorOrange">#EF6C00</color>
+    <color name="colorOrangeDark">#E65100</color>
+    <color name="green">#4CAF50</color>
+    <color name="yellow">#fff0ff3e</color>
+
+    <color name="theme_primary">#ff58be00</color>
+    <color name="theme_primary_dark">#ff4daa00</color>
+    <color name="theme_primary_dark2">#006064</color>
+    <color name="theme_accent">#FF4081</color>
+
+    <color name="background_card">#fff</color>
+    <color name="background_snackbar">#323232</color>
+
+    <color name="text_black_87">#de000000</color>
+    <color name="text_white_87">#deFFFFFF</color>
+
+    <array name="note_neutral_colors">
+        <item>#9E9E9E</item>
+        <item>#455A64</item>
+        <item>#607D8B</item>
+    </array>
+
+    <array name="note_accent_colors">
+        <item>#039BE5</item>
+        <item>#3D51B3</item>
+        <item>#689f38</item>
+        <item>#FD7044</item>
+    </array>
+</resources>

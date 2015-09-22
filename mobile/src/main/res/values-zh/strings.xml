@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">健康美食菜谱</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="open_drawer">打开</string>
+    <string name="close_drawer">关闭</string>
+    <string name="favorites">最爱</string>
+    <string name="joke">笑话</string>
+    <string name="search">搜索</string>
+    <string name="settings">设置</string>
+    <string name="about_us">关于我们</string>
+    <string name="change_theme">更换主题</string>
+    <string name="more">更多</string>
+    <string name="refresh">刷新</string>
+    <string name="topic">专题</string>
+    <string name="recommend">推荐</string>
+    <string name="all">全部</string>
+    <string name="home">首页</string>
+</resources>

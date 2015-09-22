@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="nav_header_height">148dp</dimen>
+
+    <dimen name="recommend_corner_radius">4dp</dimen>
+    <dimen name="recommend_cardview_margin">4dp</dimen>
+    <dimen name="recommend_ic_favorites_margin_top">5dp</dimen>
+    <dimen name="recommend_ic_favorites_margin_right">5dp</dimen>
+    <dimen name="recommend_content_margin">5dp</dimen>
+    <dimen name="recommend_recycleview_padding">4dp</dimen>
+
+    <dimen name="topic_cardview_margin">6dp</dimen>
+    <dimen name="topic_corner_radius">4dp</dimen>
+    <dimen name="topic_recycleview_padding">6dp</dimen>
+
+    <dimen name="all_cardview_margin">4dp</dimen>
+    <dimen name="all_corner_radius">4dp</dimen>
+    <dimen name="all_recycleview_padding">4dp</dimen>
+
+
+
+</resources>

@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@mipmap/ic_search_white_24dp"
+        android:title="@string/search" />
+
+    <item
+            android:id="@+id/action_refresh"
+            android:title="@string/refresh"
+            app:showAsAction="never" />
+</menu>

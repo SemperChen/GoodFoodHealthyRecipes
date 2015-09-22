@@ -1,0 +1,41 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Theme.HealthExpress" parent="Theme.HealthExpress.Base" />
+
+    <style name="Theme.HealthExpress.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorPrimaryDark">@color/theme_primary_dark</item>
+        <item name="colorAccent">@color/theme_accent</item>
+        <item name="android:windowBackground">@color/theme_colorWhite</item>
+    </style>
+
+    <style name="CardView.RecommendStyle" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/recommend_cardview_margin</item>
+        <item name="android:clickable">true</item>
+        <item name="cardBackgroundColor">@color/background_card</item>
+        <item name="cardCornerRadius">@dimen/recommend_corner_radius</item>
+    </style>
+
+    <style name="CardView.TopicStyle" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/topic_cardview_margin</item>
+        <item name="android:clickable">true</item>
+        <item name="cardBackgroundColor">@color/background_card</item>
+        <item name="cardCornerRadius">@dimen/topic_corner_radius</item>
+    </style>
+
+    <style name="CardView.AllStyle" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/all_cardview_margin</item>
+        <item name="android:clickable">true</item>
+        <item name="cardBackgroundColor">@android:color/holo_green_light</item>
+        <item name="cardCornerRadius">@dimen/all_corner_radius</item>
+    </style>
+
+
+</resources>

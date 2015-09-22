@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/home"
+                android:icon="@mipmap/ic_health_black"
+                android:title="@string/home"/>
+        <item
+                android:id="@+id/joke"
+                android:icon="@mipmap/ic_faces_black"
+                android:title="@string/joke"/>
+        <item
+                android:id="@+id/favorites"
+                android:icon="@mipmap/ic_favorite_black"
+                android:title="@string/favorites"/>
+    </group>
+    <item
+            android:id="@+id/more"
+            android:title="@string/more">
+        <menu>
+            <item
+                    android:id="@+id/change_theme"
+                    android:title="@string/change_theme"/>
+            <item
+                    android:id="@+id/about_us"
+                    android:title="@string/about_us"/>
+            <item
+                    android:id="@+id/settings"
+                    android:title="@string/settings"/>
+        </menu>
+    </item>
+</menu>
