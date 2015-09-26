@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.HealthExpress" >
         <activity
-            android:name=".ui.activity.RecipeMethodActivity"
+            android:name=".ui.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.MainActivity"></activity>
+        <activity android:name=".ui.activity.RecipeMethodActivity"></activity>
     </application>
 
 </manifest>
