@@ -16,7 +16,6 @@
                                 android:id="@+id/recommend_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:src="@drawable/image_commend_009"
                                 android:adjustViewBounds="true"/>
                         <ImageButton
                                 android:layout_width="wrap_content"

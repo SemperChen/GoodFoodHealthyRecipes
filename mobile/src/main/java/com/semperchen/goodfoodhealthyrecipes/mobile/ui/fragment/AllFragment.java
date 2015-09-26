@@ -32,6 +32,7 @@ public class AllFragment extends Fragment {
 
     private void initView() {
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.all_recyclerView);
+        mRecyclerView.setHasFixedSize(true);
         //列数为两列
         int spanCount = 2;
         mLayoutManager = new StaggeredGridLayoutManager(
