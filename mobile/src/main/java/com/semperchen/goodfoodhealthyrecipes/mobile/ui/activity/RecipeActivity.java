@@ -16,7 +16,7 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.helper.FontsHelper;
 /**
  * Created by Semper on 2015/9/23.
  */
-public class RecipeMethodActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity {
 
     CollapsingToolbarLayout collapsingToolbar;
     private LinearLayout linearLayout1;
