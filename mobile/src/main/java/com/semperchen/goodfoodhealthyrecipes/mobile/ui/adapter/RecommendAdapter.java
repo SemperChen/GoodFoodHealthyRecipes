@@ -6,7 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import com.android.volley.toolbox.ImageLoader;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import com.semperchen.goodfoodhealthyrecipes.mobile.data.cache.ImageCacheManager;
 
 /**
  * Created by Semper on 2015/9/18.
@@ -34,8 +37,11 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.imageView.setImageResource(images[position]);
+        viewHolder.image.setImageResource(images[position]);
+        
     }
+
+    private void setImage(ViewHolder viewHolder,String url){}
 
     @Override
     public int getItemCount() {
@@ -43,10 +49,16 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        ImageView imageView;
+        ImageView image;
+        TextView title;
+        ImageView icon;
+        TextView author;
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView= (ImageView) itemView.findViewById(R.id.recommend_image);
+            image = (ImageView) itemView.findViewById(R.id.recommend_item_image);
+            title= (TextView) itemView.findViewById(R.id.recommend_item_title);
+            icon= (ImageView) itemView.findViewById(R.id.recommend_item_author_icon);
+            author=(TextView) itemView.findViewById(R.id.recommend_item_author_name);
         }
     }
 }

@@ -1,16 +1,16 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Theme.HealthExpress" parent="Theme.HealthExpress.Base" />
+    <style name="Theme.GoodFoodHealthyRecipes" parent="Theme.GoodFoodHealthyRecipes.Base" />
 
-    <style name="Theme.HealthExpress.Base" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.GoodFoodHealthyRecipes.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/theme_primary</item>
         <item name="colorPrimaryDark">@color/theme_primary_dark</item>
         <item name="colorAccent">@color/theme_accent</item>
         <item name="android:windowBackground">@color/background_window</item>
     </style>
 
-    <style name="CardView.RecommendStyle" parent="">
+    <style name="Theme.GoodFoodHealthyRecipes.Recommend.CardViewStyle" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/recommend_cardview_margin</item>
@@ -19,7 +19,7 @@
         <item name="cardCornerRadius">@dimen/recommend_corner_radius</item>
     </style>
 
-    <style name="CardView.TopicStyle" parent="">
+    <style name="Theme.GoodFoodHealthyRecipes.Topic.CardViewStyle" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/topic_cardview_margin</item>
@@ -28,7 +28,7 @@
         <item name="cardCornerRadius">@dimen/topic_corner_radius</item>
     </style>
 
-    <style name="CardView.AllStyle" parent="">
+    <style name="Theme.GoodFoodHealthyRecipes.All.CardViewStyle" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/all_cardview_margin</item>

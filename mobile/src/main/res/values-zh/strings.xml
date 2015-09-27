@@ -3,8 +3,6 @@
     <string name="app_name">健康美食菜谱</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="open_drawer">打开</string>
-    <string name="close_drawer">关闭</string>
     <string name="favorites">最爱</string>
     <string name="joke">笑话</string>
     <string name="search">搜索</string>

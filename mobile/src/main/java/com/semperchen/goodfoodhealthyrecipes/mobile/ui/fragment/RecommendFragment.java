@@ -29,12 +29,23 @@ public class RecommendFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mView=inflater.inflate(R.layout.fragment_recommend,container,false);
-        initView();
+        initializeView();
+        setupAdapter();
         return mView;
     }
 
-    private void initView() {
+    /**
+     * 初始化视图
+     */
+    private void initializeView() {
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.recommend_recyclerView);
+
+    }
+
+    /**
+     * 设置适配器
+     */
+    private void setupAdapter() {
         //列数为两列
         int spanCount = 2;
         mLayoutManager = new StaggeredGridLayoutManager(

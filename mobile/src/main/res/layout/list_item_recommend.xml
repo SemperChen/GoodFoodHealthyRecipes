@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/card_view"
-        style="@style/CardView.RecommendStyle">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/recommend_cardview"
+        style="@style/Theme.GoodFoodHealthyRecipes.Recommend.CardViewStyle">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -13,7 +14,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
                         <ImageView
-                                android:id="@+id/recommend_image"
+                                android:id="@+id/recommend_item_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:adjustViewBounds="true"/>
@@ -31,20 +32,42 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="@dimen/recommend_content_margin">
+                        android:padding="@dimen/recommend_item_content_margin">
 
                         <TextView
-                                android:id="@+id/category_tv"
+                                android:id="@+id/recommend_item_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textColor="@android:color/holo_green_light"
+                                android:textColor="@color/ba"
+                                android:textSize="@dimen/recommend_item_title_size"
                                 android:text="爆炒河蟹"/>
 
-                        <TextView
-                                android:id="@+id/title_tv"
-                                android:layout_width="wrap_content"
+                        <RelativeLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="这仅仅只是一个测试，不用太紧张"/>
+                                android:layout_marginTop="@dimen/recommend_item_author_margin_top">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                        android:id="@+id/recommend_item_author_icon"
+                                        android:layout_width="@dimen/recommend_item_author_icon_width"
+                                        android:layout_height="@dimen/recommend_item_author_icon_height"
+                                        android:src="@drawable/image_commend_004"
+                                        app:civ_border_width="1dp"
+                                        app:civ_border_color="@color/background_recipe_title_bottom"/>
+
+                                <TextView
+                                        android:id="@+id/recommend_item_author_name"
+                                        android:layout_toRightOf="@+id/all_item_author_icon"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginLeft="@dimen/recommend_item_author_name_margin_left"
+                                        android:textSize="@dimen/recommend_item_author_name_textsize"
+                                        android:textColor="@color/text_gray_1"
+                                        android:text="谁动了我的奶酪"/>
+                        </RelativeLayout>
+
+
                 </LinearLayout>
 
         </LinearLayout>

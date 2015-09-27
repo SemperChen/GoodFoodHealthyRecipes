@@ -43,7 +43,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView= (ImageView) itemView.findViewById(R.id.topic_info_image);
+            imageView= (ImageView) itemView.findViewById(R.id.topic_item_image);
         }
     }
 }

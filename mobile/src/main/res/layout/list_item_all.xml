@@ -1,57 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/all_cardview"
-        style="@style/CardView.AllStyle">
+        style="@style/Theme.GoodFoodHealthyRecipes.All.CardViewStyle">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <RelativeLayout
-                android:layout_width="match_parent"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:paddingRight="5dp"
-                android:paddingLeft="5dp"
-                android:layout_height="wrap_content">
 
-                <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="0dp"
-                        android:layout_marginTop="0dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:background="@drawable/bg_recommend_favorites_selector"/>
-
-            <TextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="4dp"
-                    android:textSize="14dp"
-                    android:textColor="@color/theme_colorWhite"
-                    android:text="爆炒鱿鱼"/>
-            <TextView
-                    android:layout_below="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/theme_colorWhite"
-                    android:textSize="12dp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:text="一个很蒂丽舍司的食物，吃了包你满意"/>
-        </RelativeLayout>
 
         <ImageView
-                android:id="@+id/all_info_image"
+                android:id="@+id/all_item_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"/>
 
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_margin="@dimen/all_item_content_margin"
+                    android:layout_height="wrap_content">
 
+
+
+                    <TextView
+                            android:id="@+id/all_item_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/all_item_title_size"
+                            android:textColor="@color/theme_colorWhite"
+                            android:text="爆炒鱿鱼"/>
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/all_item_title"
+                            android:layout_marginTop="@dimen/all_item_author_margin_top">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/all_item_author_icon"
+                                    android:layout_width="@dimen/all_item_author_icon_width"
+                                    android:layout_height="@dimen/all_item_author_icon_height"
+                                    android:src="@drawable/image_commend_009"
+                                    app:civ_border_width="1dp"
+                                    app:civ_border_color="@color/background_recipe_title_bottom"/>
+
+                            <TextView
+                                    android:id="@+id/all_item_author_name"
+                                    android:layout_toRightOf="@+id/all_item_author_icon"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="@dimen/all_item_author_name_margin_left"
+                                    android:textSize="@dimen/all_item_author_name_textsize"
+                                    android:textColor="@color/theme_colorWhite"
+                                    android:text="谁动了我的奶酪"/>
+
+
+                    </RelativeLayout>
+                    <ImageButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/bg_recommend_favorites_selector"/>
+            </RelativeLayout>
 
     </LinearLayout>
 

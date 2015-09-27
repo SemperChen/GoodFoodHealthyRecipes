@@ -82,7 +82,7 @@
                     android:orientation="horizontal"
                     android:background="@drawable/bg_recipe_title">
                 <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/author_image"
+                        android:id="@+id/all_item_author_icon"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/image_commend_004"
@@ -97,7 +97,7 @@
                         android:gravity="center_vertical">
 
                     <TextView
-                            android:id="@+id/author_name"
+                            android:id="@+id/all_item_author_name"
                             android:layout_width="wrap_content"
                             android:textColor="#b4000000"
                             android:paddingBottom="3dp"

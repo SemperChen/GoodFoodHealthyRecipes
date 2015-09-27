@@ -12,7 +12,7 @@
     <color name="theme_primary_dark2">#006064</color>
     <color name="theme_accent">#FF4081</color>
 
-    <color name="background_card">#fff</color>
+    <color name="background_card">#ffffffff</color>
     <color name="background_snackbar">#323232</color>
     <color name="background_window">#fff5f5f5</color>
     <color name="ba">#c82d2d2d</color>
