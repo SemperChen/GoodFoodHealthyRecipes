@@ -5,7 +5,7 @@
     <string name="search">Search</string>
     <string name="refresh">Refresh</string>
 
-    <!--drawer view-->
+    <!--drawer mView-->
     <string name="settings">Settings</string>
     <string name="home">Home</string>
     <string name="favorites">My Favorites</string>

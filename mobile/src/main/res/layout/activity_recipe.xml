@@ -24,7 +24,7 @@
                 app:expandedTitleMarginEnd="48dp"
                 app:expandedTitleMarginStart="32dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
-            <!--old image view start-->
+            <!--old image mView start-->
 
             <ImageView
                     android:id="@+id/header"
@@ -34,7 +34,7 @@
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"/>
-            <!--old image view end-->
+            <!--old image mView end-->
 
             <android.support.v7.widget.Toolbar
                     android:id="@+id/anim_toolbar"
@@ -81,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:background="@drawable/bg_recipe_title">
-                <de.hdodenhof.circleimageview.CircleImageView
+                <com.semperchen.goodfoodhealthyrecipes.mobile.ui.view.NetworkCircleImageView
                         android:id="@+id/all_item_author_icon"
                         android:layout_width="48dp"
                         android:layout_height="48dp"

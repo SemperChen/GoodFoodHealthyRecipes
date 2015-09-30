@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.entity;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -18,16 +18,19 @@ public class RecipePreview {
     private String image;
     @SerializedName("recipeId")
     private int recipeId;
+    @SerializedName("isRecommendation")
+    private boolean isRecommendation;
 
     public RecipePreview(){}
 
-    public RecipePreview(int id, String title, String author, String authorIcon, String image, int recipeId) {
+    public RecipePreview(int id, String title, String author, String authorIcon, String image, int recipeId, boolean isRecommendation) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.authorIcon = authorIcon;
         this.image = image;
         this.recipeId = recipeId;
+        this.isRecommendation = isRecommendation;
     }
 
     public int getId() {
@@ -76,5 +79,13 @@ public class RecipePreview {
 
     public void setRecipeId(int recipeId) {
         this.recipeId = recipeId;
+    }
+
+    public boolean isRecommendation() {
+        return isRecommendation;
+    }
+
+    public void setIsRecommendation(boolean isRecommendation) {
+        this.isRecommendation = isRecommendation;
     }
 }

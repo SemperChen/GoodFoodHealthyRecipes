@@ -1,12 +1,11 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core;
 
 import android.net.Uri;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.semperchen.goodfoodhealthyrecipes.mobile.data.entity.NewsData;
-import com.semperchen.goodfoodhealthyrecipes.mobile.data.entity.RecipePreviewData;
-import com.semperchen.goodfoodhealthyrecipes.mobile.data.net.GsonRequest;
-import com.semperchen.goodfoodhealthyrecipes.mobile.data.net.RequestManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.GsonRequest;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.RequestManager;
 
 /**
  * <p></p>
@@ -18,7 +17,7 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.data.net.RequestManager;
  * @version 1.0-SNAPSHOT
  */
 public class RecipePreViewManager {
-    private final String BASE="http://1.jsontestapp.sinaapp.com/index.php";
+    private final String BASE="http://1.oauthdeveloptest.sinaapp.com/index.php";
     private final String PAGE_NUM="page";
 
     private static RecipePreViewManager mInstance;
@@ -34,7 +33,7 @@ public class RecipePreViewManager {
 //        getTweetForHashtag(listener, errorListener,  pageNum);
 //    }
 
-    private void getTweetForHashtag(Response.Listener<RecipePreviewData> listener, Response.ErrorListener errorListener, int pageNum) {
+    public void getRecipePreviewForHashtag(Response.Listener<RecipePreviewData> listener, Response.ErrorListener errorListener, int pageNum) {
 
         //为链接添加参数
         Uri.Builder uriBuilder = Uri.parse(BASE).buildUpon()

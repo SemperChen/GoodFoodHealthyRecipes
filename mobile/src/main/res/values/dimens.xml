@@ -2,12 +2,12 @@
 <resources>
     <dimen name="nav_header_height">148dp</dimen>
 
-    <dimen name="recommend_corner_radius">0dp</dimen>
+    <dimen name="recommend_corner_radius">3dp</dimen>
     <dimen name="recommend_cardview_margin">4dp</dimen>
     <dimen name="recommend_ic_favorites_margin_top">5dp</dimen>
     <dimen name="recommend_ic_favorites_margin_right">5dp</dimen>
     <dimen name="recommend_item_content_margin">5dp</dimen>
-    <dimen name="recommend_recycleview_padding">4dp</dimen>
+    <dimen name="recommend_recyclerview_padding">4dp</dimen>
     <dimen name="recommend_item_title_size">12sp</dimen>
     <dimen name="recommend_item_author_margin_top">5dp</dimen>
     <dimen name="recommend_item_author_icon_width">24dp</dimen>
@@ -17,12 +17,12 @@
 
     <dimen name="topic_cardview_margin">6dp</dimen>
     <dimen name="topic_corner_radius">4dp</dimen>
-    <dimen name="topic_recycleview_padding">6dp</dimen>
-    <dimen name="topic_item_title_margin">5dp</dimen>
+    <dimen name="topic_recyclerview_padding">6dp</dimen>
+    <dimen name="topic_item_title_margin">10dp</dimen>
 
     <dimen name="all_cardview_margin">4dp</dimen>
     <dimen name="all_corner_radius">4dp</dimen>
-    <dimen name="all_recycleview_padding">4dp</dimen>
+    <dimen name="all_recyclerview_padding">4dp</dimen>
     <dimen name="all_item_content_margin">5dp</dimen>
     <dimen name="all_item_title_size">14sp</dimen>
     <dimen name="all_item_author_margin_top">5dp</dimen>

@@ -12,8 +12,9 @@
         <ImageView
                 android:id="@+id/topic_item_image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"/>
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_height="wrap_content"/>
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -23,8 +24,7 @@
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/topic_item_title_margin"
-                    android:text="每日轻松一刻"/>
+                    android:layout_margin="@dimen/topic_item_title_margin"/>
         </RelativeLayout>
 
     </LinearLayout>

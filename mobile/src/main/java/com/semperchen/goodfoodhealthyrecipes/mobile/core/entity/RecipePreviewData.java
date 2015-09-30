@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.entity;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -14,11 +14,11 @@ import java.util.List;
  * @author SemperChen
  * @version 1.0-SNAPSHOT
  */
-public class NewsData {
+public class RecipePreviewData {
     @SerializedName("pageNum")
     private int page;
     @SerializedName("results")
-    List<News> users=new ArrayList<>();
+    List<RecipePreview> recipePreviews=new ArrayList<>();
 
     public int getPage() {
         return page;
@@ -28,11 +28,11 @@ public class NewsData {
         this.page = page;
     }
 
-    public List<News> getUsers() {
-        return users;
+    public List<RecipePreview> getRecipePreviews() {
+        return recipePreviews;
     }
 
-    public void setUsers(List<News> users) {
-        this.users = users;
+    public void setRecipePreviews(List<RecipePreview> recipePreviews) {
+        this.recipePreviews = recipePreviews;
     }
 }

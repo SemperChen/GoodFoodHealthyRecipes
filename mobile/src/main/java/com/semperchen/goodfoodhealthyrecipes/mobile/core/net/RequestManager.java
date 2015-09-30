@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.net;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.net;
 
 import android.content.Context;
 import com.android.volley.RequestQueue;

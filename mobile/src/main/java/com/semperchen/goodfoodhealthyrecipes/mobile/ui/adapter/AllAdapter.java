@@ -1,29 +1,42 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Semper on 2015/9/18.
  */
 public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
-    private int[] images=new int[]{R.drawable.image_commend_006, R.drawable.image_commend_002,
-            R.drawable.image_commend_005,R.drawable.image_commend_009,R.drawable.image_commend_004,
-            R.drawable.image_commend_002,R.drawable.image_commend_004,
-            R.drawable.image_commend_005,R.drawable.image_commend_006,R.drawable.image_commend_009,
-            R.drawable.image_commend_002,R.drawable.image_commend_004,
-            R.drawable.image_commend_005,R.drawable.image_commend_006,R.drawable.image_commend_009};
-
+    private RecipePreviewData data;
+    private List<RecipePreview> recipePreviews;
     private Context context;
+    private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
-    public AllAdapter(Context context) {
+    public AllAdapter(Context context,RecipePreviewData data) {
         this.context=context;
+        this.data=data;
+        this.recipePreviews=data.getRecipePreviews();
+
     }
 
     @Override
@@ -35,19 +48,54 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.imageView.setImageResource(images[position]);
+        RecipePreview recipePreview=recipePreviews.get(position);
+        ImageLoader imageLoader= ImageLoader.getInstance();
+
+        imageLoader.displayImage(recipePreview.getImage(),
+                viewHolder.image, animateFirstListener);
+        imageLoader.displayImage(recipePreview.getAuthorIcon(),
+                viewHolder.icon, animateFirstListener);
+        viewHolder.title.setText(recipePreview.getTitle());
+        viewHolder.author.setText(recipePreview.getAuthor());
+
     }
 
     @Override
     public int getItemCount() {
-        return images.length;
+        return recipePreviews.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        ImageView imageView;
+        ImageView image;
+        TextView title;
+        CircleImageView icon;
+        TextView author;
         public ViewHolder(View itemView) {
             super(itemView);
-            imageView= (ImageView) itemView.findViewById(R.id.all_item_image);
+            image = (ImageView) itemView.findViewById(R.id.all_item_image);
+            title= (TextView) itemView.findViewById(R.id.all_item_title);
+            icon= (CircleImageView) itemView.findViewById(R.id.all_item_author_icon);
+            author=(TextView) itemView.findViewById(R.id.all_item_author_name);
+        }
+    }
+
+    /**
+     * 图片第一次加载动画监听
+     */
+    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
+
+        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
+
+        @Override
+        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+            if (loadedImage != null) {
+                ImageView imageView = (ImageView) view;
+                boolean firstDisplay = !displayedImages.contains(imageUri);
+                if (firstDisplay) {
+                    FadeInBitmapDisplayer.animate(imageView, 500);
+                    displayedImages.add(imageUri);
+                }
+            }
         }
     }
 }

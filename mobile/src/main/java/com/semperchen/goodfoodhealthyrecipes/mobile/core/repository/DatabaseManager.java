@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.repository;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.repository;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,7 +6,7 @@ import android.util.Log;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.semperchen.goodfoodhealthyrecipes.mobile.data.entity.News;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 
 import java.sql.SQLException;
 
@@ -59,10 +59,10 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource, News.class);
+            TableUtils.createTable(connectionSource, RecipePreview.class);
             //TableUtils.createTable(connectionSource,NewsData.class);
         } catch (SQLException e) {
-            Log.e(TAG, "不能创建database", e);
+            Log.e(TAG, "创建database失败", e);
             e.printStackTrace();
         }
     }
@@ -70,7 +70,7 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
         try {
-            TableUtils.dropTable(connectionSource, News.class, true);
+            TableUtils.dropTable(connectionSource, RecipePreview.class, true);
             //TableUtils.dropTable(connectionSource, NewsData.class, true);
             onCreate(sqLiteDatabase,connectionSource);
         } catch (SQLException e) {

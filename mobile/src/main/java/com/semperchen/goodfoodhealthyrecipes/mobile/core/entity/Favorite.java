@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.entity;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 
 /**
  * Created by Semper on 2015/9/26.

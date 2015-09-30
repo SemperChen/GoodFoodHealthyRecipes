@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.net;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.net;
 
 import android.util.Log;
 import com.android.volley.NetworkResponse;
@@ -45,13 +45,14 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * 将接受回来的json转成对象
      *
-     * @param response
+     * @param response 响应
      * @return
      */
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
-            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            //String json = new String(response.core, HttpHeaderParser.parseCharset(response.headers));
+            String json = new String(response.data, "UTF-8");
             if(DEBUG){
                 Log.d(TAG,json);
             }
@@ -60,6 +61,9 @@ public class GsonRequest<T> extends Request<T> {
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {
+            if(DEBUG){
+                Log.e(TAG,"json格式错误");
+            }
             return Response.error(new ParseError(e));
         }
     }

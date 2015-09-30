@@ -1,4 +1,4 @@
-package com.semperchen.goodfoodhealthyrecipes.mobile.data.repository;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.repository;
 
 import android.app.Activity;
 import android.content.Context;

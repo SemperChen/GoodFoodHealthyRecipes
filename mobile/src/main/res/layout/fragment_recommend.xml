@@ -4,7 +4,7 @@
         android:id="@+id/recommend_recyclerView"
         android:scrollbars="vertical"
         android:clipToPadding="false"
-        android:padding="@dimen/recommend_recycleview_padding"
+        android:padding="@dimen/recommend_recyclerview_padding"
         android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

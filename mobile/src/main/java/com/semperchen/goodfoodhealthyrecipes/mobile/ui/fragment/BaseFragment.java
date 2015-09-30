@@ -1,26 +1,33 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
-import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import android.view.ViewGroup;
 
 /**
- * Created by Semper on 2015/9/17.
+ * Created by Semper on 2015/9/30.
  */
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
-    protected void setupToolbar(View rootView) {
+    protected View mView;
 
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu);
-            actionBar.setDisplayShowTitleEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        if (getContentViewLayoutId() != 0) {
+            mView =inflater.inflate(getContentViewLayoutId(), container,false);
+            bindData();
+            return mView;
+        } else {
+            return super.onCreateView(inflater, container, savedInstanceState);
         }
     }
+
+    protected abstract void bindData();
+
+    protected abstract int getContentViewLayoutId();
 }

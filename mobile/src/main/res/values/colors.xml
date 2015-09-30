@@ -26,6 +26,8 @@
 
     <color name="background_brown2">#fffafaf0</color>
 
+    <color name="border_author_icon">#c8dedede</color>
+
 
     <array name="note_neutral_colors">
         <item>#9E9E9E</item>

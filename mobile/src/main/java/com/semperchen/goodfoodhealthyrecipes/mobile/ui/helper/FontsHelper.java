@@ -64,7 +64,7 @@ public class FontsHelper {
             } else if (root instanceof TextView)
                 ((TextView) root).setTypeface(font);
         } catch (Exception e) {
-            Log.e(TAG, String.format("Error occurred when trying to apply font for %s view", root));
+            Log.e(TAG, String.format("Error occurred when trying to apply font for %s mView", root));
             e.printStackTrace();
         }
     }
@@ -79,7 +79,7 @@ public class FontsHelper {
         try {
             ((TextView) view).setTypeface(font);
         } catch (Exception e) {
-            Log.e(TAG, String.format("Error occurred when trying to apply font for %s view", view));
+            Log.e(TAG, String.format("Error occurred when trying to apply font for %s mView", view));
             e.printStackTrace();
         }
     }
