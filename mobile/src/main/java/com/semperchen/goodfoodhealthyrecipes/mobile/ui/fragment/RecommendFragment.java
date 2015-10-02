@@ -15,7 +15,6 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.RecommendAdapter;
 public class RecommendFragment extends BaseLazyFragment {
 
     private RecommendAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     /**
      * 绑定数据
@@ -76,7 +75,7 @@ public class RecommendFragment extends BaseLazyFragment {
     private void setupAdapter() {
         //列数为两列
         final int spanCount = 2;
-        mLayoutManager = new StaggeredGridLayoutManager(
+        RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(
                 spanCount,
                 StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
