@@ -27,4 +27,4 @@ proguard/
 *.log
 
 #other
-
+/.idea/
