@@ -29,11 +29,9 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
     private RecipePreviewData data;
     private List<RecipePreview> recipePreviews;
-    private Context context;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
-    public AllAdapter(Context context,RecipePreviewData data) {
-        this.context=context;
+    public AllAdapter(RecipePreviewData data) {
         this.data=data;
         this.recipePreviews=data.getRecipePreviews();
 

@@ -2,12 +2,11 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
+import com.android.volley.Request;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.TopicManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.TopicData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.TopicAdapter;
 
 /**
@@ -22,8 +21,33 @@ public class TopicFragment extends BaseLazyFragment {
      */
     @Override
     protected void bindData() {
-        initializeView();
+        initializeViews();
         setupAdapter();
+    }
+
+    /**
+     * 发送网络请求
+     */
+    private void sendNetworkRequest(){
+        VolleyWrapper<TopicData> volleyWrapper=new VolleyWrapper<>(
+                Request.Method.GET,
+                APIConstants.Urls.TOPIC_DATA_URL,
+                TopicData.class,
+                new VolleyWrapper.RequestSuccessListener() {
+                    @Override
+                    public void onLoadData(Object obj) {
+                        mAdapter = new TopicAdapter((TopicData) obj);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                },
+                new VolleyWrapper.RequestErrorListener() {
+                    @Override
+                    public void error() {
+
+                    }
+                });
+        volleyWrapper.addUrlParameter("pageIndex",1);
+        volleyWrapper.sendRequest();
     }
 
     /**
@@ -39,7 +63,7 @@ public class TopicFragment extends BaseLazyFragment {
     /**
      * 初始化视图
      */
-    private void initializeView() {
+    private void initializeViews() {
         mRecyclerView = (RecyclerView) mView.findViewById(R.id.topic_recyclerView);
 
     }
@@ -58,35 +82,12 @@ public class TopicFragment extends BaseLazyFragment {
     }
 
     /**
-     * 设置监听请求，请求成功设置adapter
-     * @return
-     */
-    private Response.Listener<TopicData> createMyReqSuccessListener() {
-        return new Response.Listener<TopicData>() {
-            @Override
-            public void onResponse(TopicData response) {
-                mAdapter = new TopicAdapter(response);
-                mRecyclerView.setAdapter(mAdapter);
-            }
-        };
-    }
-
-    private Response.ErrorListener createMyReqErrorListener() {
-        return new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("RecommendFragment", "RecipePreview Data failed to load");
-            }
-        };
-    }
-
-    /**
      * 碎片第一次可见时调用此方法
      */
     @Override
     protected void onFirstUserVisible() {
         if(mRecyclerView.getAdapter()==null){
-            TopicManager.getInstance().getRecipePreviewForHashtag(createMyReqSuccessListener(),createMyReqErrorListener(),1);
+            sendNetworkRequest();
         }
     }
 

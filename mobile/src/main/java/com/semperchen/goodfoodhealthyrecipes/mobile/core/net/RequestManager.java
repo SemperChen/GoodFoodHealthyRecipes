@@ -25,15 +25,14 @@ public class RequestManager {
     }
 
     /**
-     * 获取RequestQueue实例
      *
-     * @return
+     * @return RequestQueue实例
      */
     public static RequestQueue getRequestQueue() {
         if (mRequestQueue != null) {
             return mRequestQueue;
         } else {
-            throw new IllegalStateException("没有初始化RequestQueue");
+            throw new IllegalStateException("RequestManager没有被初始化");
         }
     }
 }

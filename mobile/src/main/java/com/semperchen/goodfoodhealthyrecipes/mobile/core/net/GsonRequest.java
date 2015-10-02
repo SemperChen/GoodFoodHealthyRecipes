@@ -22,8 +22,8 @@ import java.io.UnsupportedEncodingException;
  */
 public class GsonRequest<T> extends Request<T> {
 
-    private final String TAG=GsonRequest.class.getSimpleName();
-    private final boolean DEBUG=true;
+    private final static String TAG=GsonRequest.class.getSimpleName();
+    private final static boolean DEBUG=true;
 
     private final Gson mGson;
 
@@ -43,10 +43,9 @@ public class GsonRequest<T> extends Request<T> {
     }
 
     /**
-     * 将接受回来的json转成对象
      *
      * @param response 响应
-     * @return
+     * @return json转成的对象
      */
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
@@ -69,9 +68,9 @@ public class GsonRequest<T> extends Request<T> {
     }
 
     /**
-     *数据返回成功后，调用监听器mListener的onResponse方法
+     *数据返回成功后，调用onResponse方法
      *
-     * @param response
+     * @param response 接回的对象
      */
     @Override
     protected void deliverResponse(T response) {
