@@ -3,6 +3,8 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
@@ -28,25 +30,25 @@ public class RecommendFragment extends BaseLazyFragment {
     /**
      * 发送网络请求
      */
-    private void sendNetworkRequest(){
-        VolleyWrapper<RecipePreviewData> volleyWrapper=new VolleyWrapper<>(
+    private void sendNetworkRequest() {
+        VolleyWrapper<RecipePreviewData> volleyWrapper = new VolleyWrapper<>(
                 Request.Method.GET,
                 APIConstants.Urls.RECIPE_PREVIEW_URL,
                 RecipePreviewData.class,
-                new VolleyWrapper.RequestSuccessListener() {
+                new Response.Listener() {
                     @Override
-                    public void onLoadData(Object obj) {
+                    public void onResponse(Object obj) {
                         mAdapter = new RecommendAdapter((RecipePreviewData) obj);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 },
-                new VolleyWrapper.RequestErrorListener() {
+                new Response.ErrorListener() {
                     @Override
-                    public void error() {
+                    public void onErrorResponse(VolleyError volleyError) {
 
                     }
                 });
-        volleyWrapper.addUrlParameter("pageIndex",1);
+        volleyWrapper.addUrlParameter("pageIndex", 1);
         volleyWrapper.sendRequest();
     }
 

@@ -3,6 +3,8 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.TopicData;
@@ -33,16 +35,16 @@ public class TopicFragment extends BaseLazyFragment {
                 Request.Method.GET,
                 APIConstants.Urls.TOPIC_DATA_URL,
                 TopicData.class,
-                new VolleyWrapper.RequestSuccessListener() {
+                new Response.Listener() {
                     @Override
-                    public void onLoadData(Object obj) {
-                        mAdapter = new TopicAdapter((TopicData) obj);
+                    public void onResponse(Object obj) {
+                        mAdapter = new TopicAdapter((TopicData)obj);
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 },
-                new VolleyWrapper.RequestErrorListener() {
+                new Response.ErrorListener() {
                     @Override
-                    public void error() {
+                    public void onErrorResponse(VolleyError volleyError) {
 
                     }
                 });
