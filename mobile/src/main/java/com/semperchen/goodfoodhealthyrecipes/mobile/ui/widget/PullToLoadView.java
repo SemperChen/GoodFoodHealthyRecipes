@@ -107,7 +107,7 @@ public class PullToLoadView extends FrameLayout {
     }
 
     /**
-     * 刷新或加载完成
+     * 刷新或加载完成重置数据
      */
     public void setComplete() {
         mProgressBar.setVisibility(GONE);
