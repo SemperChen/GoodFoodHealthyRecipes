@@ -24,6 +24,7 @@ public class TopicFragment extends BaseLazyFragment {
 
     private TopicAdapter mAdapter;
     private PullToLoadView mPullToLoadView;
+    private TopicData mTopicData;
 
     private int currentPage=-1;
     private int nextPage=0;
@@ -80,9 +81,12 @@ public class TopicFragment extends BaseLazyFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if(mTopicData!=null){
+                        currentPage=0;
+                        nextPage=1;
+                    }
                     sendNetworkRequest();
-                    currentPage=0;
-                    nextPage=1;
+
                 }
             },2000);
 
@@ -96,7 +100,7 @@ public class TopicFragment extends BaseLazyFragment {
 
         @Override
         public void onResponse(Object obj) {
-            TopicData mTopicData= (TopicData) obj;
+            mTopicData= (TopicData) obj;
             if(mAdapter==null){
                 mAdapter = new TopicAdapter(mTopicData);
                 mRecyclerView.setAdapter(mAdapter);

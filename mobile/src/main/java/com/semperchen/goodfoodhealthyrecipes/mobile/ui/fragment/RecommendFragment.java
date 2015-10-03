@@ -22,6 +22,7 @@ public class RecommendFragment extends BaseLazyFragment {
 
     private RecommendAdapter mAdapter;
     private PullToLoadView mPullToLoadView;
+    private RecipePreviewData mRecipePreviewData;
 
     private int currentPage=-1;
     private int nextPage=0;
@@ -79,9 +80,11 @@ public class RecommendFragment extends BaseLazyFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if(mRecipePreviewData!=null){
+                        currentPage=0;
+                        nextPage=1;
+                    }
                     sendNetworkRequest();
-                    currentPage=0;
-                    nextPage=1;
                 }
             },2000);
 
@@ -95,7 +98,7 @@ public class RecommendFragment extends BaseLazyFragment {
 
         @Override
         public void onResponse(Object obj) {
-            RecipePreviewData mRecipePreviewData= (RecipePreviewData) obj;
+            mRecipePreviewData= (RecipePreviewData) obj;
             if(mAdapter==null){
                 mAdapter = new RecommendAdapter(mRecipePreviewData);
                 mRecyclerView.setAdapter(mAdapter);
