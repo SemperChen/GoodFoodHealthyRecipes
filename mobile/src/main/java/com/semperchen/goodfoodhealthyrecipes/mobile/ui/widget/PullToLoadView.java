@@ -12,9 +12,9 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 public class PullToLoadView extends FrameLayout {
 
     private boolean hasMore = true;
-    //是否在刷新中
+    //是否正在刷新中
     private boolean isRefreshing = false;
-    //是否在加载更多
+    //是否正在加载更多
     private boolean isLoadingMore = false;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
