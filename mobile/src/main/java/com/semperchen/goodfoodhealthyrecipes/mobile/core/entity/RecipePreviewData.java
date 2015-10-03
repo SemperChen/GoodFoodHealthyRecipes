@@ -15,17 +15,27 @@ import java.util.List;
  * @version 1.0-SNAPSHOT
  */
 public class RecipePreviewData {
-    @SerializedName("pageNum")
-    private int page;
+    @SerializedName("currentPage")
+    private int currentPage;
+    @SerializedName("nextPage")
+    private int nextPage;
     @SerializedName("results")
     List<RecipePreview> recipePreviews=new ArrayList<>();
 
-    public int getPage() {
-        return page;
+    public int getCurrentPage() {
+        return currentPage;
     }
 
-    public void setPage(int page) {
-        this.page = page;
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getNextPage() {
+        return nextPage;
+    }
+
+    public void setNextPage(int nextPage) {
+        this.nextPage = nextPage;
     }
 
     public List<RecipePreview> getRecipePreviews() {

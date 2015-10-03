@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/topic_recyclerView"
-        android:scrollbars="vertical"
-        android:clipToPadding="false"
-        android:padding="@dimen/topic_recyclerview_padding"
-        android:clickable="true"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+        <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullToLoadView
+                android:id="@+id/pulltoLoadview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+</RelativeLayout>

@@ -36,6 +36,14 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     }
 
+    public List<RecipePreview> getRecipePreviews(){
+        return recipePreviews;
+    }
+
+    public void clear(){
+        recipePreviews.clear();
+    }
+
     @Override
     public RecommendAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_recommend,

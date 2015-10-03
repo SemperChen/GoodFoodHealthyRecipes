@@ -37,6 +37,15 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
 
     }
 
+    public List<RecipePreview> getRecipePreviews(){
+        return recipePreviews;
+    }
+
+    public void clear(){
+        recipePreviews.clear();
+    }
+
+
     @Override
     public AllAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_all,

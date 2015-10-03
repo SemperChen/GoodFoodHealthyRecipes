@@ -36,6 +36,14 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
     }
 
+    public List<Topic> getTopics(){
+        return topics;
+    }
+
+    public void clear(){
+        topics.clear();
+    }
+
     @Override
     public TopicAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_topic,

@@ -54,7 +54,7 @@ public class MainApplication extends Application {
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
 //        config.memoryCacheSize(5 * 1024 * 1024);
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
-        config.writeDebugLogs(); // 打印日志
+        //config.writeDebugLogs(); // 打印日志
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
