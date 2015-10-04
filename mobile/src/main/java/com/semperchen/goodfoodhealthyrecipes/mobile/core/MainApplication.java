@@ -8,7 +8,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.RequestManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.utils.ImageLoaderHelper;
 
 /**
  * <p>自定义Application</p>
@@ -30,7 +32,9 @@ public class MainApplication extends Application {
 
     private void init() {
         RequestManager.init(this);
-        initImageLoader(getApplicationContext());
+        //initImageLoader(getApplicationContext());
+        ImageLoader.getInstance().init(ImageLoaderHelper.getInstance(this).getImageLoaderConfiguration(APIConstants.Paths.IMAGE_LOADER_CACHE_PATH));
+
     }
 
     public static void initImageLoader(Context context) {
@@ -52,12 +56,18 @@ public class MainApplication extends Application {
         config.defaultDisplayImageOptions(options);
         config.diskCacheFileNameGenerator(new Md5FileNameGenerator()); //图片写入内存卡时，用Md5方式取名
         config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-//        config.memoryCacheSize(5 * 1024 * 1024);
+        //config.memoryCacheSize(2 * 1024 * 1024);
         config.tasksProcessingOrder(QueueProcessingType.LIFO);
         //config.writeDebugLogs(); // 打印日志
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
+    }
+
+    @Override
+    public void onLowMemory() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+        super.onLowMemory();
     }
 
 

@@ -31,6 +31,8 @@
     <color name="title_recipe">#c82d2d2d</color>
     <color name="rotateloading">#c833b5e5</color>
 
+    <color name="default_image_background">#FFDEDEDE</color>
+
     <array name="note_neutral_colors">
         <item>#9E9E9E</item>
         <item>#455A64</item>

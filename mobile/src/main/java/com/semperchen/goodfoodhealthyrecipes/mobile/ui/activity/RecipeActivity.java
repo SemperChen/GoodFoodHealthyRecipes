@@ -23,7 +23,7 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.Recipe;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipeStep;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
-import com.semperchen.goodfoodhealthyrecipes.mobile.ui.helper.FontsHelper;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.utils.FontsHelper;
 import com.victor.loading.rotate.RotateLoading;
 
 /**
