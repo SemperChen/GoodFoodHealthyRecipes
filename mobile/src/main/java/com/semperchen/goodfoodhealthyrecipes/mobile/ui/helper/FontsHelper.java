@@ -13,25 +13,9 @@ import android.widget.TextView;
 public class FontsHelper {
     private static final String TAG = FontsHelper.class.getSimpleName();
     private static final boolean DEBUG = true;
-    public static Typeface FONT_ROBOTO_THIN;
-    public static Typeface FONT_ROBOTO_ITALIC;
-    public static Typeface FONT_ROBOTO_LIGHT;
-    public static Typeface FONT_ROBOTO_REGULAR;
-    public static Typeface FONT_ROBOTO_BLACK;
-    public static Typeface FONT_ROBOTO_BLACK_ITALIC;
-    public static Typeface FONT_ROBOTO_BOLD;
-    public static Typeface FONT_ROBOTO_BOLD_ITALIC;
-    public static Typeface FONT_ROBOTO_LIGHT_ITALIC;
-    public static Typeface FONT_ROBOTO_MEDIUM;
-    public static Typeface FONT_ROBOTO_MEDIUM_ITALIC;
-    public static Typeface FONT_ROBOTO_THIN_ITALIC;
-    public static Typeface FONT_ROBOTO_CONDENSED_BOLD;
-    public static Typeface FONT_ROBOTO_CONDENSED_BOLD_ITALIC;
-    public static Typeface FONT_ROBOTO_CONDENSED_ITALIC;
-    public static Typeface FONT_ROBOTO_CONDENSED_LIGHT;
-    public static Typeface FONT_ROBOTO_CONDENSED_LIGHT_ITALIC;
-    public static Typeface FONT_ROBOTO_CONDENSED_REGULAR;
-
+    public static Typeface FONT_SHOUJINSHU;
+    public static Typeface FONT_XIAOZHUAN;
+    public static Typeface FONT_LISU;
 
     private FontsHelper() {
     }
@@ -43,9 +27,8 @@ public class FontsHelper {
      */
     public static void initialize(Activity activity) {
         AssetManager assetManager = activity.getAssets();
-        FONT_ROBOTO_THIN = Typeface.createFromAsset(assetManager, "fonts/Roboto-Thin.ttf");
-        FONT_ROBOTO_BLACK = Typeface.createFromAsset(assetManager, "fonts/Roboto-Black.ttf");
-        FONT_ROBOTO_LIGHT = Typeface.createFromAsset(assetManager, "fonts/Roboto-Light.ttf");
+        FONT_SHOUJINSHU = Typeface.createFromAsset(assetManager, "fonts/ShouJinShu.ttf");
+        FONT_LISU = Typeface.createFromAsset(assetManager, "fonts/LiSu.ttf");
     }
 
 

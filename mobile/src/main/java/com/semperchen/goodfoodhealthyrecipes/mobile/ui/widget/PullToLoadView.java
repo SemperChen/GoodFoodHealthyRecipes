@@ -12,9 +12,9 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 public class PullToLoadView extends FrameLayout {
 
     private boolean hasMore = true;
-    //ÊÇ·ñÕıÔÚË¢ĞÂÖĞ
+    //æ˜¯å¦æ­£åœ¨åˆ·æ–°ä¸­
     private boolean isRefreshing = false;
-    //ÊÇ·ñÕıÔÚ¼ÓÔØ¸ü¶à
+    //æ˜¯å¦æ­£åœ¨åŠ è½½æ›´å¤š
     private boolean isLoadingMore = false;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -107,7 +107,7 @@ public class PullToLoadView extends FrameLayout {
     }
 
     /**
-     * Ë¢ĞÂ»ò¼ÓÔØÍê³ÉÖØÖÃÊı¾İ
+     * åˆ·æ–°æˆ–åŠ è½½å®Œæˆé‡ç½®æ•°æ®
      */
     public void setComplete() {
         mProgressBar.setVisibility(GONE);
@@ -118,14 +118,14 @@ public class PullToLoadView extends FrameLayout {
     }
 
     /**
-     * ÉèÖÃÄÜ·ñ½øĞĞË¢ĞÂ
+     * è®¾ç½®èƒ½å¦è¿›è¡Œåˆ·æ–°
      */
     public void setRefreshEnable(boolean enable) {
         mSwipeRefreshLayout.setEnabled(enable);
     }
 
     /**
-     * Ë¢ĞÂ
+     * åˆ·æ–°
      */
     private void setRefresh() {
         setIsRefresh(true);
@@ -134,7 +134,7 @@ public class PullToLoadView extends FrameLayout {
     }
 
     /**
-     * ³õÊ¼»¯¼ÓÔØ
+     * åˆå§‹åŒ–åŠ è½½
      */
     public void initLoad() {
         if (null != mPullCallback) {
@@ -151,9 +151,9 @@ public class PullToLoadView extends FrameLayout {
     }
 
     /**
-     * ÉèÖÃÏÂÀ­Ë¢ĞÂ¶¯»­ÑÕÉ«
+     * è®¾ç½®ä¸‹æ‹‰åˆ·æ–°åŠ¨ç”»é¢œè‰²
      *
-     * @param colorResIds ÑÕÉ«id¼¯
+     * @param colorResIds é¢œè‰²idé›†
      */
     public void setColorSchemeResources(int... colorResIds) {
         mSwipeRefreshLayout.setColorSchemeResources(colorResIds);

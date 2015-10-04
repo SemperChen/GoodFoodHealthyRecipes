@@ -25,9 +25,11 @@
     <color name="text_brown">#96371e00</color>
 
     <color name="background_brown2">#fffafaf0</color>
-
     <color name="border_author_icon">#c8dedede</color>
 
+    <color name="bg_recipe">#fffffff0</color>
+    <color name="title_recipe">#c82d2d2d</color>
+    <color name="rotateloading">#c833b5e5</color>
 
     <array name="note_neutral_colors">
         <item>#9E9E9E</item>

@@ -1,8 +1,11 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
+import android.content.Intent;
 import android.os.Handler;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -11,6 +14,7 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.RecipeActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.RecommendAdapter;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullCallback;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullToLoadView;
@@ -47,6 +51,8 @@ public class RecommendFragment extends BaseLazyFragment {
                 android.R.color.holo_blue_dark,
                 android.R.color.holo_orange_dark);
         mRecyclerView=mPullToLoadView.getRecyclerView();
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
         mPullToLoadView.setPullCallback(new PullLoadMoreListener());
 
     }
@@ -102,6 +108,7 @@ public class RecommendFragment extends BaseLazyFragment {
             if(mAdapter==null){
                 mAdapter = new RecommendAdapter(mRecipePreviewData);
                 mRecyclerView.setAdapter(mAdapter);
+                mAdapter.setOnItemClickListener(new OnclickListener());
             }else{
                 //如果是执行的操作是刷新，则清除适配器内容
                 if(mPullToLoadView.isRefreshing()){
@@ -166,6 +173,19 @@ public class RecommendFragment extends BaseLazyFragment {
                 StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+    }
+
+    /**
+     * 点击事件监听
+     */
+    private class OnclickListener implements RecommendAdapter.OnItemClickListener {
+        @Override
+        public void onItemClick(View view, int position) {
+            Intent intent=new Intent(getActivity(), RecipeActivity.class);
+            int recipeId=mAdapter.getRecipePreviews().get(position).getRecipeId();
+            intent.putExtra("recipeId",recipeId);
+            getActivity().startActivity(intent);
+        }
     }
 
     /**

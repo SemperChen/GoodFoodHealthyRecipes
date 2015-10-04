@@ -29,6 +29,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
     private RecipePreviewData data;
     private List<RecipePreview> recipePreviews;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    OnItemClickListener onItemClickListener;
 
     public RecommendAdapter(RecipePreviewData data) {
         this.data=data;
@@ -69,7 +70,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
         return recipePreviews.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
         TextView title;
         CircleImageView icon;
@@ -80,7 +81,23 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
             title= (TextView) itemView.findViewById(R.id.recommend_item_title);
             icon= (CircleImageView) itemView.findViewById(R.id.recommend_item_author_icon);
             author=(TextView) itemView.findViewById(R.id.recommend_item_author_name);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(onItemClickListener!=null){
+                onItemClickListener.onItemClick(v,getAdapterPosition());
+            }
+        }
+    }
+
+    public interface OnItemClickListener{
+        void onItemClick(View view,int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener=onItemClickListener;
     }
 
     /**

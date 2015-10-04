@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         if(mNavigationView!=null){
 
             setupDrawerContent(mNavigationView);
-            //侧边栏默认选择health项
+            //侧边栏默认选择“首页”
             mNavigationView.getMenu().performIdentifierAction(R.id.home,0);
         }
     }

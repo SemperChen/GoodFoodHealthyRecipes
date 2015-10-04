@@ -31,6 +31,21 @@
     <dimen name="all_item_author_name_margin_left">3dp</dimen>
     <dimen name="all_item_author_name_textsize">10sp</dimen>
 
+    <!--recipe-->
+    <dimen name="recipe_appbar_height">192dp</dimen>
+    <dimen name="recipe_expanded_title_margin_end">48sp</dimen>
+    <dimen name="recipe_expanded_title_margin_start">32sp</dimen>
+    <dimen name="recipe_title">24sp</dimen>
+    <dimen name="recipe_author_icon">48dp</dimen>
+    <dimen name="recipe_author_textsize">12sp</dimen>
+    <dimen name="recipe_time_written">10sp</dimen>
 
+    <dimen name="recipe_ingredients_item_text">14sp</dimen>
+    <dimen name="recipe_ingredients_item_marginbottom">5dp</dimen>
+    <dimen name="recipe_tips_item_margintop">8dp</dimen>
+    <dimen name="recipe_tips_item_textsize">16sp</dimen>
+    <dimen name="recipe_step_item_textsize">16sp</dimen>
+    <dimen name="recipe_step_item_text_margin">8dp</dimen>
+    <dimen name="recipe_step_item_image">100dp</dimen>
 
 </resources>

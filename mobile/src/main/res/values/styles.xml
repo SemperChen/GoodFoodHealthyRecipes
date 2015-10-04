@@ -8,7 +8,13 @@
         <item name="colorPrimaryDark">@color/theme_primary_dark</item>
         <item name="colorAccent">@color/theme_accent</item>
         <item name="android:windowBackground">@color/background_window</item>
-    </style>
+
+        <item name="android:activityOpenEnterAnimation">@anim/activity_slide_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_slide_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_slide_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_slide_out</item>
+
+</style>
 
     <style name="Theme.GoodFoodHealthyRecipes.Recommend.CardViewStyle" parent="">
         <item name="android:layout_width">match_parent</item>
