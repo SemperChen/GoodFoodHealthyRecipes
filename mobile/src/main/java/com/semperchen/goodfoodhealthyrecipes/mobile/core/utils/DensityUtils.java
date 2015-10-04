@@ -1,5 +1,5 @@
 
-package com.semperchen.goodfoodhealthyrecipes.mobile.ui.utils;
+package com.semperchen.goodfoodhealthyrecipes.mobile.core.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;

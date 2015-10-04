@@ -10,7 +10,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.RequestManager;
-import com.semperchen.goodfoodhealthyrecipes.mobile.ui.utils.ImageLoaderHelper;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.ImageLoaderHelper;
 
 /**
  * <p>自定义Application</p>
@@ -33,7 +33,8 @@ public class MainApplication extends Application {
     private void init() {
         RequestManager.init(this);
         //initImageLoader(getApplicationContext());
-        ImageLoader.getInstance().init(ImageLoaderHelper.getInstance(this).getImageLoaderConfiguration(APIConstants.Paths.IMAGE_LOADER_CACHE_PATH));
+        ImageLoader.getInstance().init(ImageLoaderHelper.getInstance(this)
+                .getImageLoaderConfiguration(APIConstants.Paths.IMAGE_LOADER_CACHE_PATH));
 
     }
 
@@ -69,6 +70,5 @@ public class MainApplication extends Application {
         android.os.Process.killProcess(android.os.Process.myPid());
         super.onLowMemory();
     }
-
 
 }
