@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-    <include layout="@layout/toolbar"/>
-    <TextView android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center"
-              android:textColor="@color/theme_primary"
-              android:text="@string/joke"/>
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@android:color/black"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/joke_ll_conent"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@android:color/white"
+                  android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <include layout="@layout/toolbar"/>
+        <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CollectionView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:iosched="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/joke_content_collection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="4dp"
+                android:layout_marginStart="@dimen/joke_menu_hz_margin"
+                android:layout_marginEnd="@dimen/joke_menu_hz_margin"
+                android:clipToPadding="false"
+                iosched:internalPadding="4dp"/>
+    </LinearLayout>
+    <FrameLayout
+            android:id="@+id/joke_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+</RelativeLayout>

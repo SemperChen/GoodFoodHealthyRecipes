@@ -14,12 +14,18 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.FavoritesFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.HomeFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.JokeFragment;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.JokeMoreFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+
+    private boolean isJokeItem = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                if(isJokeItem){
+                    returnFragment();
+                }else {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -64,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.menu_main,menu);
+        if(!isJokeItem) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_main, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -80,16 +92,18 @@ public class MainActivity extends AppCompatActivity {
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-
+                        isJokeItem = false;
                         switch (menuItem.getItemId()){
                             case R.id.home:
-                                fragmentTranslationReplace(new HomeFragment());
+                                fragmentTranslationReplace(new HomeFragment(),HomeFragment.class.getSimpleName());
                                 break;
                             case R.id.joke:
-                                fragmentTranslationReplace(new JokeFragment());
+                                JokeFragment jokeFragment = JokeFragment.getInstance();
+                                jokeFragment.setItemDefalueSetting(2, false, getString(R.string.joke), buildMenuList());
+                                fragmentTranslationReplace(jokeFragment,JokeFragment.class.getSimpleName());
                                 break;
                             case R.id.favorites:
-                                fragmentTranslationReplace(new FavoritesFragment());
+                                fragmentTranslationReplace(new FavoritesFragment(), FavoritesFragment.class.getSimpleName());
                                 break;
                         }
 
@@ -107,10 +121,45 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param fragment 碎片
      */
-    private void fragmentTranslationReplace(Fragment fragment){
+    private void fragmentTranslationReplace(Fragment fragment,String fragmentName){
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container,fragment)
+                .replace(R.id.container,fragment,fragmentName)
                 .commit();
     }
 
+    /**
+     * 切换显示更多的fragment并隐藏JokeFragment
+     * @param viewtype
+     */
+    public void setupJokeMoreContent(int viewtype){
+        isJokeItem = true;
+        getSupportFragmentManager().beginTransaction().
+                add(R.id.container, JokeMoreFragment.getInstance(), JokeMoreFragment.class.getSimpleName()).
+                show(getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName())).
+                hide(getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName())).commit();
+    }
+
+    /**
+     * 返回JokeFragment
+     */
+    private void returnFragment(){
+        isJokeItem = false;
+        getSupportFragmentManager().beginTransaction().
+                show(getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName())).
+                remove(getSupportFragmentManager().findFragmentByTag(JokeMoreFragment.class.getSimpleName())).commit();
+    }
+
+    /**
+     * 构建笑话内容页每个Item的模板
+     * @return
+     */
+    private List<Integer> buildMenuList(){
+        ArrayList<Integer> list = new ArrayList<Integer>();
+
+        list.add(R.layout.fragment_joke_item);
+        list.add(R.layout.fragment_joke_item);
+        list.add(R.layout.fragment_joke_item);
+        list.add(R.layout.fragment_joke_item);
+        return list;
+    }
 }

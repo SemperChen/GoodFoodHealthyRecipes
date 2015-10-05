@@ -10,12 +10,13 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
  * Created by Semper on 2015/9/17.
  */
 public abstract class BaseToolbarFragment extends BaseFragment {
+    protected  ActionBar actionBar;
 
     protected void setupToolbar(View rootView) {
 
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu);
             actionBar.setDisplayShowTitleEnabled(true);

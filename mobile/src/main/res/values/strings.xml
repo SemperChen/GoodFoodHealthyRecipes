@@ -13,9 +13,34 @@
     <string name="change_theme">Change theme</string>
     <string name="about_us">About us</string>
     <string name="more">More</string>
+    <string name="neihanduanzi">nei han duan zi</string>
+    <string name="gaoxiaojiongtu">gao xiao jiong tu</string>
+    <string name="meirinxiao">mei ri n xiao</string>
+    <string name="qipaxinwen">qi pa xin wen</string>
 
     <!--tabs-->
     <string name="recommend">Recommend</string>
     <string name="all">All</string>
     <string name="topic">Topic</string>
+
+    <!-- joke -->
+    <string name="joke_item_title_neihan">nei han duan zi</string>
+    <string name="joke_item_title_jiongtu">gao xiao jiong tu</string>
+    <string name="joke_item_title_xiaohua">mei ri n xiao</string>
+    <string name="joke_item_title_xinwen">qi pa xin wen</string>
+    <string name="joke_item_value_text">wo cao ni ma b!</string>
+    <string name="joke_item_value">this is a test!</string>
+    <string name="joke_item_value_success">update data success!</string>
+    <string name="joke_item_good_1">100wan</string>
+    <string name="joke_item_good_2">45wan</string>
+    <string name="joke_item_good_3">23wan</string>
+    <string name="joke_item_good_4">9732</string>
+    <string name="joke_item_bury_1">6478</string>
+    <string name="joke_item_bury_2">3343</string>
+    <string name="joke_item_bury_3">1287</string>
+    <string name="joke_item_bury_4">783</string>
+    <string name="joke_item_hot_1">673</string>
+    <string name="joke_item_hot_2">483</string>
+    <string name="joke_item_hot_3">234</string>
+    <string name="joke_item_hot_4">78</string>
 </resources>

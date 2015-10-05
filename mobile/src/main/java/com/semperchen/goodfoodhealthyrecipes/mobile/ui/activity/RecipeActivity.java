@@ -26,6 +26,7 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.FontsHelper;
 import com.victor.loading.rotate.RotateLoading;
 
+
 /**
  * Created by Semper on 2015/9/23.
  */

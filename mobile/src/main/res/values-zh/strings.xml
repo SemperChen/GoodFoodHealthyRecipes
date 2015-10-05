@@ -15,4 +15,29 @@
     <string name="recommend">推荐</string>
     <string name="all">全部</string>
     <string name="home">首页</string>
+    <string name="neihanduanzi">内涵段子</string>
+    <string name="gaoxiaojiongtu">搞笑囧图</string>
+    <string name="meirinxiao">每日N笑</string>
+    <string name="qipaxinwen">奇葩新闻</string>
+
+    <!-- joke -->
+    <string name="joke_item_title_neihan">内涵段子</string>
+    <string name="joke_item_title_jiongtu">搞笑囧图</string>
+    <string name="joke_item_title_xiaohua">每日N笑</string>
+    <string name="joke_item_title_xinwen">奇葩新闻</string>
+    <string name="joke_item_value_text">老婆问老公:你觉得我温柔吗，漂亮吗？老公:温柔，漂亮。老婆:真的吗，你是不是怕伤害到我才这么说的？老公：不是，我是怕你伤害我才这么说的!</string>
+    <string name="joke_item_value">这是一段测试文字!</string>
+    <string name="joke_item_value_success">更新数据成功!</string>
+    <string name="joke_item_good_1">100万</string>
+    <string name="joke_item_good_2">45万</string>
+    <string name="joke_item_good_3">23万</string>
+    <string name="joke_item_good_4">9732</string>
+    <string name="joke_item_bury_1">6478</string>
+    <string name="joke_item_bury_2">3343</string>
+    <string name="joke_item_bury_3">1287</string>
+    <string name="joke_item_bury_4">783</string>
+    <string name="joke_item_hot_1">673</string>
+    <string name="joke_item_hot_2">483</string>
+    <string name="joke_item_hot_3">234</string>
+    <string name="joke_item_hot_4">78</string>
 </resources>

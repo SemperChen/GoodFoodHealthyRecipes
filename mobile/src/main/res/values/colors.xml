@@ -33,6 +33,10 @@
 
     <color name="default_image_background">#FFDEDEDE</color>
 
+    <color name="name_color">#9E9E9E</color>
+    <color name="commens_color">#AFCDCDCD</color>
+    <color name="backgroud_more_item">#CFDBDBDB</color>
+
     <array name="note_neutral_colors">
         <item>#9E9E9E</item>
         <item>#455A64</item>
