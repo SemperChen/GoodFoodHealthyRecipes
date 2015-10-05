@@ -254,7 +254,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private void getDataFromService(final View imgView, final View itemView,final TextView tvValue,final ImageView imgValue) {
         AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
 
-        if(itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_JOKE) {
+        if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_JOKE) {
             int old_id = PrefUtils.getInt(activity, "joke_max_number", 0);
             jokeId = (new Random()).nextInt(old_id);
 
@@ -269,7 +269,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
 
                 }
             }, 1, (maxId - jokeId));
-        }else if(itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_IMAGE){
+        }else if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_IMAGE){
             //模拟从网上获取资源
             new Thread(new Runnable() {
                 @Override
@@ -312,9 +312,9 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                if(itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_JOKE) {
+                if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_JOKE) {
                     tvValue.setText(content);
-                }else if(itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_IMAGE) {
+                }else if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_IMAGE) {
                     imgValue.setBackgroundResource(R.drawable.image_commend_004);
                 }
                 imgView.clearAnimation();

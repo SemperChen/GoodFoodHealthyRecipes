@@ -124,7 +124,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
         final String hashTitle = mContext.getString(menuEntry.titleId);
         holder.title.setText(hashTitle);
 
-        if(mView.getTag(R.id.tag_second) != ITEMVIEW_IMAGE) {
+        if(((int)mView.getTag(R.id.tag_second)) != ITEMVIEW_IMAGE) {
             final String hashValue = menuEntry.value;
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.imgValue.setVisibility(View.GONE);
