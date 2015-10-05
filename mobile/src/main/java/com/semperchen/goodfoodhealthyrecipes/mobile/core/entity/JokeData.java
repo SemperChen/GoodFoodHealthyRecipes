@@ -3,16 +3,16 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 import java.util.List;
 
 public class JokeData {
-	public String status;       //·µ»Ø×´Ì¬£¬Áù¸ö0±íÊ¾³É¹¦ 
-	public String desc;		  //·µ»Ø½á¹ûÃèÊö£¬Áù¸ö0±íÊ¾³É¹¦
-	public List<Joke> detail;	  //¾ßÌåĞ¦»°ÁĞ±í£¬ÊÇÒ»¸öÊı×é
+	public String status;       //è¿”å›çŠ¶æ€ï¼Œå…­ä¸ª0è¡¨ç¤ºæˆåŠŸ 
+	public String desc;		  //è¿”å›ç»“æœæè¿°ï¼Œå…­ä¸ª0è¡¨ç¤ºæˆåŠŸ
+	public List<Joke> detail;	  //å…·ä½“ç¬‘è¯åˆ—è¡¨ï¼Œæ˜¯ä¸€ä¸ªæ•°ç»„
 	public class Joke{
-		public String id;		  //Êı¾İ¿â×ÔÔöid£¬Ã»ÓĞÈÎºÎÒâÒå
-		public String xhid;	  //Ğ¦»°id£¬ÅĞ¶ÏĞ¦»°ĞÂ¾ÉÓÃµÄ
-		public String author;	  //Ğ¦»°×÷Õß
-		public String content;  //Ğ¦»°ÄÚÈİ
-		public String picUrl;	  //Ğ¦»°µÄÍ¼Æ¬£¨Èç¹ûÓĞ£©
-		public String status;	  //Ğ¦»°×´Ì¬£¨ÄÜ·µ»ØµÄ¶¼ÊÇ1£©
+		public String id;		  //æ•°æ®åº“è‡ªå¢idï¼Œæ²¡æœ‰ä»»ä½•æ„ä¹‰
+		public String xhid;	  //ç¬‘è¯idï¼Œåˆ¤æ–­ç¬‘è¯æ–°æ—§ç”¨çš„
+		public String author;	  //ç¬‘è¯ä½œè€…
+		public String content;  //ç¬‘è¯å†…å®¹
+		public String picUrl;	  //ç¬‘è¯çš„å›¾ç‰‡ï¼ˆå¦‚æœæœ‰ï¼‰
+		public String status;	  //ç¬‘è¯çŠ¶æ€ï¼ˆèƒ½è¿”å›çš„éƒ½æ˜¯1ï¼‰
 	
 		public String toString() {
 			return "[id:"+id+",xhid:"+xhid+",author:"+author+",content:"+content+",picUrl:"+picUrl+",status:"+status+"]";

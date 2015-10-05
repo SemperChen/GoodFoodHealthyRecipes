@@ -1,6 +1,5 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.core.net;
 
-import android.net.Uri;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.JokeData;
@@ -8,14 +7,14 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.JokeData;
 /**
  * Created by abc on 2015/10/1.
  */
-public class JokeManager {
+public class JokeNetWorkManager {
     private final static String JOKE_URL="http://api.1-blog.com/biz/bizserver/xiaohua/list.do";
 
-    private static JokeManager mInstance;
+    private static JokeNetWorkManager mInstance;
 
-    public static JokeManager getInstance(){
+    public static JokeNetWorkManager getInstance(){
         if(mInstance==null){
-            mInstance=new JokeManager();
+            mInstance=new JokeNetWorkManager();
         }
         return mInstance;
     }

@@ -3,16 +3,14 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeNetWorkManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.JokeData;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.MainActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeMoreAdapter;
@@ -42,7 +40,7 @@ public class JokeMoreFragment extends BaseToolbarFragment{
         rvContent = (RecyclerView) mView.findViewById(R.id.rv_content);
 
         setupRecyclerManager();
-        //·ÃÎÊÍøÂç£¬»ñÈ¡Êı¾İ
+        //è®¿é—®ç½‘ç»œï¼Œè·å–æ•°æ®
         getDataFromService();
     }
 
@@ -56,7 +54,7 @@ public class JokeMoreFragment extends BaseToolbarFragment{
     public void onActivityCreated( Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //Ìî³äÊı¾İ
+        //å¡«å……æ•°æ®
         if(jokeMoreAdapter != null){
             if(rvContent.getAdapter() == null) {
                 rvContent.setAdapter(jokeMoreAdapter);
@@ -83,7 +81,7 @@ public class JokeMoreFragment extends BaseToolbarFragment{
     }
 
     private void setupRecyclerManager() {
-        //ÁĞÊıÎªÒ»ÁĞ
+        //åˆ—æ•°ä¸ºä¸€åˆ—
         final int spanCount = 1;
         RecyclerView.LayoutManager mLayoutManager = new StaggeredGridLayoutManager(
                 spanCount,
@@ -93,7 +91,7 @@ public class JokeMoreFragment extends BaseToolbarFragment{
     }
 
     private void getDataFromService() {
-        JokeManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
+        JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
             @Override
             public void onResponse(JokeData jokeData) {
                 jokeMoreAdapter = new JokeMoreAdapter(activity, jokeData.detail);
@@ -108,7 +106,7 @@ public class JokeMoreFragment extends BaseToolbarFragment{
     }
 
     /**
-     * Ìî³äÊı¾İ
+     * å¡«å……æ•°æ®
      */
     private void putDataInView() {
         rvContent.setAdapter(jokeMoreAdapter);

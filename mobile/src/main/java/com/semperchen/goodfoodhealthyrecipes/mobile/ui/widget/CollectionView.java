@@ -49,7 +49,7 @@ public class CollectionView extends ListView{
         }
     }
 
-    //¸üĞÂÈ«²¿Êı¾İ
+    //æ›´æ–°å…¨éƒ¨æ•°æ®
     public void updateInventory(Inventory inventory){
         updateInventory(inventory, true);
     }
@@ -73,45 +73,45 @@ public class CollectionView extends ListView{
     }
 
     /**
-     * ÖØĞÂÉèÖÃÉèÅäÆ÷²¢¸üĞÂÊı¾İ
+     * é‡æ–°è®¾ç½®è®¾é…å™¨å¹¶æ›´æ–°æ•°æ®
      */
     private void notifyAdapterDataSetChanged() {
         setAdapter(new MyListAdapter());
     }
 
     /**
-     * ¿ªÆô¶¯»­
+     * å¼€å¯åŠ¨ç”»
      */
     private void doFadeInAnimation(){
         setAlpha(0);
         animate().setDuration(500).alpha(1.0f);
     }
 
-    //ÉèÖÃ»Øµ÷
+    //è®¾ç½®å›è°ƒ
     public void setCollctionAdapter(CollectionViewCallbacks adapter){
         mCallbacks = adapter;
     }
 
     /**
-     * Ã¿Ò»ĞĞµÄ¼ÆËã½á¹û
+     * æ¯ä¸€è¡Œçš„è®¡ç®—ç»“æœ
      */
     private class RowComputeResult{
-        //ÔÚµÚ¼¸ĞĞ
+        //åœ¨ç¬¬å‡ è¡Œ
         int row;
-        //ÊÇ·ñÊÇÍ·ÊÓÍ¼
+        //æ˜¯å¦æ˜¯å¤´è§†å›¾
         boolean isHeader;
-        //×éID
+        //ç»„ID
         int groupId;
-        //ÔÚµÚ¼¸×é
+        //åœ¨ç¬¬å‡ ç»„
         InventoryGroup group;
-        //ÔÚµÚ¼¸ĞĞµÄµÚ¼¸¸ö
+        //åœ¨ç¬¬å‡ è¡Œçš„ç¬¬å‡ ä¸ª
         int groupOffset;
     }
 
     /**
-     * ¼ÆËãÃ¿Ò»ĞĞ
-     * @param row     µÚ¼¸ĞĞ
-     * @param result  ¼ÆËã½á¹û
+     * è®¡ç®—æ¯ä¸€è¡Œ
+     * @param row     ç¬¬å‡ è¡Œ
+     * @param result  è®¡ç®—ç»“æœ
      * @return
      */
     private boolean computeRowConent(int row,RowComputeResult result){    	
@@ -187,7 +187,7 @@ public class CollectionView extends ListView{
     RowComputeResult mRowComputeResult = new RowComputeResult();
 
     /**
-     * ĞÂ½¨Ã¿Ò»ĞĞµÄÊÓÍ¼£¬¼´ListViewµÄItem
+     * æ–°å»ºæ¯ä¸€è¡Œçš„è§†å›¾ï¼Œå³ListViewçš„Item
      * @param row
      * @param convertView
      * @param parent
@@ -202,7 +202,7 @@ public class CollectionView extends ListView{
     }
 
     /**
-     *  »ñÈ¡Ã¿Ò»ĞĞµÄÊÓÍ¼ÀàĞÍ
+     *  è·å–æ¯ä¸€è¡Œçš„è§†å›¾ç±»å‹
      * @param row
      * @return
      */
@@ -221,9 +221,9 @@ public class CollectionView extends ListView{
     }
 
     /**
-     *  ¹¹½¨Ã¿Ò»ĞĞ
-     * @param view    Ã¿Ò»ĞĞµÄÊÓÍ¼£¬¼´ListViewµÄItem
-     * @param result  Ã¿Ò»ĞĞµÄ¼ÆËã½á¹û
+     *  æ„å»ºæ¯ä¸€è¡Œ
+     * @param view    æ¯ä¸€è¡Œçš„è§†å›¾ï¼Œå³ListViewçš„Item
+     * @param result  æ¯ä¸€è¡Œçš„è®¡ç®—ç»“æœ
      * @param parent
      * @return
      */
@@ -232,14 +232,14 @@ public class CollectionView extends ListView{
             return view != null ? view : new View(getContext());
         }
 
-        //ListViewÀïÃ¿¸öItemµÄÎ¨Ò»Öµ
+        //ListViewé‡Œæ¯ä¸ªItemçš„å”¯ä¸€å€¼
         String desiredViewType = mInventory.hashCode() + "," + getRowViewType(result.row);
         String actualViewType = (view != null && view.getTag() != null)?view.getTag().toString():"";
         if(!desiredViewType.equals(actualViewType)){
             view = null;
         }
 
-        //ÅĞ¶ÏÊÇ·ñÊÇÍ·ÊÇ
+        //åˆ¤æ–­æ˜¯å¦æ˜¯å¤´æ˜¯
         if(result.isHeader){
             if(view == null){
                 view = mCallbacks.newCollectionHeaderView(getContext(),parent);
@@ -254,7 +254,7 @@ public class CollectionView extends ListView{
     }
 
     /**
-     * ¹¹½¨ListViewÀïµÄItem
+     * æ„å»ºListViewé‡Œçš„Item
      * @param convertView
      * @param result
      * @return
@@ -264,9 +264,9 @@ public class CollectionView extends ListView{
     }
 
     /**
-     * ·µ»ØItemÀïµÄ×ÓÊÓÍ¼
+     * è¿”å›Itemé‡Œçš„å­è§†å›¾
      * @param result
-     * @param column  Ã¿Ò»ĞĞµÄµÚ¼¸¸ö
+     * @param column  æ¯ä¸€è¡Œçš„ç¬¬å‡ ä¸ª
      * @param view     Item
      * @param parent
      * @return
@@ -291,8 +291,8 @@ public class CollectionView extends ListView{
     }
 
     /**
-     * ÉèÖÃItemÀïÃ¿¸ö×ÓÊÓÍ¼µÄ²¼¾ÖÊµÏÖ
-     * @param view ItemÀïµÄ×ÓÊÓÍ¼
+     * è®¾ç½®Itemé‡Œæ¯ä¸ªå­è§†å›¾çš„å¸ƒå±€å®ç°
+     * @param view Itemé‡Œçš„å­è§†å›¾
      * @return
      */
     private LinearLayout.LayoutParams setupLayoutParams(View view) {
@@ -319,19 +319,19 @@ public class CollectionView extends ListView{
     }
 
     /**
-     * ¹¹½¨ListViewÀïµÄItem
+     * æ„å»ºListViewé‡Œçš„Item
      * @param result
      * @return
      */
     private View makeNewItemRow(RowComputeResult result) {
-        //ItemµÄ²¼¾Ö
+        //Itemçš„å¸ƒå±€
         LinearLayout ll = new LinearLayout(getContext());
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         ll.setOrientation(LinearLayout.HORIZONTAL);
         ll.setLayoutParams(params);
 
-        //¹¹½¨ItemÀïµÄ×ÓÊÓÍ¼
+        //æ„å»ºItemé‡Œçš„å­è§†å›¾
         int i;
         for(i=0;i<result.group.mDisplayCols;i++){
             View view = getItemView(result,i,null,ll);
@@ -342,7 +342,7 @@ public class CollectionView extends ListView{
     }
 
     /**
-     * ¸´ÓÃItem
+     * å¤ç”¨Item
      * @param convertView
      * @param result
      * @return
@@ -362,7 +362,7 @@ public class CollectionView extends ListView{
         return ll;
     }
 
-    //Ğ¦»°Ä£¿éµÄÈ«²¿ÄÚÈİ
+    //ç¬‘è¯æ¨¡å—çš„å…¨éƒ¨å†…å®¹
     public static class Inventory{
         private ArrayList<InventoryGroup> mGroups =new ArrayList<InventoryGroup>();
         public Inventory(){};
@@ -372,14 +372,14 @@ public class CollectionView extends ListView{
             }
         }
 
-        //Ìí¼Ó×é
+        //æ·»åŠ ç»„
         public void addInventoryGroup(InventoryGroup group){
             if(group.mItemCount > 0){
                 this.mGroups.add(new InventoryGroup(group));
             }
         }
 
-        //»ñÈ¡×ÓÊÓÍ¼µÄÈ«²¿ÊıÁ¿
+        //è·å–å­è§†å›¾çš„å…¨éƒ¨æ•°é‡
         public int getTotalItemCount(){
             int total = 0;
             for(InventoryGroup group:this.mGroups){
@@ -388,12 +388,12 @@ public class CollectionView extends ListView{
             return total;
         }
 
-        //»ñÈ¡×éµÄÊıÁ¿
+        //è·å–ç»„çš„æ•°é‡
         public int getGroupCount(){
             return mGroups.size();
         }
 
-        //»ñÈ¡×éµÄË÷Òı
+        //è·å–ç»„çš„ç´¢å¼•
         public int getGroupIndex(int groupId){
             for(int i=0;i<mGroups.size();i++){
                 if(mGroups.get(i).mGroupId == groupId){
@@ -404,13 +404,13 @@ public class CollectionView extends ListView{
         }
     }
 
-    //Ã¿Ò»¸ö×é£¬¼´Í·ÊÓÍ¼+¶à¸ö×ÓÊÓÍ¼
+    //æ¯ä¸€ä¸ªç»„ï¼Œå³å¤´è§†å›¾+å¤šä¸ªå­è§†å›¾
     public static class InventoryGroup implements Cloneable {
         private int mGroupId = 0;
         private boolean mShowHeader = false;
         private String mHeaderLable = "";
         private int mDataIndexStart = 0;
-        //Ã¿Ò»ĞĞÏÔÊ¾¶àÉÙ¸ö
+        //æ¯ä¸€è¡Œæ˜¾ç¤ºå¤šå°‘ä¸ª
         private int mDisplayCols = 1;
         private int mItemCount = 0;
         private SparseArray<Object> mItemTag = new SparseArray<Object>();

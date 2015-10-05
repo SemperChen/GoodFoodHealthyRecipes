@@ -47,7 +47,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
         mCallbacks = callbacks;
     }
 
-    //»ñÈ¡È«²¿ItemµÄ¼¯ºÏ,²¢ÇÒÉèÖÃÃ¿¸öItem×éµÄ²ÎÊı
+    //è·å–å…¨éƒ¨Itemçš„é›†åˆ,å¹¶ä¸”è®¾ç½®æ¯ä¸ªItemç»„çš„å‚æ•°
     public CollectionView.Inventory getInventory(){
         CollectionView.Inventory inventory = new CollectionView.Inventory();
         inventory.addInventoryGroup(new CollectionView.InventoryGroup(TOKEN)
@@ -79,10 +79,10 @@ public class JokeAdapter implements CollectionViewCallbacks {
     }
 
     /**
-     * ĞÂ½¨ItemµÄÊÓÍ¼²¢·µ»Ø
+     * æ–°å»ºItemçš„è§†å›¾å¹¶è¿”å›
      * @param context
      * @param parent
-     * @param indexInGroup   ³ıÍ·ÊÓÍ¼Ö®ºóµÄË÷Òı
+     * @param indexInGroup   é™¤å¤´è§†å›¾ä¹‹åçš„ç´¢å¼•
      * @return
      */
     private View newView(Context context, ViewGroup parent,int indexInGroup) {
@@ -112,10 +112,10 @@ public class JokeAdapter implements CollectionViewCallbacks {
     }
 
     /**
-     * °ó¶¨ItemµÄÊı¾İ
+     * ç»‘å®šItemçš„æ•°æ®
      * @param mView
      * @param context
-     * @param indexInGroup   ³ıÍ·ÊÓÍ¼Ö®ºóµÄË÷Òı
+     * @param indexInGroup   é™¤å¤´è§†å›¾ä¹‹åçš„ç´¢å¼•
      */
     private void bindView(final View mView, Context context, final int indexInGroup) {
         final ViewHolder holder = (ViewHolder) mView.getTag(R.id.tag_first);
@@ -155,7 +155,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
             holder.description.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //Ë¢ĞÂÊı¾İ,»ñÈ¡ÍøÂç×ÊÔ´
+                    //åˆ·æ–°æ•°æ®,è·å–ç½‘ç»œèµ„æº
                     mCallbacks.onRefreshDataFromService(view,mView,holder.tvValue, holder.imgValue);
                 }
             });
@@ -171,7 +171,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
     }
 
     /**
-     * ÉèÖÃTextViewµÄ×î´óĞĞÊı
+     * è®¾ç½®TextViewçš„æœ€å¤§è¡Œæ•°
      * @param tvValue
      * @param frameLayout
      */

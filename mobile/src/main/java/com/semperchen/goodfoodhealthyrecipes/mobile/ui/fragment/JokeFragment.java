@@ -16,7 +16,7 @@ import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.JokeData;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.JokeData.Joke;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeNetWorkManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.AnimationUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.PrefUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.MainActivity;
@@ -169,7 +169,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * 访问网络获取并绑定数据
      */
     private void buildAdapterFromService() {
-        JokeManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
+        JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
             @Override
             public void onResponse(JokeData jokeData) {
                 //获取网络最新JokeId与本地最新JokeId对比
@@ -212,7 +212,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private void openSingleMenuViewAndNetWork(final View view) {
         mSingleMenuView.openMenuView(view);
         //从网络获取资源
-        JokeManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
+        JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
             @Override
             public void onResponse(JokeData jokeData) {
                 removeMoreItem(jokeData);
@@ -258,7 +258,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
             int old_id = PrefUtils.getInt(activity, "joke_max_number", 0);
             jokeId = (new Random()).nextInt(old_id);
 
-            JokeManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
+            JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
                 @Override
                 public void onResponse(JokeData jokeData) {
                     successDataAndRefresh(imgView, itemView, tvValue, imgValue, jokeData.detail.get(0).content);

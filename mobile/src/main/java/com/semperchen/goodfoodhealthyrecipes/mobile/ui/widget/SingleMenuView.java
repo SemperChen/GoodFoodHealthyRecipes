@@ -50,7 +50,7 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ³õÊ¼»¯Êı¾İ
+	 * åˆå§‹åŒ–æ•°æ®
 	 */
 	private void initData() {
 		location = new int[2];
@@ -64,11 +64,11 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ÉèÖÃÏÔÊ¾µÄÊÓÍ¼
+	 * è®¾ç½®æ˜¾ç¤ºçš„è§†å›¾
 	 * @param layoutResId
-	 * @param widthOffset       ÀëÆÁÄ»×ó±ßµÄ¾àÀë
-	 * @param heightOffset	   ÀëÆÁÄ»ÉÏ±ßµÄ¾àÀë
-	 * @param actionBarHeight   Ò»°ãÎª0¼´¿É
+	 * @param widthOffset       ç¦»å±å¹•å·¦è¾¹çš„è·ç¦»
+	 * @param heightOffset	   ç¦»å±å¹•ä¸Šè¾¹çš„è·ç¦»
+	 * @param actionBarHeight   ä¸€èˆ¬ä¸º0å³å¯
 	 */
 	public void setMenuView(int layoutResId,int widthOffset,int heightOffset,int actionBarHeight){
 		mMenuViewBig = View.inflate(mContext, layoutResId, null);
@@ -88,7 +88,7 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ¹Ø±ÕÊÓÍ¼
+	 * å…³é—­è§†å›¾
 	 */
 	public void closeMenuView(){
 		if(mView != null){
@@ -98,8 +98,8 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ´ò¿ªÊÓÍ¼
-	 * @param view µã»÷µÄview
+	 * æ‰“å¼€è§†å›¾
+	 * @param view ç‚¹å‡»çš„view
 	 */
 	public void openMenuView(View view){
 		mMenuViewBig.findViewById(R.id.btn_checkmore).setTag(view.getTag(R.id.tag_second));
@@ -135,7 +135,7 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ¿ªÆô´ò¿ª¶¯»­
+	 * å¼€å¯æ‰“å¼€åŠ¨ç”»
 	 */
 	private void startAnim() {		
 		ObjectAnimator tranAnimY = ObjectAnimator.ofFloat(mMenuViewSmall, "translationY", 0,-20);
@@ -164,7 +164,7 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ¿ªÆô¹Ø±Õ¶¯»­
+	 * å¼€å¯å…³é—­åŠ¨ç”»
 	 */
 	private void closeAnim() {
 		ObjectAnimator tranAnimY = ObjectAnimator.ofFloat(mMenuViewSmall, "translationY", -20,0);
@@ -200,7 +200,7 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * ¼ÆËã½á¹û
+	 * è®¡ç®—ç»“æœ
 	 */
 	private void compuleResult() {
 		mView.getLocationInWindow(location);
@@ -235,7 +235,7 @@ public class SingleMenuView implements AnimatorListener{
 	}
 
 	/**
-	 * »ñÈ¡×´Ì¬À¸¸ß¶È
+	 * è·å–çŠ¶æ€æ é«˜åº¦
 	 * @return
 	 */
 	private int getStatusBarHeight(){

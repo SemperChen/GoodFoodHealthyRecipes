@@ -9,7 +9,7 @@ import android.view.ViewGroup;
  */
 public interface CollectionViewCallbacks {
     /**
-     * ĞÂ½¨Í·ÊÓÍ¼²¢·µ»Ø
+     * æ–°å»ºå¤´è§†å›¾å¹¶è¿”å›
      * @param context
      * @param parent
      * @return
@@ -17,7 +17,7 @@ public interface CollectionViewCallbacks {
     View newCollectionHeaderView(Context context, ViewGroup parent);
 
     /**
-     * °ó¶¨Í·ÊÓÍ¼µÄÊı¾İ
+     * ç»‘å®šå¤´è§†å›¾çš„æ•°æ®
      * @param context
      * @param view
      * @param groupId
@@ -26,7 +26,7 @@ public interface CollectionViewCallbacks {
     void bindCollectionHeaderView(Context context, View view, int groupId, String headerLabel);
 
     /**
-     * ĞÂ½¨ItemµÄÊÓÍ¼²¢·µ»Ø
+     * æ–°å»ºItemçš„è§†å›¾å¹¶è¿”å›
      * @param context
      * @param groupId
      * @param parent
@@ -36,7 +36,7 @@ public interface CollectionViewCallbacks {
     View newCollectionItemView(Context context, int groupId, ViewGroup parent, int indexInGroup);
 
     /**
-     * °ó¶¨ItemµÄÊı¾İ
+     * ç»‘å®šItemçš„æ•°æ®
      * @param context
      * @param view
      * @param groupId
