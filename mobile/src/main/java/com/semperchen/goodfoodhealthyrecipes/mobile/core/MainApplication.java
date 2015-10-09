@@ -1,13 +1,7 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.core;
 
 import android.app.Application;
-import android.content.Context;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.RequestManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.ImageLoaderHelper;
@@ -32,37 +26,9 @@ public class MainApplication extends Application {
 
     private void init() {
         RequestManager.init(this);
-        //initImageLoader(getApplicationContext());
         ImageLoader.getInstance().init(ImageLoaderHelper.getInstance(this)
                 .getImageLoaderConfiguration(APIConstants.Paths.IMAGE_LOADER_CACHE_PATH));
 
-    }
-
-    public static void initImageLoader(Context context) {
-        //图片显示配置
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.mipmap.loading_image) //加载图片时，默认显示图片
-                .showImageForEmptyUri(R.mipmap.ic_empty)
-                .showImageOnFail(R.mipmap.ic_error)
-                .cacheInMemory(true) //写入内存
-                .cacheOnDisk(true) //写入储存卡
-                .considerExifParams(true)
-                // .displayer(new CircleBitmapDisplayer(Color.WHITE, 2)) //圆形图片配置
-                .build();
-
-        //图片加载配置
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.defaultDisplayImageOptions(options);
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator()); //图片写入内存卡时，用Md5方式取名
-        config.diskCacheSize(50 * 1024 * 1024); // 50 MiB
-        //config.memoryCacheSize(2 * 1024 * 1024);
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-        //config.writeDebugLogs(); // 打印日志
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
     }
 
     @Override
@@ -70,5 +36,6 @@ public class MainApplication extends Application {
         android.os.Process.killProcess(android.os.Process.myPid());
         super.onLowMemory();
     }
+
 
 }

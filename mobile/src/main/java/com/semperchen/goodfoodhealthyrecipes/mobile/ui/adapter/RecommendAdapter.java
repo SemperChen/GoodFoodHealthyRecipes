@@ -54,6 +54,7 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+
         RecipePreview recipePreview=recipePreviews.get(position);
         ImageLoader imageLoader= ImageLoader.getInstance();
 

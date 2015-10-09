@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import android.os.Environment;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -103,12 +104,23 @@ public class ImageLoaderHelper {
     }
 
     public ImageLoaderConfiguration getImageLoaderConfiguration(String filePath) {
-        File cacheDir = null;
-        if (!CommonUtils.isEmpty(filePath)) {
-            cacheDir = StorageUtils.getOwnCacheDirectory(mContext, filePath);
-        } else {
-            cacheDir = StorageUtils.getCacheDirectory(mContext);
+        String cachePath;
+        //判断是否存在内存卡，有则获取内存卡缓存目录，否则获取手机内存缓存目录
+        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                ||!Environment.isExternalStorageRemovable()){
+            cachePath=mContext.getExternalCacheDir().getPath();
+        }else{
+            cachePath=mContext.getCacheDir().getPath();
         }
+        File cacheDir= new File(cachePath+File.separator+filePath);
+
+        //判断是否有cachePath路径，无则创建
+
+//        if (!CommonUtils.isEmpty(filePath)) {
+//            cacheDir = StorageUtils.getOwnCacheDirectory(mContext, filePath);
+//        } else {
+//            cacheDir = StorageUtils.getCacheDirectory(mContext);
+//        }
 
         ImageLoaderConfiguration.Builder builder = new ImageLoaderConfiguration.Builder(mContext);
         builder.denyCacheImageMultipleSizesInMemory();

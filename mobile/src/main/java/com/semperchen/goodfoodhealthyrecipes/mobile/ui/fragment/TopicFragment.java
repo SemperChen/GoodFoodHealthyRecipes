@@ -26,8 +26,9 @@ public class TopicFragment extends BaseLazyFragment {
     private PullToLoadView mPullToLoadView;
     private TopicData mTopicData;
 
-    private int currentPage=-1;
-    private int nextPage=0;
+    private int currentPage;
+    private int nextPage;
+
     /**
      * 绑定数据
      */
@@ -42,12 +43,12 @@ public class TopicFragment extends BaseLazyFragment {
      */
     private void initializeView() {
 
-        mPullToLoadView= (PullToLoadView) mView.findViewById(R.id.pulltoLoadview);
+        mPullToLoadView = (PullToLoadView) mView.findViewById(R.id.pulltoLoadview);
         mPullToLoadView.setColorSchemeResources(
                 android.R.color.holo_green_dark,
                 android.R.color.holo_blue_dark,
                 android.R.color.holo_orange_dark);
-        mRecyclerView=mPullToLoadView.getRecyclerView();
+        mRecyclerView = mPullToLoadView.getRecyclerView();
         mPullToLoadView.setPullCallback(new PullLoadMoreListener());
 
     }
@@ -63,16 +64,16 @@ public class TopicFragment extends BaseLazyFragment {
                 @Override
                 public void run() {
                     //当所接回来的数据是最后一页的时候，这组数据中的nextPage等于0，于是nextPage<=currentPage
-                    if(nextPage<=currentPage){
+                    if (nextPage <= currentPage) {
 
                         Toast.makeText(getContext(), "已经没有更多了", Toast.LENGTH_SHORT).show();
                         mPullToLoadView.setComplete();
-                    }else {
+                    } else {
                         sendNetworkRequest();
                     }
 
                 }
-            },3000);
+            }, 2000);
         }
 
         @Override
@@ -81,14 +82,12 @@ public class TopicFragment extends BaseLazyFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(mTopicData!=null){
-                        currentPage=0;
-                        nextPage=1;
-                    }
+                    currentPage = -1;
+                    nextPage = 0;
                     sendNetworkRequest();
 
                 }
-            },2000);
+            }, 3000);
 
         }
     }
@@ -96,26 +95,24 @@ public class TopicFragment extends BaseLazyFragment {
     /**
      * 请求监听，请求成功后执行onResponse
      */
-    private class RequestSuccessListener implements Response.Listener{
+    private class RequestSuccessListener implements Response.Listener {
 
         @Override
         public void onResponse(Object obj) {
-            mTopicData= (TopicData) obj;
-            if(mAdapter==null){
+            mTopicData = (TopicData) obj;
+            if (mAdapter == null) {
                 mAdapter = new TopicAdapter(mTopicData);
                 mRecyclerView.setAdapter(mAdapter);
-            }else{
+            } else {
                 //如果是执行的操作是刷新，则清除适配器内容
-                if(mPullToLoadView.isRefreshing()){
+                if (mPullToLoadView.isRefreshing()) {
                     mAdapter.clear();
                 }
                 mAdapter.getTopics().addAll(mTopicData.getTopics());
                 mAdapter.notifyDataSetChanged();
-                if(mPullToLoadView.isLoadingMore()){
-                    currentPage=mTopicData.getCurrentPage();
-                    nextPage=mTopicData.getNextPage();
-                }
             }
+            currentPage = mTopicData.getCurrentPage();
+            nextPage = mTopicData.getNextPage();
 
             mPullToLoadView.setComplete();
         }
@@ -124,7 +121,7 @@ public class TopicFragment extends BaseLazyFragment {
     /**
      * 请求失败监听
      */
-    private class RequestErrorListener implements Response.ErrorListener{
+    private class RequestErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
 
@@ -175,7 +172,7 @@ public class TopicFragment extends BaseLazyFragment {
      */
     @Override
     protected void onFirstUserVisible() {
-        if(mRecyclerView.getAdapter()==null){
+        if (mRecyclerView.getAdapter() == null) {
 
             mPullToLoadView.initLoad();
         }

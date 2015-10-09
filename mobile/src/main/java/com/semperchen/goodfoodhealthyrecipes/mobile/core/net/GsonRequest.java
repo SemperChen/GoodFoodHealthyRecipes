@@ -45,7 +45,7 @@ public class GsonRequest<T> extends Request<T> {
     /**
      *
      * @param response 响应
-     * @return json转成的对象
+     * @return 所接收的对象
      */
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
@@ -58,6 +58,9 @@ public class GsonRequest<T> extends Request<T> {
             return Response.success(mGson.fromJson(json, mClass),
                     HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
+            if(DEBUG){
+                Log.e(TAG,"不支持编码格式");
+            }
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {
             if(DEBUG){

@@ -1,8 +1,11 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
+import android.content.Intent;
 import android.os.Handler;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -11,8 +14,8 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.RecipeActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.AllAdapter;
-import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.RecommendAdapter;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullCallback;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullToLoadView;
 
@@ -25,8 +28,9 @@ public class AllFragment extends BaseLazyFragment {
     private PullToLoadView mPullToLoadView;
     private RecipePreviewData mRecipePreviewData;
 
-    private int currentPage=-1;
-    private int nextPage=0;
+    private int currentPage;
+    private int nextPage;
+
     /**
      * 绑定数据
      */
@@ -41,12 +45,14 @@ public class AllFragment extends BaseLazyFragment {
      */
     private void initializeView() {
 
-        mPullToLoadView= (PullToLoadView) mView.findViewById(R.id.pulltoLoadview);
+        mPullToLoadView = (PullToLoadView) mView.findViewById(R.id.pulltoLoadview);
         mPullToLoadView.setColorSchemeResources(
                 android.R.color.holo_green_dark,
                 android.R.color.holo_blue_dark,
                 android.R.color.holo_orange_dark);
-        mRecyclerView=mPullToLoadView.getRecyclerView();
+        mRecyclerView = mPullToLoadView.getRecyclerView();
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
         mPullToLoadView.setPullCallback(new PullLoadMoreListener());
 
     }
@@ -62,16 +68,16 @@ public class AllFragment extends BaseLazyFragment {
                 @Override
                 public void run() {
                     //当所接回来的数据是最后一页的时候，这组数据中的nextPage等于0，于是nextPage<=currentPage
-                    if(nextPage<=currentPage){
+                    if (nextPage <= currentPage) {
 
                         Toast.makeText(getContext(), "已经没有更多了", Toast.LENGTH_SHORT).show();
                         mPullToLoadView.setComplete();
-                    }else {
+                    } else {
                         sendNetworkRequest();
                     }
 
                 }
-            },3000);
+            }, 2000);
         }
 
         @Override
@@ -80,15 +86,13 @@ public class AllFragment extends BaseLazyFragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    currentPage = -1;
+                    nextPage = 0;
 
-                    if(mRecipePreviewData!=null){
-                        currentPage=0;
-                        nextPage=1;
-                    }
                     sendNetworkRequest();
 
                 }
-            },2000);
+            }, 3000);
 
         }
     }
@@ -96,26 +100,25 @@ public class AllFragment extends BaseLazyFragment {
     /**
      * 请求监听，请求成功后执行onResponse
      */
-    private class RequestSuccessListener implements Response.Listener{
+    private class RequestSuccessListener implements Response.Listener {
 
         @Override
         public void onResponse(Object obj) {
-            mRecipePreviewData= (RecipePreviewData) obj;
-            if(mAdapter==null){
+            mRecipePreviewData = (RecipePreviewData) obj;
+            if (mAdapter == null) {
                 mAdapter = new AllAdapter(mRecipePreviewData);
                 mRecyclerView.setAdapter(mAdapter);
-            }else{
+                mAdapter.setOnItemClickListener(new OnclickListener());
+            } else {
                 //如果是执行的操作是刷新，则清除适配器内容
-                if(mPullToLoadView.isRefreshing()){
+                if (mPullToLoadView.isRefreshing()) {
                     mAdapter.clear();
                 }
                 mAdapter.getRecipePreviews().addAll(mRecipePreviewData.getRecipePreviews());
                 mAdapter.notifyDataSetChanged();
-                if(mPullToLoadView.isLoadingMore()){
-                    currentPage=mRecipePreviewData.getCurrentPage();
-                    nextPage=mRecipePreviewData.getNextPage();
-                }
             }
+            currentPage = mRecipePreviewData.getCurrentPage();
+            nextPage = mRecipePreviewData.getNextPage();
 
             mPullToLoadView.setComplete();
         }
@@ -124,7 +127,7 @@ public class AllFragment extends BaseLazyFragment {
     /**
      * 请求失败监听
      */
-    private class RequestErrorListener implements Response.ErrorListener{
+    private class RequestErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError volleyError) {
 
@@ -171,11 +174,24 @@ public class AllFragment extends BaseLazyFragment {
     }
 
     /**
+     * 点击事件监听
+     */
+    private class OnclickListener implements AllAdapter.OnItemClickListener {
+        @Override
+        public void onItemClick(View view, int position) {
+            Intent intent = new Intent(getActivity(), RecipeActivity.class);
+            int recipeId = mAdapter.getRecipePreviews().get(position).getRecipeId();
+            intent.putExtra("recipeId", recipeId);
+            getActivity().startActivity(intent);
+        }
+    }
+
+    /**
      * 碎片第一次可见时调用此方法
      */
     @Override
     protected void onFirstUserVisible() {
-        if(mRecyclerView.getAdapter()==null){
+        if (mRecyclerView.getAdapter() == null) {
 
             mPullToLoadView.initLoad();
         }

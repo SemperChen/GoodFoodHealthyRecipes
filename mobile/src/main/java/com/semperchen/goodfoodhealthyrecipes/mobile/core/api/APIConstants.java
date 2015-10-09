@@ -14,6 +14,6 @@ public class APIConstants {
 
     public static final class Paths {
         public static final String BASE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath();
-        public static final String IMAGE_LOADER_CACHE_PATH = "/GoodFoodHealthyRecipes/Images/";
+        public static final String IMAGE_LOADER_CACHE_PATH = "images";
     }
 }

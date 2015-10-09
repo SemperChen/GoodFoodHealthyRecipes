@@ -27,8 +27,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
     private TopicData topicData;
     private List<Topic> topics;
-
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
+    OnItemClickListener onItemClickListener;
 
     public TopicAdapter(TopicData topicData) {
         this.topicData=topicData;
@@ -65,14 +65,31 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         return topics.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
         TextView title;
         public ViewHolder(View itemView) {
             super(itemView);
             image= (ImageView) itemView.findViewById(R.id.topic_item_image);
             title= (TextView) itemView.findViewById(R.id.topic_item_title);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(onItemClickListener!=null){
+                onItemClickListener.onItemClick(v,getAdapterPosition());
+            }
+        }
+    }
+
+
+    public interface OnItemClickListener{
+        void onItemClick(View view,int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        this.onItemClickListener=onItemClickListener;
     }
 
     /**
