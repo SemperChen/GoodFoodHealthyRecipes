@@ -24,7 +24,6 @@
     <ProgressBar
         android:id="@+id/pull_loadmore_progressbar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:background="#fff4f4f4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

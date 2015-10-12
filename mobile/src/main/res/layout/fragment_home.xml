@@ -14,11 +14,15 @@
 
         <include layout="@layout/toolbar"/>
 
-        <android.support.design.widget.TabLayout
+        <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PagerSlidingTabStrip
                 android:id="@+id/tabs"
-                app:tabSelectedTextColor="@color/theme_accent"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"/>
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:pstsIndicatorColor="@color/theme_accent"
+                app:pstsTextColorSelected="@color/theme_accent"
+                app:pstsTextAllCaps="true"
+                app:pstsShouldExpand="true"/>
 
     </android.support.design.widget.AppBarLayout>
 

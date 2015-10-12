@@ -8,7 +8,7 @@
     <color name="yellow">#fff0ff3e</color>
 
     <color name="theme_primary">#FF9800</color>
-    <color name="theme_primary_dark">#FF9800</color>
+    <color name="theme_primary_dark">#ffff8800</color>
     <color name="theme_primary_dark2">#006064</color>
     <color name="theme_accent">#FF4081</color>
 
@@ -36,6 +36,10 @@
     <color name="name_color">#9E9E9E</color>
     <color name="commens_color">#AFCDCDCD</color>
     <color name="backgroud_more_item">#CFDBDBDB</color>
+
+    <!--PagerSlidingTabStrip-->
+    <color name="psts_background_tab_pressed">#1AFFFFFF</color>
+    <color name="psts_background_tab_pressed_ripple">#AAFFFFFF</color>
 
     <array name="note_neutral_colors">
         <item>#9E9E9E</item>

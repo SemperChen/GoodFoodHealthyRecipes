@@ -5,6 +5,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.HomeFragmentAdapter;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PagerSlidingTabStrip;
 
 /**
  * Created by Semper on 2015/9/17.
@@ -12,7 +13,7 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.HomeFragmentAdapt
 public class HomeFragment extends BaseToolbarFragment {
 
     private ViewPager mViewPager;
-    private TabLayout mTabLayout;
+    private PagerSlidingTabStrip slidingTabStrip;
 
     /**
      * 绑定数据
@@ -23,7 +24,7 @@ public class HomeFragment extends BaseToolbarFragment {
         setupToolbar(mView);
         if(mViewPager != null){
             setupViewPager();
-            mTabLayout.setupWithViewPager(mViewPager);
+            slidingTabStrip.setViewPager(mViewPager);
         }
     }
 
@@ -42,7 +43,7 @@ public class HomeFragment extends BaseToolbarFragment {
      */
     private void initializeViews() {
         mViewPager= (ViewPager) mView.findViewById(R.id.viewpager);
-        mTabLayout= (TabLayout) mView.findViewById(R.id.tabs);
+        slidingTabStrip= (PagerSlidingTabStrip) mView.findViewById(R.id.tabs);
     }
 
     /**

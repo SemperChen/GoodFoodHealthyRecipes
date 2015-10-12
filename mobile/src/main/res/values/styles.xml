@@ -42,6 +42,5 @@
         <item name="cardBackgroundColor">@android:color/holo_orange_light</item>
         <item name="cardCornerRadius">@dimen/all_corner_radius</item>
     </style>
-
-
+    <!--<style name="xxx" parent="android:Theme.Material"></style>-->
 </resources>
