@@ -3,7 +3,8 @@
                 android:background="@android:color/black"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.NoClickLinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
                   android:id="@+id/joke_ll_conent"
                   android:orientation="vertical"
                   android:layout_width="match_parent"
@@ -22,9 +23,29 @@
                 android:layout_marginEnd="@dimen/joke_menu_hz_margin"
                 android:clipToPadding="false"
                 iosched:internalPadding="4dp"/>
-    </LinearLayout>
+    </com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.NoClickLinearLayout>
     <FrameLayout
             android:id="@+id/joke_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+    <RelativeLayout
+            android:id="@+id/rl_gif"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/no_a_black"
+            android:visibility="gone">
+        <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/img_gifview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"/>
+        <ProgressBar
+                android:id="@+id/pb_gifloading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:layout_centerInParent="true"
+                android:background="@color/text_white_87"
+                style="?android:attr/progressBarStyleHorizontal"/>
+    </RelativeLayout>
 </RelativeLayout>

@@ -1,8 +1,9 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class JokeData {
+public class JokeData implements Serializable{
 	public String status;       //返回状态，六个0表示成功 
 	public String desc;		  //返回结果描述，六个0表示成功
 	public List<Joke> detail;	  //具体笑话列表，是一个数组

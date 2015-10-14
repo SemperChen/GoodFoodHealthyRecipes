@@ -5,10 +5,8 @@ import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -21,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by abc on 2015/10/2.
+ * Created by 卡你基巴 on 2015/10/2.
  */
 public class JokeMoreAdapter extends RecyclerView.Adapter<JokeMoreAdapter.ViewHolder>{
     private Context context;
@@ -32,9 +30,17 @@ public class JokeMoreAdapter extends RecyclerView.Adapter<JokeMoreAdapter.ViewHo
         this.jokes = jokes;
     }
 
+    public void clear(){
+        jokes.clear();
+    }
+
+    public List<Joke> getJokes(){
+        return jokes;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = View.inflate(context, R.layout.fragment_joke_more_item,null);
+        View view = View.inflate(context, R.layout.fragment_joke_more_joke_item,null);
         return new ViewHolder(view);
     }
 

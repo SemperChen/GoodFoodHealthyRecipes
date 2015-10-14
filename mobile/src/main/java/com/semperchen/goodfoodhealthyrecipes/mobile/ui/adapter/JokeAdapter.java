@@ -15,13 +15,13 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CollectionViewCall
 import java.util.List;
 
 /**
- * Created by abc on 2015/10/1.
+ * Created by 卡你基巴 on 2015/10/1.
  */
 public class JokeAdapter implements CollectionViewCallbacks {
-    public final static int ITEMVIEW_INTENSION=0x11;
-    public final static int ITEMVIEW_IMAGE=0x22;
-    public final static int ITEMVIEW_JOKE=0x33;
-    public final static int ITEMVIEW_MIRACLE=0x44;
+    public final static int ITEMVIEW_INTENSION=29;
+    public final static int ITEMVIEW_IMAGE=10;
+    public final static int ITEMVIEW_JOKE=33;
+    public final static int ITEMVIEW_VIDEO=41;
     public final static int ITEMVIEW_NONE=0x55;
 
     private Context mContext;
@@ -93,7 +93,8 @@ public class JokeAdapter implements CollectionViewCallbacks {
         holder.tvValue = (TextView) view.findViewById(R.id.tv_value);
         holder.imgValue = (ImageView) view.findViewById(R.id.img_value);
         holder.description = (ImageButton) view.findViewById(R.id.description);
-        view.setTag(R.id.tag_first,holder);
+        holder.pbLoading = (ProgressBar) view.findViewById(R.id.pb_loading);
+        view.setTag(R.id.tag_first, holder);
         switch (indexInGroup){
             case 0:
                 view.setTag(R.id.tag_second,ITEMVIEW_INTENSION);
@@ -105,7 +106,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
                 view.setTag(R.id.tag_second,ITEMVIEW_JOKE);
                 break;
             case 3:
-                view.setTag(R.id.tag_second,ITEMVIEW_MIRACLE);
+                view.setTag(R.id.tag_second,ITEMVIEW_VIDEO);
                 break;
         }
         return view;
@@ -119,28 +120,18 @@ public class JokeAdapter implements CollectionViewCallbacks {
      */
     private void bindView(final View mView, Context context, final int indexInGroup) {
         final ViewHolder holder = (ViewHolder) mView.getTag(R.id.tag_first);
-        JokeFragment.MenuEntry menuEntry = menuList.get(indexInGroup);
 
-        final String hashTitle = mContext.getString(menuEntry.titleId);
+        final String hashTitle = mContext.getString(menuList.get(indexInGroup).titleId);
         holder.title.setText(hashTitle);
 
-        if(((int)mView.getTag(R.id.tag_second)) != ITEMVIEW_IMAGE) {
-            final String hashValue = menuEntry.value;
-            holder.tvValue.setVisibility(View.VISIBLE);
-            holder.imgValue.setVisibility(View.GONE);
-            holder.tvValue.setText(hashValue);
-
-            ((FrameLayout)holder.tvValue.getParent()).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        if(((int)mView.getTag(R.id.tag_second)) != ITEMVIEW_IMAGE || ((int)mView.getTag(R.id.tag_second)) != ITEMVIEW_VIDEO) {
+            ((FrameLayout) holder.tvValue.getParent()).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    ((FrameLayout)holder.tvValue.getParent()).getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    setTvValueMaxLines(holder.tvValue,((FrameLayout)holder.tvValue.getParent()));
+                    ((FrameLayout) holder.tvValue.getParent()).getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    setTvValueMaxLines(holder.tvValue, ((FrameLayout) holder.tvValue.getParent()));
                 }
             });
-        }else{
-            holder.tvValue.setVisibility(View.GONE);
-            holder.imgValue.setVisibility(View.VISIBLE);
-            holder.imgValue.setBackgroundResource(R.drawable.image_commend_002);
         }
 
         mView.setOnClickListener(new View.OnClickListener() {
@@ -162,12 +153,15 @@ public class JokeAdapter implements CollectionViewCallbacks {
         }else{
             holder.description.setVisibility(View.GONE);
         }
+
+        mCallbacks.onItemGetData(mView, holder.tvValue, holder.imgValue, holder.pbLoading);
     }
 
     class ViewHolder {
         ImageButton description;
         ImageView imgValue;
         TextView title,tvValue;
+        ProgressBar pbLoading;
     }
 
     /**
@@ -188,5 +182,6 @@ public class JokeAdapter implements CollectionViewCallbacks {
     public interface JokeAdapterCallbacks{
         void onOpenSingleView(View view);
         void onRefreshDataFromService(View view, View parent, TextView tv, ImageView img);
+        void onItemGetData(View parent,TextView tv,ImageView img,ProgressBar pb);
     }
 }

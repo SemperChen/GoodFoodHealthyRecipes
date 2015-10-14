@@ -10,15 +10,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
-                <android.support.v7.widget.RecyclerView
-                        xmlns:android="http://schemas.android.com/apk/res/android"
-                        android:id="@+id/rv_content"
-                        android:scrollbars="vertical"
-                        android:clipToPadding="false"
-                        android:padding="@dimen/topic_recyclerview_padding"
-                        android:clickable="true"
+                <FrameLayout
+                        android:id="@+id/fl_content"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        android:background="@color/backgroud_more_item"/>
+                <ListView
+                        android:id="@+id/lv_popup"
+                        android:layout_width="125dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@android:color/white"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="gone"/>
                 <RelativeLayout
                         android:id="@+id/rl_nonet"
                         android:layout_width="match_parent"
@@ -47,6 +51,6 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <include layout="@layout/toolbar"/>
+            <include layout="@layout/joke_more_toolbar"/>
         </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -1,6 +1,7 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -10,11 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.PreferenceManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeAdapter;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.SingleMenuAdapter;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.FavoritesFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.HomeFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.JokeFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.JokeMoreFragment;
+import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.util.DensityUtil;
+import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.SuperVideoPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         initializeViews();
         setupNavView();
+
+        PreferenceManager.initialize(this);
     }
 
     /**
@@ -42,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     private void initializeViews() {
 
         mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
-
     }
 
     /**
@@ -93,14 +101,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         isJokeItem = false;
-                        switch (menuItem.getItemId()){
+                        switch (menuItem.getItemId()) {
                             case R.id.home:
-                                fragmentTranslationReplace(new HomeFragment(),HomeFragment.class.getSimpleName());
+                                fragmentTranslationReplace(new HomeFragment(), HomeFragment.class.getSimpleName());
                                 break;
                             case R.id.joke:
                                 JokeFragment jokeFragment = JokeFragment.getInstance();
                                 jokeFragment.setItemDefalueSetting(2, false, getString(R.string.joke), buildMenuList());
-                                fragmentTranslationReplace(jokeFragment,JokeFragment.class.getSimpleName());
+                                fragmentTranslationReplace(jokeFragment, JokeFragment.class.getSimpleName());
                                 break;
                             case R.id.favorites:
                                 fragmentTranslationReplace(new FavoritesFragment(), FavoritesFragment.class.getSimpleName());
@@ -123,20 +131,25 @@ public class MainActivity extends AppCompatActivity {
      */
     private void fragmentTranslationReplace(Fragment fragment,String fragmentName){
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container,fragment,fragmentName)
+                .replace(R.id.container, fragment, fragmentName)
                 .commit();
     }
 
     /**
-     * 切换显示更多的fragment并隐藏JokeFragment
+     * 切换显示更多的fragment界面
      * @param viewtype
      */
     public void setupJokeMoreContent(int viewtype){
         isJokeItem = true;
+        addAndHideFragment(new JokeMoreFragment(viewtype),
+                JokeMoreFragment.class.getSimpleName(), JokeFragment.class.getSimpleName());
+    }
+
+    private void addAndHideFragment(Fragment fragment, String addName, String hideName){
         getSupportFragmentManager().beginTransaction().
-                add(R.id.container, JokeMoreFragment.getInstance(), JokeMoreFragment.class.getSimpleName()).
-                show(getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName())).
-                hide(getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName())).commit();
+                add(R.id.container, fragment, addName).
+                show(getSupportFragmentManager().findFragmentByTag(hideName)).
+                hide(getSupportFragmentManager().findFragmentByTag(hideName)).commit();
     }
 
     /**
@@ -145,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
     private void returnFragment(){
         isJokeItem = false;
         getSupportFragmentManager().beginTransaction().
+                setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out).
                 show(getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName())).
                 remove(getSupportFragmentManager().findFragmentByTag(JokeMoreFragment.class.getSimpleName())).commit();
     }

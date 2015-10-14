@@ -10,10 +10,12 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 
 public class SingleMenuView implements AnimatorListener{
@@ -30,7 +32,7 @@ public class SingleMenuView implements AnimatorListener{
 	
 	private View mView = null;
 	private ViewGroup mRoot;
-	private ViewGroup mContentView;
+	private NoClickLinearLayout mContentView;
 	private Activity mContext;
 	
 	private View mMenuViewSmall; 
@@ -44,7 +46,7 @@ public class SingleMenuView implements AnimatorListener{
 	public SingleMenuView(Activity context,ViewGroup contentView,ViewGroup root) {
 		mRoot = root;
 		mContext = context;
-		mContentView = contentView;
+		mContentView = (NoClickLinearLayout)contentView;
 		
 		initData();
 	}
@@ -94,6 +96,7 @@ public class SingleMenuView implements AnimatorListener{
 		if(mView != null){
 			AnimState = MENUVIEW_CLOSE;
 			closeAnim();
+			mContentView.isClickable(true);
 		}
 	}
 
@@ -118,6 +121,8 @@ public class SingleMenuView implements AnimatorListener{
 				}
 				mRoot.addView(mMenuViewSmall, paramsSmall);
 				mRoot.addView(mMenuViewBig, 1, paramsBig);
+				mContentView.isClickable(false);
+
 			}
 			AnimState = MENUVIEW_SHOW;
 			startAnim();

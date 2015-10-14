@@ -33,9 +33,21 @@
 
     <color name="default_image_background">#FFDEDEDE</color>
 
+    <color name="no_a_black">#ff000000</color>
     <color name="name_color">#9E9E9E</color>
     <color name="commens_color">#AFCDCDCD</color>
     <color name="backgroud_more_item">#CFDBDBDB</color>
+    <color name="text_type">#FF009EEA</color>
+
+    <!-- video -->
+    <color name="biz_audio_progress_bg">#00b2ff</color>
+    <color name="biz_audio_progress_first">#ffffff</color>
+    <color name="biz_audio_progress_second">#6b6666</color>
+    <color name="default_bg">#aa000000</color>
+    <color name="select_color">#00b2ff</color>
+    <color name="normal_color">#ffffffff</color>
+    <color name="divider_color">#55504a</color>
+    <color name="black_a10_color">#1a000000</color>
 
     <!--PagerSlidingTabStrip-->
     <color name="psts_background_tab_pressed">#1AFFFFFF</color>

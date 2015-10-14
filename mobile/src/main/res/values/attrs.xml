@@ -49,4 +49,16 @@
             <flag name="italic" value="0x2" />
         </attr>
     </declare-styleable>
+    <style name="joke_more_intension_commens">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:textSize">@dimen/joke_item_number_text_size</item>
+        <item name="android:textColor">@color/title_recipe</item>
+    </style>
+    <style name="joke_more_intension_commens_img">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingRight">5dp</item>
+    </style>
 </resources>

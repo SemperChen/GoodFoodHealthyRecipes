@@ -23,8 +23,8 @@
                     android:layout_height="wrap_content">
                 <ImageView
                         android:id="@+id/img_avatar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:layout_centerVertical="true"
                         android:paddingTop="7dp"
                         android:paddingLeft="10dp"
@@ -38,8 +38,17 @@
                         android:layout_toRightOf="@+id/img_avatar"
                         android:layout_centerVertical="true"
                         android:singleLine="true"
-                        android:textSize="18sp"
-                        android:text="一起哈啤"/>
+                        android:textSize="18sp"/>
+                <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:paddingTop="10dp"
+                        android:paddingRight="5dp"
+                        android:textColor="@color/name_color"
+                        android:textSize="8sp"/>
             </RelativeLayout>
             <LinearLayout
                     android:layout_width="match_parent"
@@ -47,21 +56,21 @@
                     android:padding="10dp"
                     android:orientation="vertical"
                     android:layout_below="@+id/rl_top">
-                    <TextView
-                            android:id="@+id/tv_content"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:textColor="@android:color/black"
-                            android:text="@string/joke_item_value_text"/>
-                    <ImageView
-                            android:id="@+id/img_content"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:scaleType="fitXY"
-                            android:visibility="gone"/>
+                <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/black"
+                        android:text="@string/joke_item_value_text"/>
+                <ImageView
+                        android:id="@+id/img_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"/>
             </LinearLayout>
             <RelativeLayout
                     android:layout_width="match_parent"
