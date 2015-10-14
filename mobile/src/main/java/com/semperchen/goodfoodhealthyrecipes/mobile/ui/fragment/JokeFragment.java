@@ -209,6 +209,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 mSingleMenuView.closeMenuView();
                 isMenuOpen = false;
                 if(singleMenuAdapter!=null){
+                    singleMenuAdapter.stopVideo(mViewPager.getCurrentItem());
+                }
+                isMenuOpen = false;
+                if(singleMenuAdapter!=null){
                     singleMenuAdapter.colseVideo(mViewPager.getCurrentItem());
                 }
             }
