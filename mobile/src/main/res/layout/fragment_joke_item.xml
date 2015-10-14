@@ -30,7 +30,6 @@
                                 android:singleLine="true"
                                 android:layout_centerInParent="true"
                                 android:paddingTop="5dp"
-                                android:text="好好好热热热"
                                 android:textSize="@dimen/joke_item_name_text_size"
                                 android:textColor="@color/name_color"/>
                     </RelativeLayout>
@@ -45,7 +44,8 @@
                                     android:gravity="left|top"
                                     android:ellipsize="end"
                                     android:textColor="@color/background_snackbar"
-                                    android:textSize="16sp"/>
+                                    android:textSize="16sp"
+                                    android:visibility="gone"/>
                             <ImageView
                                     android:id="@+id/img_value"
                                     android:layout_width="wrap_content"
@@ -53,6 +53,12 @@
                                     android:layout_gravity="center"
                                     android:scaleType="fitXY"
                                     android:visibility="gone"/>
+                            <ProgressBar
+                                    android:id="@+id/pb_loading"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    style="?android:attr/progressBarStyle"/>
                     </FrameLayout>
                     <ImageButton
                             android:id="@+id/description"
