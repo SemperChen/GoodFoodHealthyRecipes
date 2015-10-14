@@ -272,31 +272,5 @@ public class SingleMenuAdapter extends PagerAdapter{
         }
     }
 
-    private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener{
-        static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
-        @Override
-        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-            if(loadedImage != null){
-                ImageView imageView = (ImageView) view;
-                boolean firstDisplay = !displayedImages.contains(imageUri);
-                if(firstDisplay){
-                    FadeInBitmapDisplayer.animate(imageView,500);
-                    displayedImages.add(imageUri);
-                }
-            }
-        }
-    }
 
-    public interface OnGifListener{
-        void onGifVisibility();
-        void onGifStart(byte[] bytes);
-        void onGifUpdate(Integer value);
-    }
-
-
-    public void stopVideo(int position){
-        if(videoPlayers!=null && videoPlayers.size()>0){
-            (videoPlayers.get(position)).stopPlay();
-        }
-    }
 }
