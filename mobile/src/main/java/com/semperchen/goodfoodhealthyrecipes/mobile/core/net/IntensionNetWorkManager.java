@@ -24,17 +24,17 @@ public class IntensionNetWorkManager {
         return mInstance;
     }
 
-    public <T> void sendNetworkRequestForIntension(Response.Listener<IntensionData> listener,Response.ErrorListener errorListener, int type,int page){
-        setNetworkRequestData(listener, errorListener,type, page,"");
+    public <T> void sendNetworkRequestForIntension(Response.Listener<IntensionData> listener,Response.ErrorListener errorListener, int type,int page,String tag){
+        setNetworkRequestData(listener, errorListener,type, page,"",tag);
     }
 
-    private void setNetworkRequestData(Response.Listener<IntensionData> listener, Response.ErrorListener errorListener, int type, int page,String title) {
+    private void setNetworkRequestData(Response.Listener<IntensionData> listener, Response.ErrorListener errorListener, int type, int page,String title,String tag) {
         VolleyWrapper<IntensionData> volleyWrapper = new VolleyWrapper<>(Request.Method.GET,INTENSION_URL,IntensionData.class,listener,errorListener);
         volleyWrapper.addUrlParameter("showapi_timestamp",getTimeStamp());
         volleyWrapper.addUrlParameter("type",type);
         volleyWrapper.addUrlParameter("title",title);
         volleyWrapper.addUrlParameter("page", page);
-        volleyWrapper.sendRequest();
+        volleyWrapper.sendRequest(tag);
     }
 
     public String getTimeStamp() {

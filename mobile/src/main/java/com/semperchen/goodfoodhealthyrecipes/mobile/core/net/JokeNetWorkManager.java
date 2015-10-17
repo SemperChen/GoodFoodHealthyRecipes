@@ -19,15 +19,15 @@ public class JokeNetWorkManager {
         return mInstance;
     }
 
-    public <T> void sendNetworkRequestForJoke(Response.Listener<JokeData> listener,Response.ErrorListener errorListener, int size,int pagenum){
-        setNetworkRequestData(listener, errorListener, size, pagenum);
+    public <T> void sendNetworkRequestForJoke(Response.Listener<JokeData> listener,Response.ErrorListener errorListener, int size,int pagenum,String tag){
+        setNetworkRequestData(listener, errorListener, size, pagenum,tag);
     }
 
-    private void setNetworkRequestData(Response.Listener listener, Response.ErrorListener errorListener, int size, int page) {
+    private void setNetworkRequestData(Response.Listener listener, Response.ErrorListener errorListener, int size, int page,String tag) {
         VolleyWrapper<JokeData> volleyWrapper = new VolleyWrapper<>(Request.Method.GET,JOKE_URL,JokeData.class,listener,errorListener);
         volleyWrapper.addUrlParameter("size",size);
         volleyWrapper.addUrlParameter("page",page);
-        volleyWrapper.sendRequest();
+        volleyWrapper.sendRequest(tag);
 
 //        Uri.Builder uriBuilder = Uri.parse(JOKE_URL).buildUpon().
 //                appendQueryParameter("size",String.valueOf(size)).appendQueryParameter("page",String.valueOf(page));

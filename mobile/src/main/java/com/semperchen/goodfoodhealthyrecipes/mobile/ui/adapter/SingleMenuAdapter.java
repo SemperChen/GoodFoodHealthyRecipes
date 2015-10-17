@@ -33,6 +33,7 @@ public class SingleMenuAdapter extends PagerAdapter{
     private List<Object> data;
     private int mViewType;
 
+    private ByteValueHttpClient client;
     private Map<Integer,SuperVideoPlayer> videoPlayers;
 
     private OnGifListener mCallbacks;
@@ -217,7 +218,7 @@ public class SingleMenuAdapter extends PagerAdapter{
             @Override
             public void onClick(View view) {
                 mCallbacks.onGifVisibility();
-                new ByteValueHttpClient(){
+                client = new ByteValueHttpClient(){
                     @Override
                     protected void onProgressUpdate(Integer... values) {
                         super.onProgressUpdate(values);
@@ -228,7 +229,8 @@ public class SingleMenuAdapter extends PagerAdapter{
                     protected void onPostExecute(byte[] bytes) {
                         mCallbacks.onGifStart(bytes);
                     }
-                }.execute(gifUrl);;
+                };
+                client.execute(gifUrl);
             }
         });
     }
@@ -272,5 +274,9 @@ public class SingleMenuAdapter extends PagerAdapter{
         }
     }
 
-
+    public void cleanGifNet(){
+        if(client!=null){
+            client.cleanConnection();
+        }
+    }
 }

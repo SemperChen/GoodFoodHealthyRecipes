@@ -2,10 +2,6 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.core.net;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,14 +10,20 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 
 /**
- *  Created by ø®ƒ„ª˘∞Õ on 2015/10/11.
- *  œ‘ æΩ¯∂»∏®÷˙
+ *  Created by Âç°‰Ω†Âü∫Â∑¥ on 2015/10/11.
+ *  ÊòæÁ§∫ËøõÂ∫¶ËæÖÂä©
  */
 public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
     private static final String TAG = "ByteValueHttpClient";
+    private HttpURLConnection connection;
+
+    public void cleanConnection(){
+        if(connection!=null){
+            connection.disconnect();
+        }
+    }
 
     @Override
     protected byte[] doInBackground(String... params) {
@@ -32,7 +34,7 @@ public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
 
         try {
             URL url = new URL(gifUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(3000);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);

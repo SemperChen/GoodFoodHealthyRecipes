@@ -140,6 +140,13 @@ public class JokeAdapter implements CollectionViewCallbacks {
                 mCallbacks.onOpenSingleView(mView);
             }
         });
+        mView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mCallbacks.onItemLongClick(mView,holder.tvValue, holder.imgValue, holder.pbLoading);
+                return true;
+            }
+        });
 
         if(!hashTitle.isEmpty()){
             holder.description.setVisibility(View.VISIBLE);
@@ -183,5 +190,6 @@ public class JokeAdapter implements CollectionViewCallbacks {
         void onOpenSingleView(View view);
         void onRefreshDataFromService(View view, View parent, TextView tv, ImageView img);
         void onItemGetData(View parent,TextView tv,ImageView img,ProgressBar pb);
+        void onItemLongClick(View parent,TextView tv,ImageView img,ProgressBar pb);
     }
 }
