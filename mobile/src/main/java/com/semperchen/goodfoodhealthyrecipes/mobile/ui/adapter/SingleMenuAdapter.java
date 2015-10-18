@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -218,6 +217,9 @@ public class SingleMenuAdapter extends PagerAdapter{
             @Override
             public void onClick(View view) {
                 mCallbacks.onGifVisibility();
+                if(client!=null) {
+                    client = null;
+                }
                 client = new ByteValueHttpClient(){
                     @Override
                     protected void onProgressUpdate(Integer... values) {
@@ -268,7 +270,7 @@ public class SingleMenuAdapter extends PagerAdapter{
         }
     }
 
-    public void colseVideo(int position){
+    public void closeVideo(int position){
         if(videoPlayers!=null && videoPlayers.size()>0){
             (videoPlayers.get(position)).close();
         }

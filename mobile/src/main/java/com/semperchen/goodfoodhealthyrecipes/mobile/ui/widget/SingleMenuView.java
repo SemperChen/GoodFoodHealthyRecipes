@@ -127,7 +127,7 @@ public class SingleMenuView implements AnimatorListener{
 			AnimState = MENUVIEW_SHOW;
 			startAnim();
 		}else{
-			throw new RuntimeException();
+			throw new RuntimeException("the ContentView is null,please set MenuView");
 		}
 	}
 

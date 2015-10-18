@@ -21,7 +21,17 @@ public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
 
     public void cleanConnection(){
         if(connection!=null){
-            connection.disconnect();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        (connection.getInputStream()).close();
+                        connection.disconnect();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
     }
 
@@ -36,6 +46,9 @@ public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
             URL url = new URL(gifUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(3000);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             int code = connection.getResponseCode();
