@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -33,6 +32,7 @@ public class SingleMenuAdapter extends PagerAdapter{
     private List<Object> data;
     private int mViewType;
 
+    private ByteValueHttpClient client;
     private Map<Integer,SuperVideoPlayer> videoPlayers;
 
     private OnGifListener mCallbacks;
@@ -217,7 +217,10 @@ public class SingleMenuAdapter extends PagerAdapter{
             @Override
             public void onClick(View view) {
                 mCallbacks.onGifVisibility();
-                new ByteValueHttpClient(){
+                if(client!=null) {
+                    client = null;
+                }
+                client = new ByteValueHttpClient(){
                     @Override
                     protected void onProgressUpdate(Integer... values) {
                         super.onProgressUpdate(values);
@@ -228,7 +231,8 @@ public class SingleMenuAdapter extends PagerAdapter{
                     protected void onPostExecute(byte[] bytes) {
                         mCallbacks.onGifStart(bytes);
                     }
-                }.execute(gifUrl);;
+                };
+                client.execute(gifUrl);
             }
         });
     }
@@ -266,11 +270,15 @@ public class SingleMenuAdapter extends PagerAdapter{
         }
     }
 
-    public void colseVideo(int position){
+    public void closeVideo(int position){
         if(videoPlayers!=null && videoPlayers.size()>0){
             (videoPlayers.get(position)).close();
         }
     }
 
-
+    public void cleanGifNet(){
+        if(client!=null){
+            client.cleanConnection();
+        }
+    }
 }

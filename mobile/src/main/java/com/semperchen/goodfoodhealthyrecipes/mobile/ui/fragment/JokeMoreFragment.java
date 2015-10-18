@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.IntensionData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.IntensionNetWorkManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeNetWorkManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.JokeData;
@@ -242,7 +243,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         startAnimWithInAndout(flContent, intensionView);
 
         initIntensionData();
-        getIntensionDataFromService(1);
+        getIntensionDataFromService(1,GlobalContants.INTENSION_MORE_CREATE_GET);
     }
 
     /**
@@ -264,7 +265,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
 
         startAnimWithInAndout(flContent, imageView);
         initImageData();
-        getImageDateFromService(1);
+        getImageDateFromService(1,GlobalContants.IMAGE_MORE_CREATE_GET);
     }
 
     /**
@@ -285,7 +286,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         startAnimWithInAndout(flContent, jokeView);
         initJokeData();
         //访问网络，获取数据
-        getJokeDataFromService(0);
+        getJokeDataFromService(0,GlobalContants.JOKE_MORE_CREATE_GET);
 
     }
 
@@ -306,7 +307,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         }
         startAnimWithInAndout(flContent, videoView);
         initVideoData();
-        getVideoDataFromService(1);
+        getVideoDataFromService(1, GlobalContants.VIDEO_MORE_CREATE_GET);
     }
 
     /**
@@ -324,7 +325,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
     /**
      * 从网络获取Joke数据
      */
-    private void getJokeDataFromService(final int nextPage) {
+    private void getJokeDataFromService(final int nextPage,String tag) {
         jokePullLoad.setRefreshEnable(false);
         JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
             @Override
@@ -355,13 +356,13 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             public void onErrorResponse(VolleyError volleyError) {
                 jokePullLoad.setRefreshEnable(true);
             }
-        }, 20, nextPage);
+        }, 20, nextPage,tag);
     }
 
     /**
      * 从网络获取Instensino数据
      */
-    private void getIntensionDataFromService(final int nextPage) {
+    private void getIntensionDataFromService(final int nextPage,String tag) {
         intensionPullLoad.setRefreshEnable(false);
         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
             @Override
@@ -393,13 +394,13 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             public void onErrorResponse(VolleyError error) {
                 intensionPullLoad.setRefreshEnable(true);
             }
-        }, JokeAdapter.ITEMVIEW_INTENSION, nextPage);
+        }, JokeAdapter.ITEMVIEW_INTENSION, nextPage,tag);
     }
 
     /**
      * 从网络获取Image数据
      */
-    private void getImageDateFromService(final int nextPage){
+    private void getImageDateFromService(final int nextPage,String tag){
         imagePullLoad.setRefreshEnable(false);
         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
             @Override
@@ -430,10 +431,10 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             public void onErrorResponse(VolleyError error) {
                 imagePullLoad.setRefreshEnable(true);
             }
-        }, JokeAdapter.ITEMVIEW_IMAGE, nextPage);
+        }, JokeAdapter.ITEMVIEW_IMAGE, nextPage,tag);
     }
 
-    private void getVideoDataFromService(final int nextPage) {
+    private void getVideoDataFromService(final int nextPage,String tag) {
         videoPullLoad.setRefreshEnable(false);
         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
             @Override
@@ -464,7 +465,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             public void onErrorResponse(VolleyError error) {
                 videoPullLoad.setRefreshEnable(true);
             }
-        }, JokeAdapter.ITEMVIEW_VIDEO, nextPage);
+        }, JokeAdapter.ITEMVIEW_VIDEO, nextPage,tag);
     }
 
     /**
@@ -685,16 +686,16 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
                 public void run() {
                     switch (mType){
                         case JokeAdapter.ITEMVIEW_INTENSION:
-                            getIntensionDataFromService(intensionNextPage);
+                            getIntensionDataFromService(intensionNextPage, GlobalContants.INTENSION_MORE_ONLOADMORE_GET);
                             break;
                         case JokeAdapter.ITEMVIEW_IMAGE:
-                            getImageDateFromService(imageNextPage);
+                            getImageDateFromService(imageNextPage, GlobalContants.IMAGE_MORE_ONLOADMORE_GET);
                             break;
                         case JokeAdapter.ITEMVIEW_JOKE:
-                            getJokeDataFromService(jokeNextPage);
+                            getJokeDataFromService(jokeNextPage, GlobalContants.JOKE_MORE_ONLOADMORE_GET);
                             break;
                         case JokeAdapter.ITEMVIEW_VIDEO:
-                            getVideoDataFromService(videoNextPage);
+                            getVideoDataFromService(videoNextPage, GlobalContants.VIDEO_MORE_ONLOADMORE_GET);
                             break;
                     }
                 }
@@ -708,16 +709,16 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
                 public void run() {
                     switch (mType){
                         case JokeAdapter.ITEMVIEW_INTENSION:
-                            getIntensionDataFromService(1);
+                            getIntensionDataFromService(1, GlobalContants.INTENSION_MORE_ONREFRESH_GET);
                             break;
                         case JokeAdapter.ITEMVIEW_IMAGE:
-                            getImageDateFromService(1);
+                            getImageDateFromService(1, GlobalContants.IMAGE_MORE_ONREFRESH_GET);
                             break;
                         case JokeAdapter.ITEMVIEW_JOKE:
-                            getJokeDataFromService(0);
+                            getJokeDataFromService(0, GlobalContants.JOKE_MORE_ONREFRESH_GET);
                             break;
                         case JokeAdapter.ITEMVIEW_VIDEO:
-                            getVideoDataFromService(1);
+                            getVideoDataFromService(1, GlobalContants.VIDEO_MORE_ONREFRESH_GET);
                             break;
                     }
                 }

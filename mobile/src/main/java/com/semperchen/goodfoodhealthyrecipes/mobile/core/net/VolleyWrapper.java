@@ -40,6 +40,15 @@ public class VolleyWrapper<T> {
     }
 
     /**
+     * 发送请求并添加标记
+     */
+    public void sendRequest(String tag) {
+        GsonRequest<T> request = new GsonRequest<>(method, url, mClass, mListener, mErrorListener);
+        request.setTag(tag);
+        RequestManager.getRequestQueue().add(request);
+    }
+
+    /**
      * 为url添加参数
      */
     public void addUrlParameter(String param,Object value){

@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
 
 /**
  *  Created by 卡你基巴 on 2015/10/11.
@@ -18,6 +17,23 @@ import java.net.URLDecoder;
  */
 public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
     private static final String TAG = "ByteValueHttpClient";
+    private HttpURLConnection connection;
+
+    public void cleanConnection(){
+        if(connection!=null){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        (connection.getInputStream()).close();
+                        connection.disconnect();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+    }
 
     @Override
     protected byte[] doInBackground(String... params) {
@@ -28,8 +44,11 @@ public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
 
         try {
             URL url = new URL(gifUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             connection.setReadTimeout(3000);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(5000);
             connection.setRequestMethod("GET");
             connection.setDoInput(true);
             int code = connection.getResponseCode();

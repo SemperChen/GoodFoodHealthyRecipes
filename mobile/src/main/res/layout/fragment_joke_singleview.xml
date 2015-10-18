@@ -15,6 +15,11 @@
                         android:id="@+id/vp_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
+                <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.OneViewPager
+                        android:id="@+id/vp_content_video"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
                 <ImageButton
                         android:id="@+id/btn_close"
                         android:layout_width="50dp"
