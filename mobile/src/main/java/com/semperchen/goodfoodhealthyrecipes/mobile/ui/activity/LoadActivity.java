@@ -56,4 +56,5 @@ public class LoadActivity extends Activity {
         startActivity(intent);
         finish();
     }
+
 }
