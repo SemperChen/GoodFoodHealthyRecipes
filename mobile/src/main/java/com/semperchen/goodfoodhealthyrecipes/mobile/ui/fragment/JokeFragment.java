@@ -933,7 +933,6 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         }
         pbGifLoading.setVisibility(View.GONE);
         imgGif.setVisibility(View.VISIBLE);
-        gifFromBytes.start();
         imgGif.setVisibility(View.VISIBLE);
     }
 
