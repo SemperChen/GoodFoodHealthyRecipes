@@ -2,10 +2,6 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.core.net;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import org.apache.commons.io.IOUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,8 +13,8 @@ import java.net.URL;
 import java.net.URLDecoder;
 
 /**
- *  Created by 卡你基巴 on 2015/10/11.
- *  显示进度辅助
+ *  Created by 鍗′綘鍩哄反 on 2015/10/11.
+ *  鏄剧ず杩涘害杈呭姪
  */
 public class ByteValueHttpClient extends AsyncTask<String,Integer,byte[]>{
     private static final String TAG = "ByteValueHttpClient";

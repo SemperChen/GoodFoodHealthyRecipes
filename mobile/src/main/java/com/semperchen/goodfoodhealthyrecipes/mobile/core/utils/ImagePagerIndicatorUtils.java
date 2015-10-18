@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by 卡你基巴 on 2015/10/8.
+ * Created by 鍗′綘鍩哄反 on 2015/10/8.
  *
- * 图片头页面ViewPager与Indicator切换的辅助类
+ * 鍥剧墖澶撮〉闈iewPager涓嶪ndicator鍒囨崲鐨勮緟鍔╃被
  */
 public class ImagePagerIndicatorUtils {
     private final static Map<Integer, View> views = new HashMap<Integer,View>();
