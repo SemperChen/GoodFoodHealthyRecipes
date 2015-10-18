@@ -141,8 +141,8 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class MyPagerAdapter extends PagerAdapter{
-        private int[] images = new int[]{R.drawable.image_commend_002,R.drawable.image_commend_004,R.drawable.image_commend_005,R.drawable.image_commend_006,
-                                        R.drawable.image_commend_009,R.drawable.image_topic_001,R.drawable.image_topic_002};
+        private int[] images = new int[]{R.drawable.ad_one,R.drawable.ad_two,R.drawable.ad_three,
+                        R.drawable.ad_four, R.drawable.ad_five,R.drawable.ad_six,R.drawable.ad_seven};
 
         @Override
         public int getCount() {

@@ -415,7 +415,7 @@ public class SuperVideoPlayer extends RelativeLayout {
     }
 
     private void shareToTv() {
-        Toast.makeText(mContext, "点击了分享到电视", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "本视频控件：https://github.com/xiongwei-git/AndroidVideoPlayer.git", Toast.LENGTH_SHORT).show();
     }
 
     private class AnimationImp implements Animation.AnimationListener {
