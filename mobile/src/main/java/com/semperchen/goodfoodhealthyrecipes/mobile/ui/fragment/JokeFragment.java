@@ -40,17 +40,17 @@ import java.util.*;
  * Created by Semper on 2015/9/17.
  */
 public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.JokeAdapterCallbacks,SingleMenuAdapter.OnGifListener{
-    private MainActivity activity;
+    private MainActivity mActivity;
 
     private CollectionView mCollectionView;
     private SingleMenuView mSingleMenuView;
     private NoScrollViewPager mViewPager;
     private OneViewPager mOnePager;
-    private RelativeLayout rlGif;
-    private GifImageView imgGif;
-    private ProgressView pbGifLoading;
+    private RelativeLayout mRlGif;
+    private GifImageView mImgGif;
+    private ProgressView mPbGifLoading;
 
-    private GifDrawable gifFromBytes = null;
+    private GifDrawable mGifFromBytes = null;
 
     private NoClickLinearLayout mLinear;
     private FrameLayout mFrame,mContainer;
@@ -59,35 +59,34 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private boolean isShowHeader = false;
     private String mHeaderLable = "";
     private List<Integer> mLayouList;
-    private JokeAdapter adapter;
+    private JokeAdapter mAdapter;
 
     private boolean isMenuOpen = false;
-    private SingleMenuAdapter singleMenuAdapter;
     private boolean isVideo,isImage;
-    private SingleMenuAdapter videoSingleMenuAdapter,imageSingleMenuAdapter;
+    private SingleMenuAdapter mVideoSingleMenuAdapter,mImageSingleMenuAdapter;
 
     private boolean isIntensionDataError = true;
     private boolean isImageDataError = true;
     private boolean isJokeDataError = true;
     private boolean isVideoDataError = true;
 
-    private int jokeId;
-    private int maxId;
+    private int mJokeId;
+    private int mMaxId;
 
-    private List<Detail> cacheIntensions;
-    private int intensionAllPages;
-    private int intensionNextPageInt = 0;
-    private int intensionNextNumInt = 0;
+    private List<Detail> mCacheIntensions;
+    private int mIntensionAllPages;
+    private int mIntensionNextPageInt = 0;
+    private int mIntensionNextNumInt = 0;
 
-    private List<Detail> cacheImages;
-    private int imageAllPages;
-    private int imageNextPageInt = 0;
-    private int imageNextNumInt = 0;
+    private List<Detail> mCacheImages;
+    private int mImageAllPages;
+    private int mImageNextPageInt = 0;
+    private int mImageNextNumInt = 0;
 
-    private List<Detail> cacheVideos;
-    private int videoAllPages;
-    private int videoNextPageInt = 0;
-    private int videoNextNumInt = 0;
+    private List<Detail> mCacheVideos;
+    private int mVideoAllPages;
+    private int mVideoNextPageInt = 0;
+    private int mVideoNextNumInt = 0;
 
     public static JokeFragment getInstance(){
         JokeFragment jokeFragment = new JokeFragment();
@@ -106,9 +105,9 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mCollectionView = (CollectionView) mView.findViewById(R.id.joke_content_collection);
         mFrame = (FrameLayout) mView.findViewById(R.id.joke_frame);
         mLinear = (NoClickLinearLayout) mView.findViewById(R.id.joke_ll_conent);
-        rlGif = (RelativeLayout) mView.findViewById(R.id.rl_gif);
-        imgGif = (GifImageView) mView.findViewById(R.id.img_gifview);
-        pbGifLoading = (ProgressView) mView.findViewById(R.id.pb_gifloading);
+        mRlGif = (RelativeLayout) mView.findViewById(R.id.rl_gif);
+        mImgGif = (GifImageView) mView.findViewById(R.id.img_gifview);
+        mPbGifLoading = (ProgressView) mView.findViewById(R.id.pb_gifloading);
 
         initListener();
         initSingleMenuView();
@@ -157,21 +156,21 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        activity = (MainActivity) context;
-        mContainer = (FrameLayout) activity.findViewById(R.id.container);
+        mActivity = (MainActivity) context;
+        mContainer = (FrameLayout) mActivity.findViewById(R.id.container);
     }
 
     /**
      * 初始化监听
      */
     private void initListener() {
-        imgGif.setOnClickListener(new View.OnClickListener() {
+        mImgGif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clearGif();
             }
         });
-        rlGif.setOnClickListener(new View.OnClickListener() {
+        mRlGif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clearGif();
@@ -183,21 +182,19 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * 释放Gif内存
      */
     private void clearGif(){
-        if(gifFromBytes!=null && gifFromBytes.isRecycled()){
-            gifFromBytes.recycle();
+        if(mGifFromBytes!=null && mGifFromBytes.isRecycled()){
+            mGifFromBytes.recycle();
         }
-        imageSingleMenuAdapter.cleanGifNet();
-//        imageSingleMenuAdapter.cleanGifNet();
-        imgGif.setBackground(null);
-        rlGif.setVisibility(View.GONE);
-//        pbGifLoading.setProgress(0);
+        mImageSingleMenuAdapter.cleanGifNet();
+        mImgGif.setBackground(null);
+        mRlGif.setVisibility(View.GONE);
     }
 
     /**
      * 初始化SingleMenu视图
      */
     private void initSingleMenuView() {
-        mSingleMenuView = new SingleMenuView(activity, mLinear, mFrame);
+        mSingleMenuView = new SingleMenuView(mActivity, mLinear, mFrame);
         mSingleMenuView.setMenuView(R.layout.fragment_joke_singleview, 20, 100, 0);
 
         mViewPager = (NoScrollViewPager) mSingleMenuView.getMenuView().findViewById(R.id.vp_content);
@@ -211,85 +208,113 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         ((ImageButton)(mSingleMenuView.getMenuView().findViewById(R.id.btn_close))).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mSingleMenuView.closeMenuView();
-                isMenuOpen = false;
-                if(isVideo) {
-                    if (videoSingleMenuAdapter != null) {
-                        videoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
-                    }
-                }
-                if(isImage) {
-                    if (imageSingleMenuAdapter != null) {
-                        clearGif();
-                    }
-                }
+                closeSingleMenu();
             }
         });
         ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_pre))).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isImage) {
-                    if (imageSingleMenuAdapter != null) {
-                        clearGif();
-                    }
-                }
-                if(isVideo){
-                    if (videoSingleMenuAdapter != null) {
-                        videoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
-                    }
-                    if (mOnePager.getCurrentItem() <= 0) {
-                        Toast.makeText(activity, "No Previous Page!", Toast.LENGTH_LONG).show();
-                    }
-                    mOnePager.setCurrentItem(mOnePager.getCurrentItem() - 1, false);
-                }else {
-                    if (mViewPager.getCurrentItem() <= 0) {
-                        Toast.makeText(activity, "No Previous Page!", Toast.LENGTH_LONG).show();
-                    }
-                    mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1, false);
-                }
+                prePager((Button)view);
             }
         });
         ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_checkmore))).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startJokeReplaceAnim((int) view.getTag());
-                mSingleMenuView.closeMenuView();
-                if(isVideo) {
-                    if (videoSingleMenuAdapter != null) {
-                        videoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
-                    }
-                }
-                if(isImage) {
-                    if (imageSingleMenuAdapter != null) {
-                        clearGif();
-                    }
-                }
+                checkMore(view);
             }
         });
         ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_next))).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isImage) {
-                    if (imageSingleMenuAdapter != null) {
-                        clearGif();
-                    }
-                }
-                if(isVideo){
-                    if (videoSingleMenuAdapter != null) {
-                        videoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
-                    }
-                    if (mOnePager.getCurrentItem() >= mOnePager.getAdapter().getCount() - 1) {
-                        Toast.makeText(activity, "No Next Page,Put on the move button!", Toast.LENGTH_LONG).show();
-                    }
-                    mOnePager.setCurrentItem(mOnePager.getCurrentItem() + 1, false);
-                }else{
-                    if (mViewPager.getCurrentItem() >= mViewPager.getAdapter().getCount() - 1) {
-                        Toast.makeText(activity, "No Next Page,Put on the move button!", Toast.LENGTH_LONG).show();
-                    }
-                    mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, false);
-                }
+                nextPager((Button)view);
             }
         });
+    }
+
+    /**
+     * 关闭singlemenu
+     */
+    private void closeSingleMenu() {
+        mSingleMenuView.closeMenuView();
+        isMenuOpen = false;
+        if(isVideo) {
+            if (mVideoSingleMenuAdapter != null) {
+                mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
+            }
+        }
+        if(isImage) {
+            if (mImageSingleMenuAdapter != null) {
+                clearGif();
+            }
+        }
+    }
+
+    /**
+     * 上一页
+     */
+    private void prePager(Button btn) {
+        if (isImage) {
+            if (mImageSingleMenuAdapter != null) {
+                clearGif();
+            }
+        }
+        if (isVideo) {
+            if (mVideoSingleMenuAdapter != null) {
+                mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
+            }
+            if (mOnePager.getCurrentItem() <= 0) {
+                Toast.makeText(mActivity, "No Previous Page!", Toast.LENGTH_LONG).show();
+            }
+            mOnePager.setCurrentItem(mOnePager.getCurrentItem() - 1, false);
+        } else {
+            if (mViewPager.getCurrentItem() <= 0) {
+                Toast.makeText(mActivity, "No Previous Page!", Toast.LENGTH_LONG).show();
+            }
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1, false);
+        }
+    }
+
+    /**
+     * 查看更多
+     */
+    private void checkMore(View view){
+        startJokeReplaceAnim((int) view.getTag());
+        mSingleMenuView.closeMenuView();
+        if(isVideo) {
+            if (mVideoSingleMenuAdapter != null) {
+                mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
+            }
+        }
+        if(isImage) {
+            if (mImageSingleMenuAdapter != null) {
+                clearGif();
+            }
+        }
+    }
+
+    /**
+     * 下一页
+     */
+    private void nextPager(Button btn){
+        if(isImage) {
+            if (mImageSingleMenuAdapter != null) {
+                clearGif();
+            }
+        }
+        if(isVideo){
+            if (mVideoSingleMenuAdapter != null) {
+                mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
+            }
+            if (mOnePager.getCurrentItem() >= mOnePager.getAdapter().getCount() - 1) {
+                Toast.makeText(mActivity, "No Next Page,Put on the move button!", Toast.LENGTH_LONG).show();
+            }
+            mOnePager.setCurrentItem(mOnePager.getCurrentItem() + 1, false);
+        }else{
+            if (mViewPager.getCurrentItem() >= mViewPager.getAdapter().getCount() - 1) {
+                Toast.makeText(mActivity, "No Next Page,Put on the move button!", Toast.LENGTH_LONG).show();
+            }
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, false);
+        }
     }
 
     /**
@@ -302,8 +327,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 //获取网络最新JokeId与本地最新JokeId对比
                 int old_id = PreferenceManager.getInstance().getInt("joke_max_number", 0);
                 int new_id = Integer.parseInt(jokeData.detail.get(0).id);
-                maxId = jokeId = new_id > old_id ? new_id : old_id;
-                PreferenceManager.getInstance().putInt("joke_max_number", maxId);
+                mMaxId = mJokeId = new_id > old_id ? new_id : old_id;
+                PreferenceManager.getInstance().putInt("joke_max_number", mMaxId);
                 tvValue.setText(jokeData.detail.get(0).content);
                 isJokeDataError = false;
                 tvValue.setVisibility(View.VISIBLE);
@@ -332,8 +357,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     tvValue.setText(intensionData.showapi_res_error);
                     isIntensionDataError = true;
                 } else {
-                    cacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
-                    intensionAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
+                    mCacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
+                    mIntensionAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
                     tvValue.setText(intensionData.showapi_res_body.pagebean.contentlist.get(0).text.trim());
                     isIntensionDataError = false;
                 }
@@ -366,8 +391,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     imgValue.setVisibility(View.GONE);
                 } else {
                     isImageDataError = false;
-                    cacheImages = intensionData.showapi_res_body.pagebean.contentlist;
-                    imageAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
+                    mCacheImages = intensionData.showapi_res_body.pagebean.contentlist;
+                    mImageAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
                     tvValue.setVisibility(View.GONE);
                     imgValue.setVisibility(View.VISIBLE);
                     ImageLoader.getInstance().displayImage(intensionData.showapi_res_body.pagebean.contentlist.get(0).image0, imgValue);
@@ -399,8 +424,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     imgValue.setVisibility(View.GONE);
                 } else {
                     isVideoDataError = false;
-                    cacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
-                    videoAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
+                    mCacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
+                    mVideoAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
                     tvValue.setVisibility(View.GONE);
                     imgValue.setVisibility(View.VISIBLE);
                     ImageLoader.getInstance().displayImage(intensionData.showapi_res_body.pagebean.contentlist.get(0).image3, imgValue);
@@ -419,9 +444,9 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * 填充CollectionView里的数据
      */
     private void initAdapter(){
-        adapter = buildAdapter();
-        mCollectionView.setCollctionAdapter(adapter);
-        mCollectionView.updateInventory(adapter.getInventory());
+        mAdapter = buildAdapter();
+        mCollectionView.setCollctionAdapter(mAdapter);
+        mCollectionView.updateInventory(mAdapter.getInventory());
     }
 
     /**
@@ -443,24 +468,24 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
             case JokeAdapter.ITEMVIEW_INTENSION:
                 if(isIntensionDataError){
                     AnimationUtils.setShakeToView(view,3000,AnimationUtils.MIDDLE_SHAKE);
-                    Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else {
                     openMenuSet(view,false,false);
                     //判断是否有缓存数据
-                    if (cacheIntensions != null) {
-                        List<Object> list = new ArrayList<Object>(cacheIntensions);
-                        mViewPager.setAdapter(new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),null));
-                        mViewPager.setCurrentItem(intensionNextNumInt);
+                    if (mCacheIntensions != null) {
+                        List<Object> list = new ArrayList<Object>(mCacheIntensions);
+                        mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),null));
+                        mViewPager.setCurrentItem(mIntensionNextNumInt);
                     } else {
                         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                             @Override
                             public void onResponse(IntensionData intensionData) {
                                 if (!intensionData.showapi_res_error.equals("")) {
-                                    mViewPager.setAdapter(new SingleMenuAdapter(activity, null, (int) view.getTag(R.id.tag_second),null));
+                                    mViewPager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second),null));
                                 } else {
                                     List<Object> list = new ArrayList<Object>(intensionData.showapi_res_body.pagebean.contentlist);
-                                    mViewPager.setAdapter(new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),null));
-                                    mViewPager.setCurrentItem(intensionNextNumInt);
+                                    mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),null));
+                                    mViewPager.setCurrentItem(mIntensionNextNumInt);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -468,32 +493,32 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             public void onErrorResponse(VolleyError error) {
 
                             }
-                        }, JokeAdapter.ITEMVIEW_INTENSION, intensionNextPageInt==0?1:intensionNextPageInt,GlobalContants.INTENSION_OPEN_GET);
+                        }, JokeAdapter.ITEMVIEW_INTENSION, mIntensionNextPageInt==0?1:mIntensionNextPageInt,GlobalContants.INTENSION_OPEN_GET);
                     }
                 }
                 break;
             case JokeAdapter.ITEMVIEW_IMAGE:
                 if(isImageDataError){
                     AnimationUtils.setShakeToView(view,3000,AnimationUtils.MIDDLE_SHAKE);
-                    Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else{
                     openMenuSet(view,false,true);
-                    if(cacheImages!=null){
-                        List<Object> list = new ArrayList<Object>(cacheImages);
-                        imageSingleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),this);
-                        mViewPager.setAdapter(imageSingleMenuAdapter);
-                        mViewPager.setCurrentItem(imageNextNumInt);
+                    if(mCacheImages!=null){
+                        List<Object> list = new ArrayList<Object>(mCacheImages);
+                        mImageSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),this);
+                        mViewPager.setAdapter(mImageSingleMenuAdapter);
+                        mViewPager.setCurrentItem(mImageNextNumInt);
                     }else{
                         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                             @Override
                             public void onResponse(IntensionData intensionData) {
                                 if (!intensionData.showapi_res_error.equals("")) {
-                                    mViewPager.setAdapter(new SingleMenuAdapter(activity, null, (int) view.getTag(R.id.tag_second),JokeFragment.this));
+                                    mViewPager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second),JokeFragment.this));
                                 } else {
                                     List<Object> list = new ArrayList<Object>(intensionData.showapi_res_body.pagebean.contentlist);
-                                    imageSingleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                                    mViewPager.setAdapter(imageSingleMenuAdapter);
-                                    mViewPager.setCurrentItem(imageNextNumInt);
+                                    mImageSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
+                                    mViewPager.setAdapter(mImageSingleMenuAdapter);
+                                    mViewPager.setCurrentItem(mImageNextNumInt);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -501,14 +526,14 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             public void onErrorResponse(VolleyError error) {
 
                             }
-                        }, JokeAdapter.ITEMVIEW_IMAGE, imageNextPageInt==0?1:imageNextPageInt,GlobalContants.IMAGE_OPEN_GET);
+                        }, JokeAdapter.ITEMVIEW_IMAGE, mImageNextPageInt==0?1:mImageNextPageInt,GlobalContants.IMAGE_OPEN_GET);
                     }
                 }
                 break;
             case JokeAdapter.ITEMVIEW_JOKE:
                 if(isJokeDataError){
                     AnimationUtils.setShakeToView(view,3000,AnimationUtils.MIDDLE_SHAKE);
-                    Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else {
                     openMenuSet(view,false,false);
                     JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
@@ -516,48 +541,38 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                         public void onResponse(JokeData jokeData) {
                             removeMoreItem(jokeData);
                             List<Object> list = new ArrayList<Object>(jokeData.detail);
-                            mViewPager.setAdapter(new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),null));
+                            mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),null));
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
 
                         }
-                    }, 20, (maxId - jokeId) / 20,GlobalContants.JOKE_OPEN_GET);
+                    }, 20, (mMaxId - mJokeId) / 20,GlobalContants.JOKE_OPEN_GET);
                 }
                 break;
             case JokeAdapter.ITEMVIEW_VIDEO:
                 if(isVideoDataError){
                     AnimationUtils.setShakeToView(view,3000,AnimationUtils.MIDDLE_SHAKE);
-                    Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else{
                     openMenuSet(view,true,false);
-                    if(cacheVideos!=null){
-                        List<Object> list = new ArrayList<Object>(cacheVideos);
-                        videoSingleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                        mViewPager.setAdapter(videoSingleMenuAdapter);
-                        videoSingleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                        mOnePager.setAdapter(videoSingleMenuAdapter);
-                        mOnePager.setCurrentItem(videoNextNumInt);
-                        singleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                        mViewPager.setAdapter(singleMenuAdapter);
-                        mViewPager.setCurrentItem(videoNextNumInt);
+                    if(mCacheVideos!=null){
+                        List<Object> list = new ArrayList<Object>(mCacheVideos);
+                        mVideoSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
+                        mOnePager.setAdapter(mVideoSingleMenuAdapter);
+                        mOnePager.setCurrentItem(mVideoNextNumInt);
                     }else{
                         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                             @Override
                             public void onResponse(IntensionData intensionData) {
                                 if (!intensionData.showapi_res_error.equals("")) {
-                                    mOnePager.setAdapter(new SingleMenuAdapter(activity, null, (int) view.getTag(R.id.tag_second),JokeFragment.this));
+                                    mOnePager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second),JokeFragment.this));
                                 } else {
                                     List<Object> list = new ArrayList<Object>(intensionData.showapi_res_body.pagebean.contentlist);
-                                    videoSingleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                                    mViewPager.setAdapter(videoSingleMenuAdapter);
-                                    videoSingleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                                    mOnePager.setAdapter(videoSingleMenuAdapter);
-                                    mOnePager.setCurrentItem(videoNextNumInt);
-                                    singleMenuAdapter = new SingleMenuAdapter(activity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                                    mViewPager.setAdapter(singleMenuAdapter);
-                                    mViewPager.setCurrentItem(videoNextNumInt);
+                                    mVideoSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
+                                    mOnePager.setAdapter(mVideoSingleMenuAdapter);
+                                    mOnePager.setCurrentItem(mVideoNextNumInt);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -565,7 +580,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             public void onErrorResponse(VolleyError error) {
 
                             }
-                        }, JokeAdapter.ITEMVIEW_VIDEO, videoNextPageInt==0?1:videoNextPageInt,GlobalContants.VIDEO_OPEN_GET);
+                        }, JokeAdapter.ITEMVIEW_VIDEO, mVideoNextPageInt==0?1:mVideoNextPageInt,GlobalContants.VIDEO_OPEN_GET);
                     }
                 }
                 break;
@@ -599,7 +614,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         List<Joke> removeList = new ArrayList<Joke>();
 
         for(int i=0;i<jokeData.detail.size();i++){
-            if(jokeId == Integer.parseInt(jokeData.detail.get(i).xhid)){
+            if(mJokeId == Integer.parseInt(jokeData.detail.get(i).xhid)){
                 for(Joke joke:removeList){
                     jokeData.detail.remove(joke);
                 }
@@ -620,11 +635,11 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_JOKE) {
             if(isJokeDataError){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
-                Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else {
                 AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
                 int old_id = PreferenceManager.getInstance().getInt("joke_max_number", 0);
-                jokeId = (new Random()).nextInt(old_id);
+                mJokeId = (new Random()).nextInt(old_id);
 
                 JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
                     @Override
@@ -637,15 +652,15 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     public void onErrorResponse(VolleyError volleyError) {
                         isJokeDataError = true;
                     }
-                }, 1, (maxId - jokeId),GlobalContants.JOKE_REFRESH_GET);
+                }, 1, (mMaxId - mJokeId),GlobalContants.JOKE_REFRESH_GET);
             }
         }else if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_INTENSION){
             if(isIntensionDataError){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
-                Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else {
                 AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
-                intensionNextPageInt = (new Random()).nextInt(intensionAllPages) + 1;
+                mIntensionNextPageInt = (new Random()).nextInt(mIntensionAllPages) + 1;
                 IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                     @Override
                     public void onResponse(IntensionData intensionData) {
@@ -653,10 +668,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_error);
                             isIntensionDataError = true;
                         } else {
-                            intensionNextNumInt = (new Random()).nextInt(20);
+                            mIntensionNextNumInt = (new Random()).nextInt(20);
                             isIntensionDataError = false;
-                            cacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(intensionNextNumInt).text);
+                            mCacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
+                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mIntensionNextNumInt).text);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -664,15 +679,15 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     public void onErrorResponse(VolleyError error) {
                         isIntensionDataError = true;
                     }
-                }, JokeAdapter.ITEMVIEW_INTENSION, intensionNextPageInt,GlobalContants.INTENSION_REFRESH_GET);
+                }, JokeAdapter.ITEMVIEW_INTENSION, mIntensionNextPageInt,GlobalContants.INTENSION_REFRESH_GET);
             }
         }else if(((int)itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_IMAGE)){
             if(isImageDataError){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
-                Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else {
                 AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
-                imageNextPageInt = (new Random()).nextInt(imageAllPages) + 1;
+                mImageNextPageInt = (new Random()).nextInt(mImageAllPages) + 1;
                 IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                     @Override
                     public void onResponse(IntensionData intensionData) {
@@ -680,10 +695,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_error);
                             isImageDataError = true;
                         } else {
-                            imageNextNumInt = (new Random()).nextInt(20);
+                            mImageNextNumInt = (new Random()).nextInt(20);
                             isImageDataError = false;
-                            cacheImages = intensionData.showapi_res_body.pagebean.contentlist;
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(imageNextNumInt).image0);
+                            mCacheImages = intensionData.showapi_res_body.pagebean.contentlist;
+                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mImageNextNumInt).image0);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -691,15 +706,15 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     public void onErrorResponse(VolleyError error) {
                         isImageDataError = true;
                     }
-                }, JokeAdapter.ITEMVIEW_IMAGE, imageNextPageInt,GlobalContants.IMAGE_REFRESH_GET);
+                }, JokeAdapter.ITEMVIEW_IMAGE, mImageNextPageInt,GlobalContants.IMAGE_REFRESH_GET);
             }
         }else if(((int)itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_VIDEO)){
             if(isVideoDataError){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
-                Toast.makeText(activity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else{
                 AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
-                videoNextPageInt = (new Random()).nextInt(videoAllPages) + 1;
+                mVideoNextPageInt = (new Random()).nextInt(mVideoAllPages) + 1;
                 IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                     @Override
                     public void onResponse(IntensionData intensionData) {
@@ -707,10 +722,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_error);
                             isImageDataError = true;
                         }else{
-                            videoNextNumInt = (new Random()).nextInt(20);
+                            mVideoNextNumInt = (new Random()).nextInt(20);
                             isVideoDataError = false;
-                            cacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(imageNextNumInt).image3);
+                            mCacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
+                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mImageNextNumInt).image3);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -718,7 +733,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     public void onErrorResponse(VolleyError error) {
                         isVideoDataError = true;
                     }
-                },JokeAdapter.ITEMVIEW_VIDEO,videoNextPageInt,GlobalContants.VIDEO_REFRESH_GET);
+                },JokeAdapter.ITEMVIEW_VIDEO,mVideoNextPageInt,GlobalContants.VIDEO_REFRESH_GET);
             }
         } else {
             return;
@@ -758,7 +773,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             }
                         });
                     } else {
-                        Toast.makeText(activity,"该方法还没有实现...",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mActivity,"该方法还没有实现...",Toast.LENGTH_SHORT).show();
                         imgView.clearAnimation();
                     }
                 }
@@ -780,7 +795,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * @param parent
      */
     private void statAnimAndRefreshView(final View parent, final TextView tv, final ImageView img, final ProgressBar pb) {
-        Toast.makeText(activity,"重新刷新",Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity,"重新刷新",Toast.LENGTH_SHORT).show();
         AnimationUtils.ObjectAnimation(parent, "rotationY", 0, 360, 500, new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
@@ -836,7 +851,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                activity.setupJokeMoreContent(viewtype);
+                mActivity.setupJokeMoreContent(viewtype);
                 ObjectAnimator mainAnimX = ObjectAnimator.ofFloat(mContainer, "scaleX", 1.5f, 1.0f);
                 ObjectAnimator mainAnimY = ObjectAnimator.ofFloat(mContainer, "scaleY", 1.5f, 1.0f);
                 AnimatorSet set = new AnimatorSet();
@@ -913,27 +928,27 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      */
     @Override
     public void onGifVisibility() {
-        rlGif.setVisibility(View.VISIBLE);
-        imgGif.setVisibility(View.GONE);
-        pbGifLoading.setVisibility(View.VISIBLE);
+        mRlGif.setVisibility(View.VISIBLE);
+        mImgGif.setVisibility(View.GONE);
+        mPbGifLoading.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onGifStart(byte[] bytes) {
         if(bytes!=null){
             try {
-                gifFromBytes = new GifDrawable(bytes);
-                imgGif.setBackground(gifFromBytes);
-                gifFromBytes.start();
+                mGifFromBytes = new GifDrawable(bytes);
+                mImgGif.setBackground(mGifFromBytes);
+                mGifFromBytes.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }else{
-            imgGif.setBackground(activity.getResources().getDrawable(R.mipmap.net_time_out));
+            mImgGif.setBackground(mActivity.getResources().getDrawable(R.mipmap.net_time_out));
         }
-        pbGifLoading.setVisibility(View.GONE);
-        imgGif.setVisibility(View.VISIBLE);
-        imgGif.setVisibility(View.VISIBLE);
+        mPbGifLoading.setVisibility(View.GONE);
+        mImgGif.setVisibility(View.VISIBLE);
+        mImgGif.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -942,7 +957,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      */
     @Override
     public void onGifUpdate(Integer value) {
-        pbGifLoading.setProgress(value);
+        mPbGifLoading.setProgress(value);
     }
 
     /**

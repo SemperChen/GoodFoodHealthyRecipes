@@ -22,43 +22,43 @@ import java.util.List;
  * Created by 卡你基巴 on 2015/10/2.
  */
 public class JokeMoreAdapter extends RecyclerView.Adapter<JokeMoreAdapter.ViewHolder>{
-    private Context context;
-    private List<Joke> jokes;
+    private Context mContext;
+    private List<Joke> mJokes;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
     public JokeMoreAdapter(Context context,List<Joke> jokes){
-        this.context = context;
-        this.jokes = jokes;
+        mContext = context;
+        mJokes = jokes;
     }
 
     public void clear(){
-        jokes.clear();
+        mJokes.clear();
     }
 
     public List<Joke> getJokes(){
-        return jokes;
+        return mJokes;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = View.inflate(context, R.layout.fragment_joke_more_joke_item,null);
+        View view = View.inflate(mContext, R.layout.fragment_joke_more_joke_item,null);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int i) {
-        holder.tvName.setText(jokes.get(i).author);
-        holder.tvContent.setText(jokes.get(i).content);
-        if(jokes.get(i).picUrl.equals("")) {
+        holder.tvName.setText(mJokes.get(i).author);
+        holder.tvContent.setText(mJokes.get(i).content);
+        if(mJokes.get(i).picUrl.equals("")) {
             holder.imgContent.setVisibility(View.GONE);
         }else{
             holder.imgContent.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage(jokes.get(i).picUrl,holder.imgContent,animateFirstListener);
+            ImageLoader.getInstance().displayImage(mJokes.get(i).picUrl,holder.imgContent,animateFirstListener);
         }
     }
 
     @Override
     public int getItemCount() {
-        return jokes.size();
+        return mJokes.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

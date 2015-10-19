@@ -30,7 +30,7 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static final int TYPE_ITEM = 1;
 
     private Context mContext;
-    private List<Detail> intensionData;
+    private List<Detail> mIntensionData;
     private int mItemCount;
 
     private OnItemCreate mCallbacks;
@@ -38,23 +38,23 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public ImageMoreAdapter(Context context,List<Detail> intensions,OnItemCreate callbacks){
         mContext = context;
-        intensionData = intensions;
-        mItemCount = intensionData.size()+1;
+        mIntensionData = intensions;
+        mItemCount = mIntensionData.size()+1;
         mCallbacks = callbacks;
     }
 
     public void clear(){
-        intensionData.clear();
+        mIntensionData.clear();
         mItemCount = 0;
     }
 
     public void addAll(List<Detail> data){
-        intensionData.addAll(data);
-        mItemCount = intensionData.size() + 1;
+        mIntensionData.addAll(data);
+        mItemCount = mIntensionData.size() + 1;
     }
 
     public List<Detail> getImages(){
-        return intensionData;
+        return mIntensionData;
     }
 
     @Override
@@ -75,8 +75,8 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }else if(holder instanceof ViewHolderItem){
             ViewHolderItem itemHolder = (ViewHolderItem) holder;
             itemHolder.tvName.setText(getItem(position).name);
-            itemHolder.tvLove.setText(getItem(position).love);
-            itemHolder.tvHate.setText(getItem(position).hate);
+            itemHolder.tvLove.setText(getItem(position).love+"人点了赞");
+            itemHolder.tvHate.setText(getItem(position).hate+"人点了踩'");
             itemHolder.tvTime.setText(getItem(position).create_time);
             itemHolder.tvContent.setText(getItem(position).text.trim());
 
@@ -96,7 +96,7 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private Detail getItem(int position){
-        return intensionData.get(position-1);
+        return mIntensionData.get(position-1);
     }
 
     @Override

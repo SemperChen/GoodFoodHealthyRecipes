@@ -28,7 +28,7 @@ public class IntensionMoreAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final int TYPE_ITEM = 1;
 
     private Context mContext;
-    private List<Detail> intensionData;
+    private List<Detail> mIntensionData;
     private String allNum;
     private int mItemCount;
 
@@ -36,23 +36,23 @@ public class IntensionMoreAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public IntensionMoreAdapter(Context context,List<Detail> intensions,String allNum){
         this.mContext = context;
-        this.intensionData = intensions;
+        this.mIntensionData = intensions;
         this.allNum = allNum;
-        mItemCount = intensionData.size() + 1;
+        mItemCount = mIntensionData.size() + 1;
     }
 
     public void clear(){
-        intensionData.clear();
+        mIntensionData.clear();
         mItemCount = 0;
     }
 
     public void addAll(List<Detail> data){
-        intensionData.addAll(data);
-        mItemCount = intensionData.size() + 1;
+        mIntensionData.addAll(data);
+        mItemCount = mIntensionData.size() + 1;
     }
 
     public List<Detail> getIntensions(){
-        return intensionData;
+        return mIntensionData;
     }
 
     @Override
@@ -75,8 +75,8 @@ public class IntensionMoreAdapter extends RecyclerView.Adapter<RecyclerView.View
         }else if(holder instanceof ViewHolderItem) {
             ViewHolderItem itemHolder = (ViewHolderItem) holder;
             itemHolder.tvName.setText(getItem(position).name);
-            itemHolder.tvLove.setText(getItem(position).love);
-            itemHolder.tvHate.setText(getItem(position).hate);
+            itemHolder.tvLove.setText(getItem(position).love+"人点了赞");
+            itemHolder.tvHate.setText(getItem(position).hate+"人点了踩");
             itemHolder.tvTime.setText(getItem(position).create_time);
             itemHolder.tvType.setText(Integer.parseInt(getItem(position).type) == 29 ? "内涵段子" : "未知");
             itemHolder.tvContent.setText(getItem(position).text.trim());
@@ -97,7 +97,7 @@ public class IntensionMoreAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private Detail getItem(int position){
-        return intensionData.get(position-1);
+        return mIntensionData.get(position-1);
     }
 
     @Override

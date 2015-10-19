@@ -23,21 +23,21 @@ import java.util.List;
  */
 public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.ViewHolder>{
     private Context mContext;
-    private List<Detail> intensionData;
+    private List<Detail> mIntensionData;
 
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
     public VideoMoreAdapter(Context context,List<Detail> intensions){
         mContext = context;
-        intensionData = intensions;
+        mIntensionData = intensions;
     }
 
     public void clear(){
-        intensionData.clear();
+        mIntensionData.clear();
     }
 
     public List<Detail> getVideos(){
-        return intensionData;
+        return mIntensionData;
     }
 
     @Override
@@ -48,21 +48,21 @@ public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.tvName.setText(intensionData.get(position).name);
-        holder.tvTime.setText(intensionData.get(position).create_time);
-        holder.tvLove.setText(intensionData.get(position).love);
-        holder.tvHate.setText(intensionData.get(position).hate);
-        holder.tvContent.setText(intensionData.get(position).text.trim());
+        holder.tvName.setText(mIntensionData.get(position).name);
+        holder.tvTime.setText(mIntensionData.get(position).create_time);
+        holder.tvLove.setText(mIntensionData.get(position).love+"人点了赞");
+        holder.tvHate.setText(mIntensionData.get(position).hate+"人点了踩");
+        holder.tvContent.setText(mIntensionData.get(position).text.trim());
 
         holder.imgContent.setVisibility(View.VISIBLE);
 
-        ImageLoader.getInstance().displayImage(intensionData.get(position).profile_image, holder.imgAvatar);
-        ImageLoader.getInstance().displayImage(intensionData.get(position).image3, holder.imgContent, animateFirstListener);
+        ImageLoader.getInstance().displayImage(mIntensionData.get(position).profile_image, holder.imgAvatar);
+        ImageLoader.getInstance().displayImage(mIntensionData.get(position).image3, holder.imgContent, animateFirstListener);
     }
 
     @Override
     public int getItemCount() {
-        return intensionData.size();
+        return mIntensionData.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

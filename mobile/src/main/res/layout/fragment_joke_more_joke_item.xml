@@ -63,40 +63,6 @@
                         android:scaleType="fitXY"
                         android:visibility="gone"/>
             </LinearLayout>
-            <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom">
-                <ImageView
-                        android:id="@+id/img_good"
-                        style="@style/joke_item_bottom_img"
-                        android:src="@mipmap/ic_digg_normal"/>
-                <TextView
-                        android:id="@+id/tv_good"
-                        style="@style/joke_item_bottom_text"
-                        android:layout_toRightOf="@+id/img_good"
-                        android:text="100万"/>
-                <ImageView
-                        android:id="@+id/img_bury"
-                        android:layout_toRightOf="@+id/tv_good"
-                        style="@style/joke_item_bottom_img"
-                        android:src="@mipmap/ic_bury_normal"/>
-                <TextView
-                        android:id="@+id/tv_bury"
-                        style="@style/joke_item_bottom_text"
-                        android:layout_toRightOf="@+id/img_bury"
-                        android:text="1万"/>
-                <ImageView
-                        android:id="@+id/img_hot"
-                        android:layout_toRightOf="@+id/tv_bury"
-                        style="@style/joke_item_bottom_img"
-                        android:src="@mipmap/hot_commenticon_textpage"/>
-                <TextView
-                        android:id="@+id/tv_hot"
-                        style="@style/joke_item_bottom_text"
-                        android:layout_toRightOf="@+id/img_hot"
-                        android:text="973"/>
-            </RelativeLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
 </RelativeLayout>

@@ -17,13 +17,6 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:background="@mipmap/ic_discovery_default_avatar"/>
-                <!--<de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/img_avatar"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerVertical="true"
-                    app:civ_border_width="1dp"
-                    app:civ_border_color="@color/background_recipe_title_bottom"/>-->
                 <TextView
                         android:id="@+id/tv_name"
                         android:layout_width="wrap_content"
@@ -41,29 +34,18 @@
                         android:paddingTop="8dp"
                         android:paddingLeft="10dp"
                         android:textColor="@color/name_color"
-                        android:textSize="14sp"/>
+                        android:textSize="12sp"/>
                 <TextView
                         android:id="@+id/tv_good"
                         android:layout_alignParentRight="true"
                         android:paddingTop="2dp"
                         style="@style/joke_more_intension_commens"/>
-                <ImageView
-                        android:id="@+id/img_good"
-                        android:layout_toLeftOf="@+id/tv_good"
-                        android:src="@mipmap/ic_digg_normal"
-                        style="@style/joke_more_intension_commens_img"/>
                 <TextView
                         android:id="@+id/tv_bury"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/tv_good"
                         android:paddingTop="5dp"
                         style="@style/joke_more_intension_commens"/>
-                <ImageView
-                        android:layout_below="@+id/img_good"
-                        android:layout_toLeftOf="@+id/tv_bury"
-                        android:paddingTop="10dp"
-                        android:src="@mipmap/ic_bury_normal"
-                        style="@style/joke_more_intension_commens_img"/>
         </RelativeLayout>
         <LinearLayout
                 android:layout_width="match_parent"

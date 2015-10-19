@@ -25,7 +25,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
     public final static int ITEMVIEW_NONE=0x55;
 
     private Context mContext;
-    private List<JokeFragment.MenuEntry> menuList;
+    private List<JokeFragment.MenuEntry> mMenuList;
 
     private int mDisplayCols = 0;
     private int mItemCount = 0;
@@ -38,7 +38,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
 
     public JokeAdapter(Context context,List<JokeFragment.MenuEntry> list,int displayCols,int itemCount,boolean showHeader,String headerLable,List<Integer> layoutList,JokeAdapterCallbacks callbacks){
         mContext = context;
-        menuList = list;
+        mMenuList = list;
         mDisplayCols = displayCols;
         mItemCount = itemCount;
         isShowHeader = showHeader;
@@ -121,7 +121,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
     private void bindView(final View mView, Context context, final int indexInGroup) {
         final ViewHolder holder = (ViewHolder) mView.getTag(R.id.tag_first);
 
-        final String hashTitle = mContext.getString(menuList.get(indexInGroup).titleId);
+        final String hashTitle = mContext.getString(mMenuList.get(indexInGroup).titleId);
         holder.title.setText(hashTitle);
 
         if(((int)mView.getTag(R.id.tag_second)) != ITEMVIEW_IMAGE || ((int)mView.getTag(R.id.tag_second)) != ITEMVIEW_VIDEO) {

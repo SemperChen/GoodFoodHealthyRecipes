@@ -29,28 +29,28 @@ import java.util.*;
  */
 public class SingleMenuAdapter extends PagerAdapter{
     private Context mContext;
-    private List<Object> data;
+    private List<Object> mData;
     private int mViewType;
 
-    private ByteValueHttpClient client;
-    private Map<Integer,SuperVideoPlayer> videoPlayers;
+    private ByteValueHttpClient mClient;
+    private Map<Integer,SuperVideoPlayer> mVideoPlayers;
 
     private OnGifListener mCallbacks;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
     public SingleMenuAdapter(Context context,List<Object> data,int viewtype,OnGifListener gifListener){
         mContext = context;
-        this.data = data;
+        mData = data;
         mViewType = viewtype;
         mCallbacks = gifListener;
         if(mViewType == JokeAdapter.ITEMVIEW_VIDEO){
-            videoPlayers = new HashMap<Integer,SuperVideoPlayer>();
+            mVideoPlayers = new HashMap<Integer,SuperVideoPlayer>();
         }
     }
 
     @Override
     public int getCount() {
-        return data == null ? 1 : data.size();
+        return mData == null ? 1 : mData.size();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SingleMenuAdapter extends PagerAdapter{
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
         final View view = View.inflate(mContext, R.layout.fragment_joke_singleview_item,null);
-        if(data == null){
+        if(mData == null){
             ImageView imageView = (ImageView) view.findViewById(R.id.img_content);
 
             view.findViewById(R.id.tv_content).setVisibility(View.GONE);
@@ -69,57 +69,57 @@ public class SingleMenuAdapter extends PagerAdapter{
             imageView.setBackgroundResource(R.mipmap.no_realize);
             ((TextView)view.findViewById(R.id.tv_name)).setText("未实现!");
             ((ImageView)view.findViewById(R.id.img_avatar)).setBackgroundResource(R.mipmap.ic_discovery_default_avatar);
-//            ((TextView)view.findViewById(R.id.tv_name)).setText("错误!");
-//            ((TextView)view.findViewById(R.id.tv_content)).setText("网络有问题...");
         }
 
         if(mViewType == JokeAdapter.ITEMVIEW_JOKE){
             setTvVis(view);
+            view.findViewById(R.id.rl_bottom).setVisibility(View.GONE);
 
-            ((TextView)view.findViewById(R.id.tv_name)).setText(((Joke) data.get(position)).author);
-            ((TextView)view.findViewById(R.id.tv_content)).setText(((Joke)data.get(position)).content);
+            ((TextView)view.findViewById(R.id.tv_name)).setText(((Joke) mData.get(position)).author);
+            ((TextView)view.findViewById(R.id.tv_content)).setText(((Joke)mData.get(position)).content);
             ((ImageView)view.findViewById(R.id.img_avatar)).setBackgroundResource(R.mipmap.ic_discovery_default_avatar);
         }else if(mViewType == JokeAdapter.ITEMVIEW_INTENSION){
             setTvVis(view);
+            view.findViewById(R.id.rl_bottom).setVisibility(View.VISIBLE);
 
-            ((TextView)view.findViewById(R.id.tv_good)).setText(((Detail) data.get(position)).love);
-            ((TextView)view.findViewById(R.id.tv_bury)).setText(((Detail)data.get(position)).hate);
-            ((TextView)view.findViewById(R.id.tv_name)).setText(((Detail)data.get(position)).name);
-            ((TextView)view.findViewById(R.id.tv_content)).setText(((Detail)data.get(position)).text.trim());
-            ((TextView)view.findViewById(R.id.tv_hot)).setText("-.-");
+            ((TextView)view.findViewById(R.id.tv_good)).setText(((Detail)mData.get(position)).love+"人点了赞");
+            ((TextView)view.findViewById(R.id.tv_bury)).setText(((Detail)mData.get(position)).hate+"人点了踩");
+            ((TextView)view.findViewById(R.id.tv_name)).setText(((Detail)mData.get(position)).name);
+            ((TextView)view.findViewById(R.id.tv_content)).setText(((Detail)mData.get(position)).text.trim());
 
-            ImageLoader.getInstance().displayImage(((Detail) data.get(position)).profile_image, (ImageView) view.findViewById(R.id.img_avatar));
+            ImageLoader.getInstance().displayImage(((Detail) mData.get(position)).profile_image, (ImageView) view.findViewById(R.id.img_avatar));
         }else if(mViewType == JokeAdapter.ITEMVIEW_IMAGE){
             final ImageView imgContent = (ImageView) view.findViewById(R.id.img_content);
             final ImageView iconGif = (ImageView) view.findViewById(R.id.iv_isgif);
 
+            view.findViewById(R.id.rl_bottom).setVisibility(View.VISIBLE);
             view.findViewById(R.id.rl_content).setVisibility(View.VISIBLE);
             view.findViewById(R.id.tv_content).setVisibility(View.GONE);
             view.findViewById(R.id.img_player).setVisibility(View.GONE);
             view.findViewById(R.id.rl_player).setVisibility(View.GONE);
             imgContent.setVisibility(View.VISIBLE);
 
-            ((TextView)view.findViewById(R.id.tv_good)).setText(((Detail) data.get(position)).love);
-            ((TextView)view.findViewById(R.id.tv_bury)).setText(((Detail)data.get(position)).hate);
-            ((TextView)view.findViewById(R.id.tv_name)).setText(((Detail)data.get(position)).name);
-            ((TextView)view.findViewById(R.id.tv_hot)).setText("-.-");
+            ((TextView)view.findViewById(R.id.tv_good)).setText(((Detail)mData.get(position)).love+"人点了赞");
+            ((TextView)view.findViewById(R.id.tv_bury)).setText(((Detail)mData.get(position)).hate+"人点了踩");
+            ((TextView)view.findViewById(R.id.tv_name)).setText(((Detail)mData.get(position)).name);
 
-            if((((Detail) data.get(position)).image0).endsWith(".gif")){
+            if((((Detail) mData.get(position)).image0).endsWith(".gif")){
                 iconGif.setVisibility(View.VISIBLE);
-                setupGifView(imgContent,((Detail) data.get(position)).image0);
+                setupGifView(imgContent,((Detail) mData.get(position)).image0);
             }else{
                 iconGif.setVisibility(View.GONE);
             }
 
 
-            ImageLoader.getInstance().displayImage(((Detail) data.get(position)).profile_image, (ImageView) view.findViewById(R.id.img_avatar));
-            ImageLoader.getInstance().displayImage(((Detail)data.get(position)).image0, imgContent,animateFirstListener);
+            ImageLoader.getInstance().displayImage(((Detail)mData.get(position)).profile_image, (ImageView) view.findViewById(R.id.img_avatar));
+            ImageLoader.getInstance().displayImage(((Detail)mData.get(position)).image0, imgContent,animateFirstListener);
         }else if(mViewType == JokeAdapter.ITEMVIEW_VIDEO){
             ImageView imgContent = (ImageView) view.findViewById(R.id.img_content);
             final ImageButton btnPlayer = (ImageButton) view.findViewById(R.id.img_player);
             final SuperVideoPlayer mVideoPlayer = (SuperVideoPlayer) view.findViewById(R.id.video_player);
-            videoPlayers.put(position,mVideoPlayer);
+            mVideoPlayers.put(position, mVideoPlayer);
 
+            view.findViewById(R.id.rl_bottom).setVisibility(View.VISIBLE);
             view.findViewById(R.id.rl_content).setVisibility(View.VISIBLE);
             view.findViewById(R.id.rl_comments).setVisibility(View.GONE);
             view.findViewById(R.id.iv_isgif).setVisibility(View.GONE);
@@ -129,13 +129,12 @@ public class SingleMenuAdapter extends PagerAdapter{
             imgContent.setVisibility(View.VISIBLE);
             btnPlayer.setVisibility(View.VISIBLE);
 
-            ((TextView)view.findViewById(R.id.tv_good)).setText(((Detail) data.get(position)).love);
-            ((TextView)view.findViewById(R.id.tv_bury)).setText(((Detail) data.get(position)).hate);
-            ((TextView)view.findViewById(R.id.tv_name)).setText(((Detail) data.get(position)).name);
-            ((TextView)view.findViewById(R.id.tv_hot)).setText("-.-");
+            ((TextView)view.findViewById(R.id.tv_good)).setText(((Detail)mData.get(position)).love+"人点了赞");
+            ((TextView)view.findViewById(R.id.tv_bury)).setText(((Detail)mData.get(position)).hate+"人点了踩");
+            ((TextView)view.findViewById(R.id.tv_name)).setText(((Detail) mData.get(position)).name);
 
-            ImageLoader.getInstance().displayImage(((Detail) data.get(position)).profile_image, (ImageView) view.findViewById(R.id.img_avatar));
-            ImageLoader.getInstance().displayImage(((Detail) data.get(position)).image3, imgContent, animateFirstListener);
+            ImageLoader.getInstance().displayImage(((Detail) mData.get(position)).profile_image, (ImageView) view.findViewById(R.id.img_avatar));
+            ImageLoader.getInstance().displayImage(((Detail) mData.get(position)).image3, imgContent, animateFirstListener);
 
             mVideoPlayer.setVideoPlayCallback(new SuperVideoPlayer.VideoPlayCallbackImpl() {
                 @Override
@@ -157,7 +156,7 @@ public class SingleMenuAdapter extends PagerAdapter{
 
                 }
             });
-            setVideoPlayer(btnPlayer, mVideoPlayer, view, ((Detail) data.get(position)).video_uri);
+            setVideoPlayer(btnPlayer, mVideoPlayer, view, ((Detail) mData.get(position)).video_uri);
         }else{
             view.findViewById(R.id.tv_content).setVisibility(View.GONE);
             view.findViewById(R.id.img_content).setVisibility(View.VISIBLE);
@@ -217,10 +216,10 @@ public class SingleMenuAdapter extends PagerAdapter{
             @Override
             public void onClick(View view) {
                 mCallbacks.onGifVisibility();
-                if(client!=null) {
-                    client = null;
+                if(mClient!=null) {
+                    mClient = null;
                 }
-                client = new ByteValueHttpClient(){
+                mClient = new ByteValueHttpClient(){
                     @Override
                     protected void onProgressUpdate(Integer... values) {
                         super.onProgressUpdate(values);
@@ -232,7 +231,7 @@ public class SingleMenuAdapter extends PagerAdapter{
                         mCallbacks.onGifStart(bytes);
                     }
                 };
-                client.execute(gifUrl);
+                mClient.execute(gifUrl);
             }
         });
     }
@@ -265,20 +264,20 @@ public class SingleMenuAdapter extends PagerAdapter{
 
 
     public void stopVideo(int position){
-        if(videoPlayers!=null && videoPlayers.size()>0){
-            (videoPlayers.get(position)).stopPlay();
+        if(mVideoPlayers!=null && mVideoPlayers.size()>0){
+            (mVideoPlayers.get(position)).stopPlay();
         }
     }
 
     public void closeVideo(int position){
-        if(videoPlayers!=null && videoPlayers.size()>0){
-            (videoPlayers.get(position)).close();
+        if(mVideoPlayers!=null && mVideoPlayers.size()>0){
+            (mVideoPlayers.get(position)).close();
         }
     }
 
     public void cleanGifNet(){
-        if(client!=null){
-            client.cleanConnection();
+        if(mClient!=null){
+            mClient.cleanConnection();
         }
     }
 }
