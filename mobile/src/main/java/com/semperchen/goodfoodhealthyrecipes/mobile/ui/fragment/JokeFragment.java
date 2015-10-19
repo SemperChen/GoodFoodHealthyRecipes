@@ -718,7 +718,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     public void onErrorResponse(VolleyError error) {
                         isVideoDataError = true;
                     }
-                },JokeAdapter.ITEMVIEW_VIDEO,videoNextPageInt,GlobalContants.VIDEO_OPEN_GET);
+                },JokeAdapter.ITEMVIEW_VIDEO,videoNextPageInt,GlobalContants.VIDEO_REFRESH_GET);
             }
         } else {
             return;
