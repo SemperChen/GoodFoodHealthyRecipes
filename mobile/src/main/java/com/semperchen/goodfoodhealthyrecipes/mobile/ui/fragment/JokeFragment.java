@@ -48,8 +48,9 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private OneViewPager mOnePager;
     private RelativeLayout mRlGif;
     private GifImageView mImgGif;
-    private ProgressView mPbGifLoading;
+    private HorizontalProgressBarWithNumber mPbGifLoading;
 
+    private Button mPreBtn,mNextBtn;
     private GifDrawable mGifFromBytes = null;
 
     private NoClickLinearLayout mLinear;
@@ -107,7 +108,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mLinear = (NoClickLinearLayout) mView.findViewById(R.id.joke_ll_conent);
         mRlGif = (RelativeLayout) mView.findViewById(R.id.rl_gif);
         mImgGif = (GifImageView) mView.findViewById(R.id.img_gifview);
-        mPbGifLoading = (ProgressView) mView.findViewById(R.id.pb_gifloading);
+        mPbGifLoading = (HorizontalProgressBarWithNumber) mView.findViewById(R.id.pb_gifloading);
 
         initListener();
         initSingleMenuView();
@@ -188,6 +189,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mImageSingleMenuAdapter.cleanGifNet();
         mImgGif.setBackground(null);
         mRlGif.setVisibility(View.GONE);
+        mPbGifLoading.setProgress(0);
     }
 
     /**
@@ -205,16 +207,19 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * 初始化SingleMenu视图监听
      */
     private void initSingleMenuViewListener() {
+        mPreBtn = (Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_pre));
+        mNextBtn = (Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_next));
+
         ((ImageButton)(mSingleMenuView.getMenuView().findViewById(R.id.btn_close))).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeSingleMenu();
             }
         });
-        ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_pre))).setOnClickListener(new View.OnClickListener() {
+        mPreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                prePager((Button)view);
+                prePager(mPreBtn,mNextBtn);
             }
         });
         ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_checkmore))).setOnClickListener(new View.OnClickListener() {
@@ -223,10 +228,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 checkMore(view);
             }
         });
-        ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_next))).setOnClickListener(new View.OnClickListener() {
+        mNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                nextPager((Button)view);
+                nextPager(mNextBtn, mPreBtn);
             }
         });
     }
@@ -252,7 +257,11 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     /**
      * 上一页
      */
-    private void prePager(Button btn) {
+    private void prePager(Button preBtn,Button nextBtn) {
+        nextBtn.setClickable(true);
+        nextBtn.setFocusable(true);
+        nextBtn.setEnabled(true);
+
         if (isImage) {
             if (mImageSingleMenuAdapter != null) {
                 clearGif();
@@ -262,13 +271,19 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
             if (mVideoSingleMenuAdapter != null) {
                 mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
             }
-            if (mOnePager.getCurrentItem() <= 0) {
+            if (mOnePager.getCurrentItem() <= 1) {
                 Toast.makeText(mActivity, "No Previous Page!", Toast.LENGTH_LONG).show();
+                preBtn.setClickable(false);
+                preBtn.setFocusable(false);
+                preBtn.setEnabled(false);
             }
             mOnePager.setCurrentItem(mOnePager.getCurrentItem() - 1, false);
         } else {
-            if (mViewPager.getCurrentItem() <= 0) {
+            if (mViewPager.getCurrentItem() <= 1) {
                 Toast.makeText(mActivity, "No Previous Page!", Toast.LENGTH_LONG).show();
+                preBtn.setClickable(false);
+                preBtn.setFocusable(false);
+                preBtn.setEnabled(false);
             }
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1, false);
         }
@@ -295,7 +310,11 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     /**
      * 下一页
      */
-    private void nextPager(Button btn){
+    private void nextPager(Button nextBtn,Button preBtn) {
+        preBtn.setClickable(true);
+        preBtn.setFocusable(true);
+        preBtn.setEnabled(true);
+
         if(isImage) {
             if (mImageSingleMenuAdapter != null) {
                 clearGif();
@@ -305,13 +324,19 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
             if (mVideoSingleMenuAdapter != null) {
                 mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
             }
-            if (mOnePager.getCurrentItem() >= mOnePager.getAdapter().getCount() - 1) {
+            if (mOnePager.getCurrentItem() >= mOnePager.getAdapter().getCount() - 2) {
                 Toast.makeText(mActivity, "No Next Page,Put on the move button!", Toast.LENGTH_LONG).show();
+                nextBtn.setClickable(false);
+                nextBtn.setFocusable(false);
+                nextBtn.setEnabled(false);
             }
             mOnePager.setCurrentItem(mOnePager.getCurrentItem() + 1, false);
         }else{
-            if (mViewPager.getCurrentItem() >= mViewPager.getAdapter().getCount() - 1) {
+            if (mViewPager.getCurrentItem() >= mViewPager.getAdapter().getCount() - 2) {
                 Toast.makeText(mActivity, "No Next Page,Put on the move button!", Toast.LENGTH_LONG).show();
+                nextBtn.setClickable(false);
+                nextBtn.setFocusable(false);
+                nextBtn.setEnabled(false);
             }
             mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1, false);
         }

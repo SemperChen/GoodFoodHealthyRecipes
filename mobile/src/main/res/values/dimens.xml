@@ -51,7 +51,7 @@
     <!--joke-->
     <dimen name="joke_menu_hz_margin">0dp</dimen>
     <dimen name="joke_hashtag_line_height">1dp</dimen>
-    <dimen name="joke_item_name_text_size">14sp</dimen>
+    <dimen name="joke_item_name_text_size">16sp</dimen>
     <dimen name="joke_item_number_text_size">14sp</dimen>
 
     <dimen name="load_top_margin">160dp</dimen>
