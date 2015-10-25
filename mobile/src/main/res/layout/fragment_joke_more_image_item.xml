@@ -58,14 +58,26 @@
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
                     android:textColor="@android:color/black"/>
-            <ImageView
-                    android:id="@+id/img_content"
+            <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:scaleType="fitXY"
-                    android:visibility="gone"/>
+                    android:layout_marginBottom="10dp">
+                <ImageView
+                        android:id="@+id/img_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitXY"
+                        android:visibility="gone"/>
+                <ImageView
+                        android:id="@+id/iv_isgif"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:src="@mipmap/is_gif"
+                        android:visibility="gone"/>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

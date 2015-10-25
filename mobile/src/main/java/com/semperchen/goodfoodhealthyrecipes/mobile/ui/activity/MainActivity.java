@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.PreferenceManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeAdapter;
@@ -76,6 +77,12 @@ public class MainActivity extends AppCompatActivity {
                     mDrawerLayout.openDrawer(GravityCompat.START);
                 }
                 return true;
+            case R.id.action_refresh:
+                JokeFragment jokeFragment = (JokeFragment) getSupportFragmentManager().findFragmentByTag(JokeFragment.class.getSimpleName());
+                if(jokeFragment != null){
+                    jokeFragment.onRefresh();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

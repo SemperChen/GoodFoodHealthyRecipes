@@ -26,6 +26,9 @@ public class JokeAdapter implements CollectionViewCallbacks {
 
     private Context mContext;
     private List<JokeFragment.MenuEntry> mMenuList;
+    private CollectionView.Inventory inventory;
+
+    private View mHeaderView;
 
     private int mDisplayCols = 0;
     private int mItemCount = 0;
@@ -49,7 +52,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
 
     //获取全部Item的集合,并且设置每个Item组的参数
     public CollectionView.Inventory getInventory(){
-        CollectionView.Inventory inventory = new CollectionView.Inventory();
+        inventory = new CollectionView.Inventory();
         inventory.addInventoryGroup(new CollectionView.InventoryGroup(TOKEN)
                 .setDisplayCols(mDisplayCols)
                 .setItemCount(mItemCount)
@@ -58,9 +61,11 @@ public class JokeAdapter implements CollectionViewCallbacks {
         return inventory;
     }
 
+
     @Override
     public View newCollectionHeaderView(Context context, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.fragment_joke_item_header,parent,false);
+        mHeaderView = LayoutInflater.from(context).inflate(R.layout.fragment_joke_item_header,parent,false);
+        return mHeaderView;
     }
 
     @Override
@@ -76,6 +81,10 @@ public class JokeAdapter implements CollectionViewCallbacks {
     @Override
     public void bindCollectionItemView(Context context, View view, int groupId, int indexInGroup, int dataIndex, Object tag) {
         bindView(view, context, indexInGroup);
+    }
+
+    public View getHeaderView(){
+        return mHeaderView;
     }
 
     /**
@@ -143,7 +152,7 @@ public class JokeAdapter implements CollectionViewCallbacks {
         mView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mCallbacks.onItemLongClick(mView,holder.tvValue, holder.imgValue, holder.pbLoading);
+                mCallbacks.onItemLongClick(mView,holder.tvValue, holder.imgValue,holder.description,holder.pbLoading);
                 return true;
             }
         });
@@ -190,6 +199,6 @@ public class JokeAdapter implements CollectionViewCallbacks {
         void onOpenSingleView(View view);
         void onRefreshDataFromService(View view, View parent, TextView tv, ImageView img);
         void onItemGetData(View parent,TextView tv,ImageView img,ProgressBar pb);
-        void onItemLongClick(View parent,TextView tv,ImageView img,ProgressBar pb);
+        void onItemLongClick(View parent,TextView tv,ImageView img,ImageButton description,ProgressBar pb);
     }
 }

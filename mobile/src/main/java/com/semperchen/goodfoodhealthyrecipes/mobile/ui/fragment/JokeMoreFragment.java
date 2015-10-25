@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.IntensionData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.IntensionData.Body.Bean.Detail;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.IntensionNetWorkManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeNetWorkManager;
@@ -27,11 +28,14 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.*;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullCallback;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullToLoadView;
 
+import java.util.List;
+
 /**
  * Created by 卡你基巴 on 2015/9/29.
  */
-public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAdapter.OnItemCreate{
+public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAdapter.OnItemCreate,ImagePagerAdapter.OnImagePagerCallbacks{
     private MainActivity mActivity;
+    private Toolbar mToolbar;
 
     private View mJokeView,mIntensionView,mVideoView,mImageView;
 
@@ -40,6 +44,8 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
     private RecyclerView mIntensionContent,mJokeContent,mImageContent,mVideoContent;
 
     private PullToLoadView mJokePullLoad,mIntensionPullLoad,mVideoPullLoad,mImagePullLoad;
+    private ViewPager mImagePager;
+    private ImagePagerAdapter mPagerAdapter;
 
     private JokeMoreAdapter mJokeMoreAdapter;
     private IntensionMoreAdapter mIntensionMoreAdapter;
@@ -242,7 +248,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         startAnimWithInAndout(mFlContent, mIntensionView);
 
         initIntensionData();
-        getIntensionDataFromService(1,GlobalContants.INTENSION_MORE_CREATE_GET);
+        getIntensionDataFromService(1, GlobalContants.INTENSION_MORE_CREATE_GET);
     }
 
     /**
@@ -253,6 +259,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             mImageView = View.inflate(mActivity, R.layout.fragment_joke_more_image, null);
             mImageView.setTag("image");
             mImagePullLoad = (PullToLoadView) mImageView.findViewById(R.id.pulltoLoadview);
+            mImagePager = (ViewPager) mImageView.findViewById(R.id.vp_content);
             setPullLoadToLoad(mImagePullLoad);
 
             mImageContent = mImagePullLoad.getRecyclerView();
@@ -264,7 +271,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
 
         startAnimWithInAndout(mFlContent, mImageView);
         initImageData();
-        getImageDateFromService(1,GlobalContants.IMAGE_MORE_CREATE_GET);
+        getImageDateFromService(1, GlobalContants.IMAGE_MORE_CREATE_GET);
     }
 
     /**
@@ -285,7 +292,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         startAnimWithInAndout(mFlContent, mJokeView);
         initJokeData();
         //访问网络，获取数据
-        getJokeDataFromService(0,GlobalContants.JOKE_MORE_CREATE_GET);
+        getJokeDataFromService(0, GlobalContants.JOKE_MORE_CREATE_GET);
 
     }
 
@@ -355,7 +362,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             public void onErrorResponse(VolleyError volleyError) {
                 mJokePullLoad.setRefreshEnable(true);
             }
-        }, 20, nextPage,tag);
+        }, 20, nextPage, tag);
     }
 
     /**
@@ -366,13 +373,13 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
             @Override
             public void onResponse(IntensionData intensionData) {
-                if(mIntensionMoreAdapter == null || mIntensionMoreAdapter.getItemCount() <= 1) {
+                if (mIntensionMoreAdapter == null || mIntensionMoreAdapter.getItemCount() <= 1) {
                     mIntensionMoreAdapter = new IntensionMoreAdapter(mActivity, intensionData.showapi_res_body.pagebean.contentlist,
                             intensionData.showapi_res_body.pagebean.allNum);
                     buildDataInView(mIntensionMoreAdapter);
                     mIntensionCuttentPage = 1;
                     mIntensionNextPage = 2;
-                }else{
+                } else {
                     if (mIntensionPullLoad.isRefreshing()) {
                         mIntensionMoreAdapter.clear();
                         mIntensionCuttentPage = 1;
@@ -390,9 +397,10 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             }
         }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {mIntensionPullLoad.setRefreshEnable(true);
+            public void onErrorResponse(VolleyError error) {
+                mIntensionPullLoad.setRefreshEnable(true);
             }
-        }, JokeAdapter.ITEMVIEW_INTENSION, nextPage,tag);
+        }, JokeAdapter.ITEMVIEW_INTENSION, nextPage, tag);
     }
 
     /**
@@ -416,6 +424,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
                     }
                     mImageMoreAdapter.addAll(intensionData.showapi_res_body.pagebean.contentlist);
                     mImageMoreAdapter.notifyDataSetChanged();
+                    mPagerAdapter.notifyDataSetChanged();
                     if (mImagePullLoad.isLoadingMore()) {
                         mImageCuttentPage = mImageNextPage;
                         mImageNextPage = mImageNextPage + 1;
@@ -643,6 +652,29 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
     }
 
     /**
+     * 笑话里图片点击时回调
+     * @param position
+     */
+    @Override
+    public void onImageClick(int position) {
+        if(mImagePullLoad!=null && mImagePager!=null){
+            if(mPagerAdapter == null) {
+                mPagerAdapter = new ImagePagerAdapter(mActivity, mImageMoreAdapter.getImages(),this);
+                mImagePager.setAdapter(mPagerAdapter);
+            }
+            actionBar.hide();
+            mImagePullLoad.setVisibility(View.INVISIBLE);
+            mImagePager.setVisibility(View.VISIBLE);
+            setImagePagerData(position);
+        }
+    }
+
+    private void setImagePagerData(int position) {
+        mImagePager.setCurrentItem(position,false);
+    }
+
+
+    /**
      * 笑话页面viewpager完成时回调
      * @param pager
      * @param indicator
@@ -669,6 +701,18 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
 
         mHandler.sendEmptyMessageDelayed(0,3000);
         ImagePagerIndicatorUtils.setOnPagerChangListener(pager, indicator);
+    }
+
+    /**
+     * 图片模式点击回调
+     */
+    @Override
+    public void onImageClick() {
+        actionBar.show();
+        mImagePullLoad.setVisibility(View.VISIBLE);
+        mImagePager.setVisibility(View.INVISIBLE);
+        mPagerAdapter.destory();
+        mPagerAdapter = null;
     }
 
     /**

@@ -12,17 +12,40 @@
                   android:background="@android:color/white"
                   android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <include layout="@layout/toolbar"/>
-        <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CollectionView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:iosched="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/joke_content_collection"
+        <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="4dp"
-                android:layout_marginStart="@dimen/joke_menu_hz_margin"
-                android:layout_marginEnd="@dimen/joke_menu_hz_margin"
-                android:clipToPadding="false"
-                iosched:internalPadding="4dp"/>
+                android:layout_height="match_parent">
+            <FrameLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:id="@+id/fl_notnet"
+                    android:visibility="gone"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:enabled="false">
+                <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black"
+                        android:background="@color/fragment_joke_item_header"
+                        android:text="没有网络"/>
+            </FrameLayout>
+            <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CollectionView
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:iosched="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/joke_content_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="4dp"
+                    android:layout_marginStart="@dimen/joke_menu_hz_margin"
+                    android:layout_marginEnd="@dimen/joke_menu_hz_margin"
+                    android:clipToPadding="false"
+                    iosched:internalPadding="4dp"/>
+        </FrameLayout>
     </com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.NoClickLinearLayout>
     <FrameLayout
             android:id="@+id/joke_frame"

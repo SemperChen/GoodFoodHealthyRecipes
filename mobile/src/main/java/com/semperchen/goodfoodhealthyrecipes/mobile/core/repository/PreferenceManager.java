@@ -46,5 +46,13 @@ public class PreferenceManager {
     public int getInt(String key,int defalueValue){
         return preferences.getInt(key,defalueValue);
     }
+
+    public void putString(String key,String value){
+        preferences.edit().putString(key,value).commit();
+    }
+
+    public String getString(String key){
+        return preferences.getString(key,"");
+    }
 }
 

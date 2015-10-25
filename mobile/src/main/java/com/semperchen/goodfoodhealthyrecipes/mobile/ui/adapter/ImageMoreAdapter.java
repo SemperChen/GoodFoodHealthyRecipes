@@ -68,7 +68,7 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(holder instanceof ViewHolderHeader){
             ViewHolderHeader headerHolder = (ViewHolderHeader) holder;
             mCallbacks.onHeaderCreate(headerHolder.vpContent,headerHolder.rlIndicator);
@@ -76,7 +76,7 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ViewHolderItem itemHolder = (ViewHolderItem) holder;
             itemHolder.tvName.setText(getItem(position).name);
             itemHolder.tvLove.setText(getItem(position).love+"人点了赞");
-            itemHolder.tvHate.setText(getItem(position).hate+"人点了踩'");
+            itemHolder.tvHate.setText(getItem(position).hate+"人点了踩");
             itemHolder.tvTime.setText(getItem(position).create_time);
             itemHolder.tvContent.setText(getItem(position).text.trim());
 
@@ -86,6 +86,17 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             } else {
                 ImageLoader.getInstance().displayImage(getItem(position).image0, itemHolder.imgContent, animateFirstListener);
                 itemHolder.imgContent.setVisibility(View.VISIBLE);
+                if((getItem(position).image0).endsWith(".gif")){
+                    itemHolder.imgIsGif.setVisibility(View.VISIBLE);
+                }else{
+                    itemHolder.imgIsGif.setVisibility(View.GONE);
+                }
+                itemHolder.imgContent.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mCallbacks.onImageClick((position-1));
+                    }
+                });
             }
         }
     }
@@ -122,7 +133,7 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     class ViewHolderItem extends RecyclerView.ViewHolder{
-        ImageView imgAvatar,imgContent;
+        ImageView imgAvatar,imgContent,imgIsGif;
         TextView tvName,tvTime,tvLove,tvHate,tvContent;
         public ViewHolderItem(View itemView) {
             super(itemView);
@@ -133,6 +144,7 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             tvLove = (TextView) itemView.findViewById(R.id.tv_good);
             tvHate = (TextView) itemView.findViewById(R.id.tv_bury);
             tvContent = (TextView) itemView.findViewById(R.id.tv_content);
+            imgIsGif = (ImageView) itemView.findViewById(R.id.iv_isgif);
         }
     }
 
@@ -186,5 +198,6 @@ public class ImageMoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     public interface OnItemCreate{
         void onHeaderCreate(ViewPager pager,RelativeLayout indicator);
+        void onImageClick(int position);
     }
 }

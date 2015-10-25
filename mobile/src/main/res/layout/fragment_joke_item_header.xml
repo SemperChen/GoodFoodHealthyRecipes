@@ -3,14 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
-
+    android:visibility="gone"
+    android:clickable="false"
+    android:focusable="false"
+    android:enabled="false">
     <TextView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:gravity="center"
         android:textSize="16sp"
-        android:textColor="@android:color/black"/>
-
+        android:textColor="@android:color/black"
+        android:background="@color/fragment_joke_item_header"
+        android:text="没有网络"/>
 </FrameLayout>

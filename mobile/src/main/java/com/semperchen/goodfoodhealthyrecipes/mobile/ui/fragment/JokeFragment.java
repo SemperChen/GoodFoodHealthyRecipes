@@ -3,16 +3,22 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.*;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
@@ -26,6 +32,8 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.JokeNetWorkManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.RequestManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.PreferenceManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.AnimationUtils;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.DensityUtils;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.NetUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.MainActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeAdapter;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.SingleMenuAdapter;
@@ -50,8 +58,11 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private GifImageView mImgGif;
     private HorizontalProgressBarWithNumber mPbGifLoading;
 
-    private Button mPreBtn,mNextBtn;
+    private Button mPreBtn,mNextBtn,mMoreBtn;
     private GifDrawable mGifFromBytes = null;
+
+    private FrameLayout mNotNetView;
+    private int mNotNetViewHeight,mNotNetViewWidth;
 
     private NoClickLinearLayout mLinear;
     private FrameLayout mFrame,mContainer;
@@ -65,6 +76,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private boolean isMenuOpen = false;
     private boolean isVideo,isImage;
     private SingleMenuAdapter mVideoSingleMenuAdapter,mImageSingleMenuAdapter;
+
+    private boolean mNetState;
+    private BroadcastReceiver mNetReceiver;
+    private Gson mGson;
 
     private boolean isIntensionDataError = true;
     private boolean isImageDataError = true;
@@ -109,7 +124,15 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mRlGif = (RelativeLayout) mView.findViewById(R.id.rl_gif);
         mImgGif = (GifImageView) mView.findViewById(R.id.img_gifview);
         mPbGifLoading = (HorizontalProgressBarWithNumber) mView.findViewById(R.id.pb_gifloading);
+        mNotNetView = (FrameLayout) mView.findViewById(R.id.fl_notnet);
 
+        mNotNetViewWidth = DensityUtils.getDisplayWidth(getActivity());
+        mNotNetViewHeight = DensityUtils.dip2px(getActivity(),48);
+
+        mNetState = NetUtils.isNetworkAvailable(getActivity());
+        mGson = new Gson();
+
+        initNetReceiver();
         initListener();
         initSingleMenuView();
         initSingleMenuViewListener();
@@ -161,6 +184,38 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mContainer = (FrameLayout) mActivity.findViewById(R.id.container);
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mNetReceiver != null){
+            mActivity.unregisterReceiver(mNetReceiver);
+        }
+    }
+
+    /**
+     * 初始化网络监听
+     */
+    private void initNetReceiver() {
+        if(mNetReceiver == null){
+            mNetReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if(action.equals(ConnectivityManager.CONNECTIVITY_ACTION)){
+                        mNetState = NetUtils.isNetworkAvailable(getActivity());
+                        updateHeaderShow(!mNetState);
+                    }
+                }
+            };
+
+            //注册广播
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+            getActivity().registerReceiver(mNetReceiver, intentFilter);
+        }
+    }
+
     /**
      * 初始化监听
      */
@@ -177,6 +232,20 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 clearGif();
             }
         });
+    }
+
+    /**
+     * 是否显示无网络
+     * @param isShow
+     */
+    private void updateHeaderShow(boolean isShow) {
+        if(mLinear!=null && mNotNetView!=null){
+            if(isShow){
+                AnimationUtils.startShowNotNetAnim(mCollectionView,mNotNetView,mNotNetViewWidth,mNotNetViewHeight);
+            }else{
+                AnimationUtils.closeShowNotNetAnim(mCollectionView,mNotNetView,mNotNetViewWidth,mNotNetViewHeight);
+            }
+        }
     }
 
     /**
@@ -209,6 +278,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private void initSingleMenuViewListener() {
         mPreBtn = (Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_pre));
         mNextBtn = (Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_next));
+        mMoreBtn = (Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_checkmore));
 
         ((ImageButton)(mSingleMenuView.getMenuView().findViewById(R.id.btn_close))).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,10 +289,10 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mPreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                prePager(mPreBtn,mNextBtn);
+                prePager(mPreBtn, mNextBtn);
             }
         });
-        ((Button)(mSingleMenuView.getMenuView().findViewById(R.id.btn_checkmore))).setOnClickListener(new View.OnClickListener() {
+        mMoreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 checkMore(view);
@@ -343,60 +413,106 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     }
 
     /**
-     * 获取笑话数据并绑定
+     * 获取笑话数据
      */
     private void buildDataToJoke(final TextView tvValue, final ImageView imgValue, final ProgressBar pbLoading) {
-        JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
-            @Override
-            public void onResponse(JokeData jokeData) {
-                //获取网络最新JokeId与本地最新JokeId对比
-                int old_id = PreferenceManager.getInstance().getInt("joke_max_number", 0);
-                int new_id = Integer.parseInt(jokeData.detail.get(0).id);
-                mMaxId = mJokeId = new_id > old_id ? new_id : old_id;
-                PreferenceManager.getInstance().putInt("joke_max_number", mMaxId);
-                tvValue.setText(jokeData.detail.get(0).content);
-                isJokeDataError = false;
-                tvValue.setVisibility(View.VISIBLE);
-                imgValue.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.GONE);
+        if(mNetState) {
+            JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
+                @Override
+                public void onResponse(JokeData jokeData) {
+                    //获取网络最新JokeId与本地最新JokeId对比
+                    int old_id = PreferenceManager.getInstance().getInt("joke_max_number", 0);
+                    int new_id = Integer.parseInt(jokeData.detail.get(0).id);
+                    mMaxId = mJokeId = new_id > old_id ? new_id : old_id;
+                    PreferenceManager.getInstance().putInt("joke_max_number", mMaxId);
+                    PreferenceManager.getInstance().putString(GlobalContants.JOKE_PREFERENCE_FIRST, mGson.toJson(jokeData));
+                    setJokeData(tvValue, imgValue, pbLoading, jokeData.detail.get(0).content, false);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    isJokeDataError = true;
+                }
+            }, 1, 0, GlobalContants.JOKE_CREATE_GET);
+        }else{
+            mJokeId = PreferenceManager.getInstance().getInt("joke_max_number", 0);
+            String json = PreferenceManager.getInstance().getString(GlobalContants.JOKE_PREFERENCE_FIRST);
+            if("".equals(json)){
+                setJokeData(tvValue,imgValue,pbLoading,"没有网络...",true);
+            }else{
+                JokeData jokeData = mGson.fromJson(json,JokeData.class);
+                setJokeData(tvValue, imgValue, pbLoading, jokeData.detail.get(0).content, false);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                isJokeDataError = true;
-            }
-        }, 1, 0, GlobalContants.JOKE_CREATE_GET);
+        }
     }
 
     /**
-     * 获取内涵段子数据并绑定
+     * 绑定笑话数据
+     * @param tvValue
+     * @param imgValue
+     * @param pbLoading
+     * @param value
+     * @param isError
+     */
+    private void setJokeData(TextView tvValue, ImageView imgValue, ProgressBar pbLoading, String value, boolean isError){
+        tvValue.setText(value);
+        isJokeDataError = isError;
+        tvValue.setVisibility(View.VISIBLE);
+        imgValue.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    /**
+     * 获取内涵段子数据
      * @param tvValue
      * @param imgValue
      * @param pbLoading
      */
     private void buildDataToIntension(final TextView tvValue, final ImageView imgValue, final ProgressBar pbLoading){
-        IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
-            @Override
-            public void onResponse(IntensionData intensionData) {
-                if (!intensionData.showapi_res_error.equals("")) {
-                    tvValue.setText(intensionData.showapi_res_error);
-                    isIntensionDataError = true;
-                } else {
-                    mCacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
-                    mIntensionAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
-                    tvValue.setText(intensionData.showapi_res_body.pagebean.contentlist.get(0).text.trim());
-                    isIntensionDataError = false;
+        if(mNetState) {
+            IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
+                @Override
+                public void onResponse(IntensionData intensionData) {
+                    if (!intensionData.showapi_res_error.equals("")) {
+                        setIntensionData(tvValue, imgValue, pbLoading, intensionData.showapi_res_error, true);
+                    } else {
+                        PreferenceManager.getInstance().putString(GlobalContants.INTENSION_PREFERENCE_FIRST, mGson.toJson(intensionData));
+                        mCacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
+                        mIntensionAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
+                        setIntensionData(tvValue, imgValue, pbLoading, intensionData.showapi_res_body.pagebean.contentlist.get(0).text.trim(), false);
+                    }
                 }
-                tvValue.setVisibility(View.VISIBLE);
-                imgValue.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.GONE);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    isIntensionDataError = true;
+                }
+            }, JokeAdapter.ITEMVIEW_INTENSION, 1, GlobalContants.INTENSION_CREATE_GET);
+        }else{
+            String json = PreferenceManager.getInstance().getString(GlobalContants.INTENSION_PREFERENCE_FIRST);
+            if("".equals(json)){
+                setIntensionData(tvValue,imgValue,pbLoading,"没有网络...",true);
+            }else{
+                IntensionData intensionData = mGson.fromJson(json,IntensionData.class);
+                setIntensionData(tvValue, imgValue, pbLoading, intensionData.showapi_res_body.pagebean.contentlist.get(0).text.trim(), false);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isIntensionDataError = true;
-            }
-        }, JokeAdapter.ITEMVIEW_INTENSION, 1, GlobalContants.INTENSION_CREATE_GET);
+        }
+    }
+
+    /**
+     * 绑定内涵段子数据
+     * @param tvValue
+     * @param imgValue
+     * @param pbLoading
+     * @param value
+     * @param isError
+     */
+    private void setIntensionData(TextView tvValue, ImageView imgValue, ProgressBar pbLoading,String value,boolean isError){
+        tvValue.setText(value);
+        isIntensionDataError = isError;
+        tvValue.setVisibility(View.VISIBLE);
+        imgValue.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -406,63 +522,117 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * @param pbLoading
      */
     private void buildDataToImage(final TextView tvValue, final ImageView imgValue, final ProgressBar pbLoading){
-        IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
-            @Override
-            public void onResponse(IntensionData intensionData) {
-                if (!intensionData.showapi_res_error.equals("")) {
-                    tvValue.setText(intensionData.showapi_res_error);
-                    isImageDataError = true;
-                    tvValue.setVisibility(View.VISIBLE);
-                    imgValue.setVisibility(View.GONE);
-                } else {
-                    isImageDataError = false;
-                    mCacheImages = intensionData.showapi_res_body.pagebean.contentlist;
-                    mImageAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
-                    tvValue.setVisibility(View.GONE);
-                    imgValue.setVisibility(View.VISIBLE);
-                    ImageLoader.getInstance().displayImage(intensionData.showapi_res_body.pagebean.contentlist.get(0).image0, imgValue);
+        if(mNetState) {
+            IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
+                @Override
+                public void onResponse(IntensionData intensionData) {
+                    if (!intensionData.showapi_res_error.equals("")) {
+                        setImageData(tvValue, imgValue, pbLoading, intensionData.showapi_res_error, true, false);
+                    } else {
+                        PreferenceManager.getInstance().putString(GlobalContants.IMAGE_PREFERENCE_FIRST, mGson.toJson(intensionData));
+                        mCacheImages = intensionData.showapi_res_body.pagebean.contentlist;
+                        mImageAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
+                        setImageData(tvValue, imgValue, pbLoading, intensionData.showapi_res_body.pagebean.contentlist.get(0).image0, false, true);
+                    }
                 }
-                pbLoading.setVisibility(View.GONE);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    isImageDataError = true;
+                }
+            }, JokeAdapter.ITEMVIEW_IMAGE, 1, GlobalContants.IMAGE_CREATE_GET);
+        }else{
+            String json = PreferenceManager.getInstance().getString(GlobalContants.IMAGE_PREFERENCE_FIRST);
+            if("".equals(json)){
+                setImageData(tvValue, imgValue, pbLoading, "没有网络...", true, false);
+            }else{
+                IntensionData intensionData = mGson.fromJson(json,IntensionData.class);
+                setImageData(tvValue,imgValue,pbLoading,intensionData.showapi_res_body.pagebean.contentlist.get(0).image0,false,true);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isImageDataError = true;
-            }
-        }, JokeAdapter.ITEMVIEW_IMAGE, 1, GlobalContants.IMAGE_CREATE_GET);
+        }
     }
 
     /**
-     * 获取搞笑视频数据并绑定
+     * 绑定囧图数据
+     * @param tvValue
+     * @param imgValue
+     * @param pbLoading
+     * @param value
+     * @param isError
+     * @param isShowImage
+     */
+    private void setImageData(TextView tvValue, ImageView imgValue, ProgressBar pbLoading,String value,boolean isError, boolean isShowImage){
+        if(!isShowImage){
+            tvValue.setText(value);
+            tvValue.setVisibility(View.VISIBLE);
+            imgValue.setVisibility(View.GONE);
+        }else{
+            ImageLoader.getInstance().displayImage(value, imgValue);
+            tvValue.setVisibility(View.GONE);
+            imgValue.setVisibility(View.VISIBLE);
+        }
+        isImageDataError = isError;
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    /**
+     * 获取搞笑视频数据
      * @param tvValue
      * @param imgValue
      * @param pbLoading
      */
     private void buildDataToVideo(final TextView tvValue, final ImageView imgValue, final ProgressBar pbLoading){
-        IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
-            @Override
-            public void onResponse(IntensionData intensionData) {
-                if (!intensionData.showapi_res_error.equals("")) {
-                    tvValue.setText(intensionData.showapi_res_error);
-                    isVideoDataError = true;
-                    tvValue.setVisibility(View.VISIBLE);
-                    imgValue.setVisibility(View.GONE);
-                } else {
-                    isVideoDataError = false;
-                    mCacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
-                    mVideoAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
-                    tvValue.setVisibility(View.GONE);
-                    imgValue.setVisibility(View.VISIBLE);
-                    ImageLoader.getInstance().displayImage(intensionData.showapi_res_body.pagebean.contentlist.get(0).image3, imgValue);
+        if(mNetState) {
+            IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
+                @Override
+                public void onResponse(IntensionData intensionData) {
+                    if (!intensionData.showapi_res_error.equals("")) {
+                        setVideoData(tvValue, imgValue, pbLoading, intensionData.showapi_res_error, true, false);
+                    } else {
+                        PreferenceManager.getInstance().putString(GlobalContants.VIDEO_PREFERENCE_FIRST, mGson.toJson(intensionData));
+                        mCacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
+                        mVideoAllPages = Integer.parseInt(intensionData.showapi_res_body.pagebean.allPages);
+                        setVideoData(tvValue, imgValue, pbLoading, intensionData.showapi_res_body.pagebean.contentlist.get(0).image3, false, true);
+                    }
                 }
-                pbLoading.setVisibility(View.GONE);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    isVideoDataError = true;
+                }
+            }, JokeAdapter.ITEMVIEW_VIDEO, 1, GlobalContants.VIDEO_CREATE_GET);
+        }else{
+            String json = PreferenceManager.getInstance().getString(GlobalContants.VIDEO_PREFERENCE_FIRST);
+            if("".equals(json)){
+                setVideoData(tvValue, imgValue, pbLoading, "没有网络...", true, false);
+            }else{
+                IntensionData intensionData = mGson.fromJson(json,IntensionData.class);
+                setVideoData(tvValue,imgValue,pbLoading,intensionData.showapi_res_body.pagebean.contentlist.get(0).image3,false,true);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isVideoDataError = true;
-            }
-        }, JokeAdapter.ITEMVIEW_VIDEO, 1,GlobalContants.VIDEO_CREATE_GET);
+        }
+    }
+
+    /**
+     * 绑定搞笑视频数据
+     * @param tvValue
+     * @param imgValue
+     * @param pbLoading
+     * @param value
+     * @param isError
+     * @param isShowVideo
+     */
+    private void setVideoData(TextView tvValue, ImageView imgValue, ProgressBar pbLoading,String value,boolean isError, boolean isShowVideo){
+        if(!isShowVideo){
+            tvValue.setText(value);
+            tvValue.setVisibility(View.VISIBLE);
+            imgValue.setVisibility(View.GONE);
+        }else{
+            ImageLoader.getInstance().displayImage(value, imgValue);
+            tvValue.setVisibility(View.GONE);
+            imgValue.setVisibility(View.VISIBLE);
+        }
+        isVideoDataError = isError;
+        pbLoading.setVisibility(View.GONE);
     }
 
     /**
@@ -472,6 +642,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mAdapter = buildAdapter();
         mCollectionView.setCollctionAdapter(mAdapter);
         mCollectionView.updateInventory(mAdapter.getInventory());
+//        mAdapter.getHeaderView().setVisibility(View.GONE);
     }
 
     /**
@@ -481,8 +652,6 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     protected JokeAdapter buildAdapter(){
         return new JokeAdapter(getActivity(),buildMenuList(),mDisplayCols,mItemCount,isShowHeader,mHeaderLable,mLayouList,this);
     }
-
-
 
     /**
      * 打开SingleMenu并访问网络
@@ -496,11 +665,16 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else {
                     openMenuSet(view,false,false);
-                    //判断是否有缓存数据
-                    if (mCacheIntensions != null) {
-                        List<Object> list = new ArrayList<Object>(mCacheIntensions);
-                        mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),null));
-                        mViewPager.setCurrentItem(mIntensionNextNumInt);
+                    //判断是否有网络和缓存数据
+                    if (!mNetState) {
+                        if(mCacheIntensions!=null) {
+                            setIntensionOpenData(mCacheIntensions, (int) view.getTag(R.id.tag_second), mIntensionNextNumInt);
+                        }else{
+                            String json = PreferenceManager.getInstance().getString(GlobalContants.INTENSION_PREFERENCE_FIRST);
+                            IntensionData intensionData = mGson.fromJson(json, IntensionData.class);
+                            setIntensionOpenData(intensionData.showapi_res_body.pagebean.contentlist,
+                                    (int) view.getTag(R.id.tag_second), mIntensionNextNumInt);
+                        }
                     } else {
                         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                             @Override
@@ -508,9 +682,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                                 if (!intensionData.showapi_res_error.equals("")) {
                                     mViewPager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second),null));
                                 } else {
-                                    List<Object> list = new ArrayList<Object>(intensionData.showapi_res_body.pagebean.contentlist);
-                                    mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),null));
-                                    mViewPager.setCurrentItem(mIntensionNextNumInt);
+                                    setIntensionOpenData(intensionData.showapi_res_body.pagebean.contentlist,
+                                            (int)view.getTag(R.id.tag_second),mIntensionNextNumInt);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -528,11 +701,15 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else{
                     openMenuSet(view,false,true);
-                    if(mCacheImages!=null){
-                        List<Object> list = new ArrayList<Object>(mCacheImages);
-                        mImageSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),this);
-                        mViewPager.setAdapter(mImageSingleMenuAdapter);
-                        mViewPager.setCurrentItem(mImageNextNumInt);
+                    if(!mNetState){
+                        if(mCacheImages!=null) {
+                            setImageOpenData(mCacheImages, (int) view.getTag(R.id.tag_second), mImageNextNumInt);
+                        }else{
+                            String json = PreferenceManager.getInstance().getString(GlobalContants.IMAGE_PREFERENCE_FIRST);
+                            IntensionData intensionData = mGson.fromJson(json, IntensionData.class);
+                            setImageOpenData(intensionData.showapi_res_body.pagebean.contentlist,
+                                    (int) view.getTag(R.id.tag_second), mImageNextNumInt);
+                        }
                     }else{
                         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                             @Override
@@ -540,10 +717,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                                 if (!intensionData.showapi_res_error.equals("")) {
                                     mViewPager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second),JokeFragment.this));
                                 } else {
-                                    List<Object> list = new ArrayList<Object>(intensionData.showapi_res_body.pagebean.contentlist);
-                                    mImageSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                                    mViewPager.setAdapter(mImageSingleMenuAdapter);
-                                    mViewPager.setCurrentItem(mImageNextNumInt);
+                                    setImageOpenData(intensionData.showapi_res_body.pagebean.contentlist,
+                                            (int) view.getTag(R.id.tag_second), mImageNextNumInt);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -561,19 +736,30 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else {
                     openMenuSet(view,false,false);
-                    JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
-                        @Override
-                        public void onResponse(JokeData jokeData) {
-                            removeMoreItem(jokeData);
-                            List<Object> list = new ArrayList<Object>(jokeData.detail);
-                            mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),null));
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
+                    mMoreBtn.setClickable(mNetState);
+                    mMoreBtn.setFocusable(mNetState);
+                    mMoreBtn.setEnabled(mNetState);
+                    if(!mNetState) {
+                        String json = PreferenceManager.getInstance().getString(GlobalContants.JOKE_PREFERENCE_FIRST);
+                        JokeData jokeData = mGson.fromJson(json, JokeData.class);
+                        removeMoreItem(jokeData);
+                        List<Object> list = new ArrayList<Object>(jokeData.detail);
+                        mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second), null));
+                    }else{
+                        JokeNetWorkManager.getInstance().sendNetworkRequestForJoke(new Response.Listener<JokeData>() {
+                            @Override
+                            public void onResponse(JokeData jokeData) {
+                                removeMoreItem(jokeData);
+                                List<Object> list = new ArrayList<Object>(jokeData.detail);
+                                mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second), null));
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
 
-                        }
-                    }, 20, (mMaxId - mJokeId) / 20,GlobalContants.JOKE_OPEN_GET);
+                            }
+                        }, 20, (mMaxId - mJokeId) / 20, GlobalContants.JOKE_OPEN_GET);
+                    }
                 }
                 break;
             case JokeAdapter.ITEMVIEW_VIDEO:
@@ -582,22 +768,24 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
                 }else{
                     openMenuSet(view,true,false);
-                    if(mCacheVideos!=null){
-                        List<Object> list = new ArrayList<Object>(mCacheVideos);
-                        mVideoSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                        mOnePager.setAdapter(mVideoSingleMenuAdapter);
-                        mOnePager.setCurrentItem(mVideoNextNumInt);
+                    if(!mNetState){
+                        if(mCacheVideos!=null) {
+                            setVideoOpenData(mCacheVideos,(int) view.getTag(R.id.tag_second),mVideoNextNumInt);
+                        }else{
+                            String json = PreferenceManager.getInstance().getString(GlobalContants.VIDEO_PREFERENCE_FIRST);
+                            IntensionData intensionData = mGson.fromJson(json, IntensionData.class);
+                            setVideoOpenData(intensionData.showapi_res_body.pagebean.contentlist,
+                                    (int) view.getTag(R.id.tag_second), mVideoNextNumInt);
+                        }
                     }else{
                         IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                             @Override
                             public void onResponse(IntensionData intensionData) {
                                 if (!intensionData.showapi_res_error.equals("")) {
-                                    mOnePager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second),JokeFragment.this));
+                                    mOnePager.setAdapter(new SingleMenuAdapter(mActivity, null, (int) view.getTag(R.id.tag_second), JokeFragment.this));
                                 } else {
-                                    List<Object> list = new ArrayList<Object>(intensionData.showapi_res_body.pagebean.contentlist);
-                                    mVideoSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, (int) view.getTag(R.id.tag_second),JokeFragment.this);
-                                    mOnePager.setAdapter(mVideoSingleMenuAdapter);
-                                    mOnePager.setCurrentItem(mVideoNextNumInt);
+                                    setVideoOpenData(intensionData.showapi_res_body.pagebean.contentlist,
+                                            (int) view.getTag(R.id.tag_second), mVideoNextNumInt);
                                 }
                             }
                         }, new Response.ErrorListener() {
@@ -605,11 +793,40 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                             public void onErrorResponse(VolleyError error) {
 
                             }
-                        }, JokeAdapter.ITEMVIEW_VIDEO, mVideoNextPageInt==0?1:mVideoNextPageInt,GlobalContants.VIDEO_OPEN_GET);
+                        }, JokeAdapter.ITEMVIEW_VIDEO, mVideoNextPageInt == 0 ? 1 : mVideoNextPageInt, GlobalContants.VIDEO_OPEN_GET);
                     }
                 }
                 break;
         }
+    }
+
+    private void setIntensionOpenData(List<Detail> details,int type,int nextNumInt){
+        List<Object> list = new ArrayList<Object>(details);
+        mViewPager.setAdapter(new SingleMenuAdapter(mActivity, list, type, null));
+        mViewPager.setCurrentItem(nextNumInt);
+        mMoreBtn.setClickable(mNetState);
+        mMoreBtn.setFocusable(mNetState);
+        mMoreBtn.setEnabled(mNetState);
+    }
+
+    private void setImageOpenData(List<Detail> details,int type,int nextNumInt){
+        List<Object> list = new ArrayList<Object>(details);
+        mImageSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, type, this);
+        mViewPager.setAdapter(mImageSingleMenuAdapter);
+        mViewPager.setCurrentItem(nextNumInt);
+        mMoreBtn.setClickable(mNetState);
+        mMoreBtn.setFocusable(mNetState);
+        mMoreBtn.setEnabled(mNetState);
+    }
+
+    private void setVideoOpenData(List<Detail> details,int type,int nextNumInt){
+        List<Object> list = new ArrayList<Object>(details);
+        mVideoSingleMenuAdapter = new SingleMenuAdapter(mActivity, list, type, null);
+        mOnePager.setAdapter(mVideoSingleMenuAdapter);
+        mOnePager.setCurrentItem(mVideoNextNumInt);
+        mMoreBtn.setClickable(mNetState);
+        mMoreBtn.setFocusable(mNetState);
+        mMoreBtn.setEnabled(mNetState);
     }
 
     /**
@@ -653,16 +870,17 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
 
     /**
      * 开始刷新图片的动画和获取网络数据
-     * @param imgView
+     * @param description
      * @param itemView
      */
-    private void getDataFromService(final View imgView, final View itemView,final TextView tvValue,final ImageView imgValue) {
+    private void getDataFromService(final View description, final View itemView,final TextView tvValue,final ImageView imgValue) {
         if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_JOKE) {
-            if(isJokeDataError){
+            if(isJokeDataError || mNetState == false){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
                 Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else {
-                AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
+                isJokeDataError = true;
+                AnimationUtils.RotateAnimation(description, 0, 360, 500, -1, new LinearInterpolator());
                 int old_id = PreferenceManager.getInstance().getInt("joke_max_number", 0);
                 mJokeId = (new Random()).nextInt(old_id);
 
@@ -670,7 +888,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                     @Override
                     public void onResponse(JokeData jokeData) {
                         isJokeDataError = false;
-                        successDataAndRefresh(imgView, itemView, tvValue, imgValue, jokeData.detail.get(0).content);
+                        successDataAndRefresh(description, itemView, tvValue, imgValue, jokeData.detail.get(0).content);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -680,23 +898,24 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 }, 1, (mMaxId - mJokeId),GlobalContants.JOKE_REFRESH_GET);
             }
         }else if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_INTENSION){
-            if(isIntensionDataError){
+            if(isIntensionDataError || mNetState == false || mIntensionAllPages == 0){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
                 Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else {
-                AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
+                isIntensionDataError = true;
+                AnimationUtils.RotateAnimation(description, 0, 360, 500, -1, new LinearInterpolator());
                 mIntensionNextPageInt = (new Random()).nextInt(mIntensionAllPages) + 1;
                 IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                     @Override
                     public void onResponse(IntensionData intensionData) {
                         if (!intensionData.showapi_res_error.equals("")) {
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_error);
+                            successDataAndRefresh(description, itemView, tvValue, imgValue, intensionData.showapi_res_error);
                             isIntensionDataError = true;
                         } else {
                             mIntensionNextNumInt = (new Random()).nextInt(20);
                             isIntensionDataError = false;
                             mCacheIntensions = intensionData.showapi_res_body.pagebean.contentlist;
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mIntensionNextNumInt).text);
+                            successDataAndRefresh(description, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mIntensionNextNumInt).text);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -707,23 +926,24 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 }, JokeAdapter.ITEMVIEW_INTENSION, mIntensionNextPageInt,GlobalContants.INTENSION_REFRESH_GET);
             }
         }else if(((int)itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_IMAGE)){
-            if(isImageDataError){
+            if(isImageDataError || mNetState == false || mImageAllPages == 0){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
                 Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else {
-                AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
+                isImageDataError = true;
+                AnimationUtils.RotateAnimation(description, 0, 360, 500, -1, new LinearInterpolator());
                 mImageNextPageInt = (new Random()).nextInt(mImageAllPages) + 1;
                 IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                     @Override
                     public void onResponse(IntensionData intensionData) {
                         if (!intensionData.showapi_res_error.equals("")) {
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_error);
+                            successDataAndRefresh(description, itemView, tvValue, imgValue, intensionData.showapi_res_error);
                             isImageDataError = true;
                         } else {
                             mImageNextNumInt = (new Random()).nextInt(20);
                             isImageDataError = false;
                             mCacheImages = intensionData.showapi_res_body.pagebean.contentlist;
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mImageNextNumInt).image0);
+                            successDataAndRefresh(description, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mImageNextNumInt).image0);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -734,23 +954,24 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 }, JokeAdapter.ITEMVIEW_IMAGE, mImageNextPageInt,GlobalContants.IMAGE_REFRESH_GET);
             }
         }else if(((int)itemView.getTag(R.id.tag_second) == JokeAdapter.ITEMVIEW_VIDEO)){
-            if(isVideoDataError){
+            if(isVideoDataError || mNetState == false || mVideoAllPages == 0){
                 AnimationUtils.setShakeToView(itemView,3000,AnimationUtils.MIDDLE_SHAKE);
                 Toast.makeText(mActivity,"未知错误,请长按刷新!",Toast.LENGTH_SHORT).show();
             }else{
-                AnimationUtils.RotateAnimation(imgView, 0, 360, 500, -1, new LinearInterpolator());
+                isVideoDataError = true;
+                AnimationUtils.RotateAnimation(description, 0, 360, 500, -1, new LinearInterpolator());
                 mVideoNextPageInt = (new Random()).nextInt(mVideoAllPages) + 1;
                 IntensionNetWorkManager.getInstance().sendNetworkRequestForIntension(new Response.Listener<IntensionData>() {
                     @Override
                     public void onResponse(IntensionData intensionData) {
                         if (!intensionData.showapi_res_error.equals("")) {
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_error);
+                            successDataAndRefresh(description, itemView, tvValue, imgValue, intensionData.showapi_res_error);
                             isImageDataError = true;
                         }else{
                             mVideoNextNumInt = (new Random()).nextInt(20);
                             isVideoDataError = false;
                             mCacheVideos = intensionData.showapi_res_body.pagebean.contentlist;
-                            successDataAndRefresh(imgView, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mImageNextNumInt).image3);
+                            successDataAndRefresh(description, itemView, tvValue, imgValue, intensionData.showapi_res_body.pagebean.contentlist.get(mImageNextNumInt).image3);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -770,13 +991,13 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
 
     /**
      * 成功获取数据并设置数据，开启设置数据动画，关闭开始获取数据动画
-     * @param imgView
+     * @param description
      * @param itemView
      * @param tvValue
      * @param imgValue
      * @param content
      */
-    private void successDataAndRefresh(final View imgView,final View itemView,final TextView tvValue,final ImageView imgValue, final String content){
+    private void successDataAndRefresh(final View description,final View itemView,final TextView tvValue,final ImageView imgValue, final String content){
             AnimationUtils.ObjectAnimation(itemView,"rotationY", 0, 360,500, new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animator) {
@@ -787,19 +1008,19 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
                 public void onAnimationEnd(Animator animator) {
                     if (((int) itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_JOKE || ((int) itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_INTENSION) {
                         tvValue.setText(content);
-                        imgView.clearAnimation();
+                        description.clearAnimation();
                     }else if(((int)itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_IMAGE || ((int) itemView.getTag(R.id.tag_second)) == JokeAdapter.ITEMVIEW_VIDEO){
                         ImageLoader.getInstance().displayImage(content, imgValue,new SimpleImageLoadingListener(){
                             @Override
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 if(loadedImage!=null){
-                                    imgView.clearAnimation();
+                                    description.clearAnimation();
                                 }
                             }
                         });
                     } else {
                         Toast.makeText(mActivity,"该方法还没有实现...",Toast.LENGTH_SHORT).show();
-                        imgView.clearAnimation();
+                        description.clearAnimation();
                     }
                 }
 
@@ -819,46 +1040,55 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * 开始刷新动画并每个Item重新刷新数据
      * @param parent
      */
-    private void statAnimAndRefreshView(final View parent, final TextView tv, final ImageView img, final ProgressBar pb) {
-        Toast.makeText(mActivity,"重新刷新",Toast.LENGTH_SHORT).show();
-        AnimationUtils.ObjectAnimation(parent, "rotationY", 0, 360, 500, new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
+    private void statAnimAndRefreshView(final View parent, final TextView tv, final ImageView img, ImageButton description, final ProgressBar pb) {
+        if(mNetState) {
+            Toast.makeText(mActivity, "重新刷新", Toast.LENGTH_SHORT).show();
+            description.clearAnimation();
+            AnimationUtils.ObjectAnimation(parent, "rotationY", 0, 360, 500, new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
 
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                switch ((int)parent.getTag(R.id.tag_second)){
-                    case JokeAdapter.ITEMVIEW_INTENSION:
-                        RequestManager.getRequestQueue().cancelAll(GlobalContants.INTENSION_CREATE_GET);
-                        buildDataToIntension(tv, img, pb);
-                        break;
-                    case JokeAdapter.ITEMVIEW_IMAGE:
-                        RequestManager.getRequestQueue().cancelAll(GlobalContants.IMAGE_CREATE_GET);
-                        buildDataToImage(tv, img, pb);
-                        break;
-                    case JokeAdapter.ITEMVIEW_JOKE:
-                        RequestManager.getRequestQueue().cancelAll(GlobalContants.JOKE_CREATE_GET);
-                        buildDataToJoke(tv, img, pb);
-                        break;
-                    case JokeAdapter.ITEMVIEW_VIDEO:
-                        RequestManager.getRequestQueue().cancelAll(GlobalContants.VIDEO_CREATE_GET);
-                        buildDataToVideo(tv, img, pb);
-                        break;
                 }
-            }
 
-            @Override
-            public void onAnimationCancel(Animator animator) {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    switch ((int) parent.getTag(R.id.tag_second)) {
+                        case JokeAdapter.ITEMVIEW_INTENSION:
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.INTENSION_CREATE_GET);
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.INTENSION_REFRESH_GET);
+                            buildDataToIntension(tv, img, pb);
+                            break;
+                        case JokeAdapter.ITEMVIEW_IMAGE:
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.IMAGE_CREATE_GET);
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.IMAGE_REFRESH_GET);
+                            buildDataToImage(tv, img, pb);
+                            break;
+                        case JokeAdapter.ITEMVIEW_JOKE:
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.JOKE_CREATE_GET);
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.JOKE_REFRESH_GET);
+                            buildDataToJoke(tv, img, pb);
+                            break;
+                        case JokeAdapter.ITEMVIEW_VIDEO:
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.VIDEO_CREATE_GET);
+                            RequestManager.getRequestQueue().cancelAll(GlobalContants.VIDEO_REFRESH_GET);
+                            buildDataToVideo(tv, img, pb);
+                            break;
+                    }
+                }
 
-            }
+                @Override
+                public void onAnimationCancel(Animator animator) {
 
-            @Override
-            public void onAnimationRepeat(Animator animator) {
+                }
 
-            }
-        });
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+        }else{
+            Toast.makeText(mActivity,"没有网络,不能刷新..",Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -904,14 +1134,14 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
 
     /**
      * 点击刷新回调方法
-     * @param view
+     * @param description
      * @param parent
      * @param tv
      * @param img
      */
     @Override
-    public void onRefreshDataFromService(View view, View parent, TextView tv, ImageView img) {
-        this.getDataFromService(view, parent, tv, img);
+    public void onRefreshDataFromService(View description, View parent, TextView tv, ImageView img) {
+        this.getDataFromService(description, parent, tv, img);
     }
 
     /**
@@ -919,8 +1149,8 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
      * @param parent
      */
     @Override
-    public void onItemLongClick(View parent, TextView tv, ImageView img, ProgressBar pb) {
-        this.statAnimAndRefreshView(parent, tv, img,pb);
+    public void onItemLongClick(View parent, TextView tv, ImageView img, ImageButton description, ProgressBar pb) {
+        this.statAnimAndRefreshView(parent, tv, img, description,pb);
     }
 
     /**
@@ -986,24 +1216,29 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     }
 
     /**
+     * 点击actionBar的刷新
+     */
+    public void onRefresh(){
+        if(mCollectionView != null){
+            mCollectionView.updateInventory(mAdapter.getInventory());
+        }
+    }
+
+    /**
      * 构建一个Item的数据
      * @return
      */
     private List<MenuEntry> buildMenuList(){
         List<MenuEntry> list = new ArrayList<MenuEntry>();
-
         list.add(new MenuEntry(R.string.joke_item_title_neihan));
         list.add(new MenuEntry(R.string.joke_item_title_jiongtu));
         list.add(new MenuEntry(R.string.joke_item_title_xiaohua));
         list.add(new MenuEntry(R.string.joke_item_title_shipin));
-
-
         return list;
     }
 
     public class MenuEntry{
         public int titleId;
-
         public MenuEntry(int titleId) {
             this.titleId = titleId;
         }

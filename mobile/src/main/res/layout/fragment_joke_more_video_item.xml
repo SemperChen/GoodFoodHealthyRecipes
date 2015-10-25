@@ -63,14 +63,38 @@
                         android:textSize="20sp"
                         android:textColor="@android:color/black"
                         android:text="@string/joke_item_value_text"/>
-                <ImageView
-                        android:id="@+id/img_content"
+                <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:scaleType="fitXY"
-                        android:visibility="gone"/>
+                        android:layout_height="match_parent">
+                        <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+                                <ImageView
+                                        android:id="@+id/img_content"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:layout_marginBottom="10dp"
+                                        android:scaleType="fitXY"
+                                        android:visibility="gone"/>
+                                <ImageButton
+                                        android:id="@+id/img_player"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:src="@mipmap/biz_video_play"/>
+                        </FrameLayout>
+                        <FrameLayout
+                                android:id="@+id/fl_player"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:visibility="gone">
+                                <com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.SuperVideoPlayer
+                                        android:id="@+id/video_player"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"/>
+                        </FrameLayout>
+                </RelativeLayout>
             </LinearLayout>
             <RelativeLayout
                     android:layout_width="match_parent"

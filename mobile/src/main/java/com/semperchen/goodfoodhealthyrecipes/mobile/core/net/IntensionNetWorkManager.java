@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by abc on 2015/10/5.
+ * Created by 卡你基巴 on 2015/10/5.
  */
 public class IntensionNetWorkManager {
     private final static String INTENSION_URL="https://route.showapi.com/255-1?showapi_appid=10509&showapi_sign=9a3c0e0a988741238bf303cfdb298ea9";

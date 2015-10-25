@@ -1,11 +1,16 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.core.utils;
 
 import android.animation.Animator;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.RotateAnimation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 /**
  * Created by 卡你基巴 on 2015/10/1.
@@ -36,7 +41,9 @@ public class AnimationUtils {
         objAnim.setDuration(duration);
         objAnim.setRepeatCount(0);
         objAnim.start();
-        objAnim.addListener(listener);
+        if(listener!=null) {
+            objAnim.addListener(listener);
+        }
     }
 
     public static void openAnim(View view, int type, int duration) {
@@ -139,5 +146,66 @@ public class AnimationUtils {
                 }
             }
         }).start();
+    }
+
+    public static void startShowNotNetAnim(View view, final View notNetView,int mViewWidth,int mViewHeight){
+        ObjectAnimator collection = ObjectAnimator.ofFloat(view,"translationY",0,mViewHeight);
+        collection.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                notNetView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+        ObjectAnimator header = ObjectAnimator.ofFloat(notNetView,"translationX",-mViewWidth,0);
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(1000);
+        set.play(collection).before(header);
+        set.start();
+    }
+
+    public static void closeShowNotNetAnim(final View view, final View notNetView,int mViewWidth,int mViewHeight){
+        ObjectAnimator collection = ObjectAnimator.ofFloat(view,"translationY",mViewHeight,0);
+        ObjectAnimator header = ObjectAnimator.ofFloat(notNetView,"translationX",0,mViewWidth);
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(500);
+        set.play(header).before(collection);
+        set.play(header);
+        set.start();
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                notNetView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 }

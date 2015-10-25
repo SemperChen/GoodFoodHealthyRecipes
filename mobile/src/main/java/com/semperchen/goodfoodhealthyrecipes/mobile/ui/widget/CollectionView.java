@@ -1,17 +1,23 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.AnimationUtils;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.DensityUtils;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeAdapter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by abc on 2015/9/21.
@@ -20,6 +26,7 @@ public class CollectionView extends ListView{
     private static final int BUILTIN_VIEWTYPE_HEADER = 0;
     private static final int BUILTIN_VIEWTYPE_COUNT = 1;
 
+    private Context mContext;
     private Inventory mInventory = new Inventory();
     private CollectionViewCallbacks mCallbacks = null;
     private int mContentTopClearance = 0;
@@ -35,6 +42,7 @@ public class CollectionView extends ListView{
 
     public CollectionView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext = context;
         setAdapter(new MyListAdapter());
         setDivider(null);
         setDividerHeight(0);
@@ -285,8 +293,8 @@ public class CollectionView extends ListView{
         if(view == null || view instanceof EmptyView){
             view = mCallbacks.newCollectionItemView(getContext(), result.groupId, parent,indexInGroup);
         }
-        mCallbacks.bindCollectionItemView(getContext(), view, result.groupId, 
-        		indexInGroup, result.group.getDataIndex(indexInGroup), result.group.getItemTag(indexInGroup));
+        mCallbacks.bindCollectionItemView(getContext(), view, result.groupId,
+                indexInGroup, result.group.getDataIndex(indexInGroup), result.group.getItemTag(indexInGroup));
         return view;
     }
 
@@ -393,6 +401,16 @@ public class CollectionView extends ListView{
             return mGroups.size();
         }
 
+        //获取一个组
+        public InventoryGroup getGroup(int groupId){
+            for(int i=0;i<mGroups.size();i++){
+                if(mGroups.get(i).mGroupId == groupId){
+                    return mGroups.get(i);
+                }
+            }
+            return null;
+        }
+
         //获取组的索引
         public int getGroupIndex(int groupId){
             for(int i=0;i<mGroups.size();i++){
@@ -402,6 +420,7 @@ public class CollectionView extends ListView{
             }
             return -1;
         }
+
     }
 
     //每一个组，即头视图+多个子视图
@@ -475,7 +494,7 @@ public class CollectionView extends ListView{
         }
 
         public InventoryGroup setItemTag(int index,Object tag){
-            this.mItemTag.put(index,tag);
+            this.mItemTag.put(index, tag);
             return this;
         }
 

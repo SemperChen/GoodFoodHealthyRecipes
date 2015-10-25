@@ -107,12 +107,11 @@ public class SingleMenuView implements AnimatorListener{
 	public void openMenuView(View view){
 		mMenuViewBig.findViewById(R.id.btn_checkmore).setTag(view.getTag(R.id.tag_second));
 
-		if(mView != view){
-			this.mView = view;
-//			mMenuViewSmall = view;
-			mRoot.removeAllViews();
-			compuleResult();
-		}
+//		if(mView != view){
+		this.mView = view;
+		mRoot.removeAllViews();
+		compuleResult();
+//		}
 		
 		if(mMenuViewSmall != null && mMenuViewBig != null){
 			if(mRoot.getChildCount() <= 1){
