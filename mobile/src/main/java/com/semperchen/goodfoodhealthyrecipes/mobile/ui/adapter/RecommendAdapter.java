@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -15,6 +16,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.RecipeUtils;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.Collections;
@@ -54,9 +56,13 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-
         RecipePreview recipePreview=recipePreviews.get(position);
         ImageLoader imageLoader= ImageLoader.getInstance();
+        if(RecipeUtils.isItemShow(String.valueOf(recipePreview.getRecipeId()))){
+            viewHolder.favoriteBtn.setBackgroundResource(R.mipmap.ic_favorite_white_2);
+        }else{
+            viewHolder.favoriteBtn.setBackgroundResource(R.mipmap.ic_favorite_border_white);
+        }
 
         imageLoader.displayImage(recipePreview.getImage(),
                 viewHolder.image, animateFirstListener);
@@ -73,12 +79,14 @@ public class RecommendAdapter extends RecyclerView.Adapter<RecommendAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView image;
+        ImageButton favoriteBtn;
         TextView title;
         CircleImageView icon;
         TextView author;
         public ViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.recommend_item_image);
+            favoriteBtn = (ImageButton) itemView.findViewById(R.id.recommed_item_favorite_btn);
             title= (TextView) itemView.findViewById(R.id.recommend_item_title);
             icon= (CircleImageView) itemView.findViewById(R.id.recommend_item_author_icon);
             author=(TextView) itemView.findViewById(R.id.recommend_item_author_name);

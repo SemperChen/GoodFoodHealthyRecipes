@@ -336,12 +336,13 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CustomView
+            android:id="@+id/float_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:clickable="true"
-            android:src="@mipmap/ic_favorite_white"
             app:layout_anchor="@+id/appbar"
             app:layout_anchorGravity="bottom|right|end"/>
 

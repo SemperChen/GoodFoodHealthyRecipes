@@ -1,19 +1,20 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.Toast;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.PreferenceManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeAdapter;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.SingleMenuAdapter;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
 
     private boolean isJokeItem = true;
+    private Intent mBackIntent;
+    private AlertDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +45,18 @@ public class MainActivity extends AppCompatActivity {
 
         initializeViews();
         setupNavView();
+        initBackListen();
+        setupBackDialog();
 
         PreferenceManager.initialize(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == 0xFF){
+
+        }
     }
 
     /**
@@ -64,6 +77,42 @@ public class MainActivity extends AppCompatActivity {
             setupDrawerContent(mNavigationView);
             //侧边栏默认选择“首页”
             mNavigationView.getMenu().performIdentifierAction(R.id.home,0);
+        }
+    }
+
+    /**
+     * 初始化返回键监听的意图
+     */
+    private void initBackListen() {
+        mBackIntent = new Intent();
+        mBackIntent.setAction(GlobalContants.BACK_ACTION);
+    }
+
+    /**
+     * 初始化离开提示框
+     */
+    private void setupBackDialog(){
+        if(mDialog == null){
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+            View dialogView = View.inflate(this,R.layout.dialog,null);
+            dialogView.findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mDialog!=null){
+                        mDialog.dismiss();
+                    }
+                }
+            });
+            dialogView.findViewById(R.id.btn_exit).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDialog.getWindow().setWindowAnimations(0);
+                    MainActivity.this.finish();
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
+            });
+            mBuilder.setView(dialogView);
+            mDialog = mBuilder.create();
         }
     }
 
@@ -140,6 +189,33 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment, fragmentName)
                 .commit();
+    }
+
+    /**
+     * 设置返回键监听
+     */
+    @Override
+    public void onBackPressed() {
+        if(mBackIntent == null) {
+            initBackListen();
+        }
+        if(!isJokeItem){
+            this.sendBroadcast(mBackIntent);
+        }else{
+            returnFragment();
+        }
+    }
+
+    /**
+     * 显示退出提示框
+     */
+    public void showBackDialog(){
+        if(mDialog == null){
+            setupBackDialog();
+        }else{
+            mDialog.show();
+            mDialog.getWindow().setWindowAnimations(R.style.dialog_anim);
+        }
     }
 
     /**

@@ -1,9 +1,15 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.listener.RecycleViewPauseOnScrollListener;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.MainActivity;
 
 /**
  * Created by Semper on 2015/9/30.
@@ -20,10 +26,13 @@ public abstract class BaseLazyFragment extends BaseFragment {
     protected boolean pauseOnFling = true;
     protected RecyclerView mRecyclerView;
 
+    private BroadcastReceiver mBackReceiver;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initPrepare();
+        initBackReceiver();
     }
 
     @Override
@@ -44,6 +53,14 @@ public abstract class BaseLazyFragment extends BaseFragment {
         super.onPause();
         if (getUserVisibleHint()) {
             onUserInvisible();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mBackReceiver != null){
+            getActivity().unregisterReceiver(mBackReceiver);
         }
     }
 
@@ -79,11 +96,34 @@ public abstract class BaseLazyFragment extends BaseFragment {
     }
 
     /**
+     * 获取点击返回键响应
+     */
+    private void initBackReceiver() {
+        if(mBackReceiver == null) {
+            mBackReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if (GlobalContants.BACK_ACTION.equals(action)) {
+                        ((MainActivity) getActivity()).showBackDialog();
+                    }
+                }
+            };
+
+            //注册广播
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(GlobalContants.BACK_ACTION);
+            getActivity().registerReceiver(mBackReceiver, intentFilter);
+        }
+    }
+
+    /**
      * 应用滚动监听
      */
     private void applyScrollListener() {
         mRecyclerView.setOnScrollListener(new RecycleViewPauseOnScrollListener(ImageLoader.getInstance(), pauseOnScroll, pauseOnFling));
     }
+
 
     protected abstract void onFirstUserVisible();
     protected abstract void onFirstUserInvisible();

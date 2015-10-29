@@ -19,13 +19,14 @@
                                 android:adjustViewBounds="true"
                                 android:layout_height="wrap_content"/>
                         <ImageButton
+                                android:id="@+id/recommed_item_favorite_btn"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/recommend_ic_favorites_margin_right"
                                 android:layout_marginTop="@dimen/recommend_ic_favorites_margin_top"
                                 android:layout_alignParentRight="true"
-                                android:layout_alignParentTop="true"
-                                android:background="@drawable/bg_recommend_favorites_selector"/>
+                                android:layout_alignParentTop="true"/>
+                                <!--android:background="@drawable/bg_recommend_favorites_selector"/>-->
                 </RelativeLayout>
 
                 <LinearLayout

@@ -4,15 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@android:color/black">
-        <TextView
-            android:id="@+id/tv_index"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textColor="@color/background_card"
-            android:text="8/18"/>
+        <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_centerInParent="true">
         <ImageView
             android:id="@+id/img_content"
             android:layout_width="match_parent"
@@ -20,7 +12,8 @@
             android:layout_centerInParent="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:scaleType="fitXY"/>
+            android:scaleType="fitCenter"/>
+        </ScrollView>
         <RelativeLayout
                 android:id="@+id/rl_content"
                 android:layout_width="match_parent"
@@ -41,4 +34,13 @@
                         zhy:progress_text_color="#ff0000ff"
                         zhy:progress_unreached_color="@color/text_white_87"/>
         </RelativeLayout>
+        <TextView
+                android:id="@+id/tv_index"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/background_card"
+                android:text="8/18"/>
 </RelativeLayout>

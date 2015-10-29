@@ -1,6 +1,9 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.RecipeActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.RecommendAdapter;
@@ -23,10 +27,11 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullToLoadView;
  * Created by Semper on 2015/9/17.
  */
 public class RecommendFragment extends BaseLazyFragment {
-
     private RecommendAdapter mAdapter;
     private PullToLoadView mPullToLoadView;
     private RecipePreviewData mRecipePreviewData;
+
+    private BroadcastReceiver mReceiver;
 
     private int currentPage;
     private int nextPage;
@@ -38,7 +43,15 @@ public class RecommendFragment extends BaseLazyFragment {
     protected void bindData() {
         initializeView();
         setupManager();
+        initReceiver();
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mReceiver != null){
+            getActivity().unregisterReceiver(mReceiver);
+        }
     }
 
     /**
@@ -173,6 +186,28 @@ public class RecommendFragment extends BaseLazyFragment {
                 StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+    }
+
+    /**
+     * 初始化广播
+     */
+    private void initReceiver() {
+        if(mReceiver == null){
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if(intent.getAction().equals(GlobalContants.RECIPE_FINISH)){
+                        if(mAdapter!=null){
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            };
+        }
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(GlobalContants.RECIPE_FINISH);
+        getActivity().registerReceiver(mReceiver,intentFilter);
     }
 
     /**

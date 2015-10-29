@@ -1,5 +1,7 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,8 +25,11 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.Recipe;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipeStep;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.FontsHelper;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.RecipeUtils;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CustomView;
 import com.victor.loading.rotate.RotateLoading;
 
 
@@ -37,6 +43,7 @@ public class RecipeActivity extends AppCompatActivity {
     private CoordinatorLayout coordinatorLayout;
     private Recipe recipe;
     private RotateLoading rotateLoading;
+    private CustomView mFloatBtn;
 
     private LinearLayout mIngredientsList;
     private LinearLayout mStepsList;
@@ -58,7 +65,7 @@ public class RecipeActivity extends AppCompatActivity {
         initView();
         initToolbar();
         sendNetworkRequest();
-
+        initListener();
     }
 
     /**
@@ -68,6 +75,7 @@ public class RecipeActivity extends AppCompatActivity {
         mIngredientsList= (LinearLayout) findViewById(R.id.ingredients_list_container);
         mStepsList= (LinearLayout) findViewById(R.id.step_list_container);
         mTipsList= (LinearLayout) findViewById(R.id.tips_list_container);
+        mFloatBtn = (CustomView) findViewById(R.id.float_btn);
 
         headerImg = (ImageView) findViewById(R.id.recipe_header_img);
         title= (TextView) findViewById(R.id.recipe_title);
@@ -132,6 +140,8 @@ public class RecipeActivity extends AppCompatActivity {
      * 绑定数据
      */
     private void bindData(){
+        mFloatBtn.isShow(RecipeUtils.isItemShow(String.valueOf(recipeId)));
+
         ImageLoader imageLoader=ImageLoader.getInstance();
         imageLoader.displayImage(recipe.getHeaderImage(),headerImg);
         title.setText(recipe.getTitle());
@@ -166,6 +176,25 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     /**
+     * 初始化监听
+     */
+    private void initListener() {
+        mFloatBtn.setOnClickListener(mFloatBtn.new MyListener() {
+            @Override
+            public void onClick(View v) {
+                super.onClick(v);
+                if (mFloatBtn.getShow()) {
+                    RecipeUtils.putRecipeIdInPreference(String.valueOf(recipeId));
+                    //存进数据库
+                } else {
+                    RecipeUtils.clearRecipeIdInPreference(String.valueOf(recipeId));
+                    //从数据库里删除
+                }
+            }
+        });
+    }
+
+    /**
      * 设置字体
      */
     private void setFonts(){
@@ -178,7 +207,7 @@ public class RecipeActivity extends AppCompatActivity {
 
         FontsHelper.applyFont(mIngredientsList,FontsHelper.FONT_SHOUJINSHU);
         FontsHelper.applyFont(mStepsList,FontsHelper.FONT_SHOUJINSHU);
-        FontsHelper.applyFont(mTipsList,FontsHelper.FONT_SHOUJINSHU);
+        FontsHelper.applyFont(mTipsList, FontsHelper.FONT_SHOUJINSHU);
     }
 
     /**
@@ -210,13 +239,29 @@ public class RecipeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                sendReceiverTofinish();
                 break;
             case R.id.action_search:
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onBackPressed() {
+        sendReceiverTofinish();
+    }
+
+    /**
+     * 结束时发送广播
+     */
+    private void sendReceiverTofinish() {
+        Intent intent = new Intent();
+        intent.setAction(GlobalContants.RECIPE_FINISH);
+        this.sendBroadcast(intent);
+        this.finish();
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

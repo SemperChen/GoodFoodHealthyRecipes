@@ -74,6 +74,9 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private JokeAdapter mAdapter;
 
     private boolean isMenuOpen = false;
+    private boolean isGifViewOpen = false;
+    private BroadcastReceiver mBackReceiver;
+
     private boolean isVideo,isImage;
     private SingleMenuAdapter mVideoSingleMenuAdapter,mImageSingleMenuAdapter;
 
@@ -127,12 +130,13 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mNotNetView = (FrameLayout) mView.findViewById(R.id.fl_notnet);
 
         mNotNetViewWidth = DensityUtils.getDisplayWidth(getActivity());
-        mNotNetViewHeight = DensityUtils.dip2px(getActivity(),48);
+        mNotNetViewHeight = DensityUtils.dip2px(getActivity(), 48);
 
         mNetState = NetUtils.isNetworkAvailable(getActivity());
         mGson = new Gson();
 
         initNetReceiver();
+        initBackReceiver();
         initListener();
         initSingleMenuView();
         initSingleMenuViewListener();
@@ -191,6 +195,9 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         if(mNetReceiver != null){
             mActivity.unregisterReceiver(mNetReceiver);
         }
+        if(mBackReceiver != null){
+            mActivity.unregisterReceiver(mBackReceiver);
+        }
     }
 
     /**
@@ -213,6 +220,38 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             getActivity().registerReceiver(mNetReceiver, intentFilter);
+        }
+    }
+
+    /**
+     * 获取点击返回键响应
+     */
+    private void initBackReceiver() {
+        if(mBackReceiver == null){
+            mBackReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if(GlobalContants.BACK_ACTION.equals(action)){
+                        //判断是否打开SingleMenuView
+                        if(!isMenuOpen && !isGifViewOpen){
+                            mActivity.showBackDialog();
+                        }
+                        if(isGifViewOpen){
+                            clearGif();
+                            isGifViewOpen = false;
+                        }else if(isMenuOpen){
+                            closeSingleMenu();
+                            isMenuOpen = false;
+                        }
+                    }
+                }
+            };
+
+            //注册广播
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(GlobalContants.BACK_ACTION);
+            getActivity().registerReceiver(mBackReceiver,intentFilter);
         }
     }
 
@@ -259,6 +298,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mImgGif.setBackground(null);
         mRlGif.setVisibility(View.GONE);
         mPbGifLoading.setProgress(0);
+        isGifViewOpen = false;
     }
 
     /**
@@ -1186,6 +1226,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
         mRlGif.setVisibility(View.VISIBLE);
         mImgGif.setVisibility(View.GONE);
         mPbGifLoading.setVisibility(View.VISIBLE);
+        isGifViewOpen = true;
     }
 
     @Override
@@ -1202,7 +1243,6 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
             mImgGif.setBackground(mActivity.getResources().getDrawable(R.mipmap.net_time_out));
         }
         mPbGifLoading.setVisibility(View.GONE);
-        mImgGif.setVisibility(View.VISIBLE);
         mImgGif.setVisibility(View.VISIBLE);
     }
 
