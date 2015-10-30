@@ -5,12 +5,15 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Interpolator;
-import android.view.animation.RotateAnimation;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.*;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
+import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.FavoritesMenuAdapter;
+
+import java.util.List;
 
 /**
  * Created by 卡你基巴 on 2015/10/1.
@@ -207,5 +210,65 @@ public class AnimationUtils {
 
             }
         });
+    }
+
+    public static void deleteListViewItemAnim(View view, final FavoritesMenuAdapter adapter, final int position,
+                                              final List<RecipePreview> mRecipes, final SwipeMenuListView menuList, final TextView noFavorites){
+        Animation.AnimationListener aListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mRecipes.remove(position);
+                adapter.notifyDataSetChanged();
+                changeNoFavoritesView(mRecipes,menuList,noFavorites);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+        collapse(view, aListener);
+    }
+
+    private static void collapse(final View view, Animation.AnimationListener aListener) {
+        final int originHeight = view.getMeasuredHeight();
+        Animation animation = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if(interpolatedTime >= 1.0f){
+                    view.getLayoutParams().height = originHeight;
+                    view.requestLayout();
+                }else{
+                    view.getLayoutParams().height = originHeight - (int) (originHeight * interpolatedTime);
+                    view.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+
+        if(aListener != null){
+            animation.setAnimationListener(aListener);
+        }
+        animation.setDuration(300);
+        view.startAnimation(animation);
+    }
+
+    /**
+     * 当没有关注时修改页面
+     */
+    private static void changeNoFavoritesView(List<RecipePreview> recipes,SwipeMenuListView menuList,TextView noFavorites) {
+        if(recipes.size()<=0 || recipes == null){
+            menuList.setVisibility(View.GONE);
+            noFavorites.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -203,11 +203,11 @@ public class AllFragment extends BaseLazyFragment {
                     }
                 }
             };
-        }
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(GlobalContants.RECIPE_FINISH);
-        getActivity().registerReceiver(mReceiver, intentFilter);
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.addAction(GlobalContants.RECIPE_FINISH);
+            getActivity().registerReceiver(mReceiver, intentFilter);
+        }
     }
 
     /**
@@ -217,8 +217,8 @@ public class AllFragment extends BaseLazyFragment {
         @Override
         public void onItemClick(View view, int position) {
             Intent intent = new Intent(getActivity(), RecipeActivity.class);
-            int recipeId = mAdapter.getRecipePreviews().get(position).getRecipeId();
-            intent.putExtra("recipeId", recipeId);
+//            int recipeId = mAdapter.getRecipePreviews().get(position).getRecipeId();
+            intent.putExtra("recipePreview", mRecipePreviewData.getRecipePreviews().get(position));
             getActivity().startActivity(intent);
         }
     }

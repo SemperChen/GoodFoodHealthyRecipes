@@ -24,9 +24,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.Recipe;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipeStep;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao.DataDao;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.DataService;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.FontsHelper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.RecipeUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CustomView;
@@ -38,12 +41,15 @@ import com.victor.loading.rotate.RotateLoading;
  */
 public class RecipeActivity extends AppCompatActivity {
 
+    private RecipePreview recipePreview;
     private int recipeId;
     private CollapsingToolbarLayout collapsingToolbar;
     private CoordinatorLayout coordinatorLayout;
     private Recipe recipe;
     private RotateLoading rotateLoading;
     private CustomView mFloatBtn;
+
+    private DataService<RecipePreview> mService;
 
     private LinearLayout mIngredientsList;
     private LinearLayout mStepsList;
@@ -60,7 +66,8 @@ public class RecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
-        recipeId=getIntent().getIntExtra("recipeId",0);
+        recipePreview= (RecipePreview) getIntent().getSerializableExtra("recipePreview");
+        recipeId = recipePreview.getRecipeId();
         FontsHelper.initialize(this);
         initView();
         initToolbar();
@@ -186,12 +193,29 @@ public class RecipeActivity extends AppCompatActivity {
                 if (mFloatBtn.getShow()) {
                     RecipeUtils.putRecipeIdInPreference(String.valueOf(recipeId));
                     //存进数据库
+                    setDataToDB(true);
                 } else {
                     RecipeUtils.clearRecipeIdInPreference(String.valueOf(recipeId));
                     //从数据库里删除
+                    setDataToDB(false);
                 }
             }
         });
+    }
+
+    /**
+     * 操作数据库
+     * @param value 添加或删除
+     */
+    private void setDataToDB(boolean value) {
+        if(mService == null){
+            mService = new DataDao<>(this,RecipePreview.class);
+        }
+        if(value){
+            mService.add(recipePreview);
+        }else{
+            mService.deleteByRecipeId(String.valueOf(recipePreview.getRecipeId()));
+        }
     }
 
     /**

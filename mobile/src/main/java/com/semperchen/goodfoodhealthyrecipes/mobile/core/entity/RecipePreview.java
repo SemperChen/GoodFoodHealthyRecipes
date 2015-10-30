@@ -1,23 +1,35 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+import java.io.Serializable;
 
 /**
  * Created by Semper on 2015/9/26.
  */
-public class RecipePreview {
+@DatabaseTable(tableName = "table_reciperpreview")
+public class RecipePreview implements Serializable{
+    @DatabaseField(generatedId = true)
     @SerializedName("id")
     private int id;
+    @DatabaseField(columnName = "title")
     @SerializedName("title")
     private String title;
+    @DatabaseField(columnName = "author")
     @SerializedName("author")
     private String author;
+    @DatabaseField(columnName = "authorIcon")
     @SerializedName("authorIcon")
     private String authorIcon;
+    @DatabaseField(columnName = "image")
     @SerializedName("image")
     private String image;
+    @DatabaseField(columnName = "recipeId")
     @SerializedName("recipeId")
     private int recipeId;
+    @DatabaseField(columnName = "isRecommendation")
     @SerializedName("isRecommendation")
     private boolean isRecommendation;
 

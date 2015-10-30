@@ -3,6 +3,7 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
+import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
@@ -59,9 +60,9 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource, RecipePreviewData.class);
+//            TableUtils.createTable(connectionSource, RecipePreviewData.class);
             TableUtils.createTable(connectionSource, RecipePreview.class);
-            //TableUtils.createTable(connectionSource, Recipe.class);
+//            TableUtils.createTable(connectionSource, Recipe.class);
             //TableUtils.createTable(connectionSource, RecipeStep.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -71,14 +72,23 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
         try {
-            TableUtils.dropTable(connectionSource, RecipePreviewData.class, true);
-            TableUtils.dropTable(connectionSource, RecipePreview.class,true);
+//            TableUtils.dropTable(connectionSource, RecipePreviewData.class, true);
+            TableUtils.dropTable(connectionSource, RecipePreview.class, true);
             //TableUtils.dropTable(connectionSource, Recipe.class,true);
            // TableUtils.dropTable(connectionSource, RecipeStep.class,true);
             onCreate(sqLiteDatabase,connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 获得userDao
+     *
+     * @return
+     */
+    public Dao getDao() throws SQLException {
+        return getDao(RecipePreview.class);
     }
 
     @Override

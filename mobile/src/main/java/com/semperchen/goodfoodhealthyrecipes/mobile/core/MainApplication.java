@@ -4,6 +4,7 @@ import android.app.Application;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.api.APIConstants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.RequestManager;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.database.DatabaseManager;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.ImageLoaderHelper;
 
 /**
@@ -25,6 +26,7 @@ public class MainApplication extends Application {
     }
 
     private void init() {
+        DatabaseManager.init(this);
         RequestManager.init(this);
         ImageLoader.getInstance().init(ImageLoaderHelper.getInstance(this)
                 .getImageLoaderConfiguration(APIConstants.Paths.IMAGE_LOADER_CACHE_PATH));
