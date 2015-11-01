@@ -5,26 +5,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.*;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao.DataDao;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.DataService;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao.RecipePreviewDao;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.RecipePreviewService;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.AnimationUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.DensityUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.RecipeUtils;
@@ -32,9 +26,6 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.MainActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.RecipeActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.FavoritesMenuAdapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -45,10 +36,10 @@ public class FavoritesFragment extends BaseToolbarFragment {
 
     private FrameLayout mFlContent;
     private SwipeMenuListView mMenuList;
-    private TextView mNoFavorites;
+    private TextView mNoAllFavorites,mNoSearchFavorites;
 
     private FavoritesMenuAdapter mAdapter;
-    private DataService<RecipePreview> mService;
+    private RecipePreviewService mRecipePreviewService;
     private List<RecipePreview> mRecipePreviews;
 
     private BroadcastReceiver mBackReceiver;
@@ -68,7 +59,8 @@ public class FavoritesFragment extends BaseToolbarFragment {
     private void initView() {
         View view = View.inflate(getActivity(),R.layout.fragment_favorites_menu,null);
         mMenuList = (SwipeMenuListView) view.findViewById(R.id.lv_content);
-        mNoFavorites = (TextView) view.findViewById(R.id.tv_nofavorites);
+        mNoAllFavorites = (TextView) view.findViewById(R.id.tv_noallfavorites);
+        mNoSearchFavorites = (TextView) view.findViewById(R.id.tv_nosearchfavorites);
         mFlContent.addView(view);
 
         SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -125,7 +117,6 @@ public class FavoritesFragment extends BaseToolbarFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mService.clearDao();
         if(mBackReceiver != null){
             getActivity().unregisterReceiver(mBackReceiver);
         }
@@ -135,19 +126,21 @@ public class FavoritesFragment extends BaseToolbarFragment {
     }
 
     private void initData() {
-        if(mService == null) {
-            mService = new DataDao<>(getActivity(), RecipePreview.class);
+        if(mRecipePreviewService == null) {
+            mRecipePreviewService = new RecipePreviewDao(getActivity());
         }
-        mRecipePreviews = mService.findAll();
+        mRecipePreviews = mRecipePreviewService.findAll();
     }
 
     private void initAdapter() {
         if(mRecipePreviews.size() <= 0 || mRecipePreviews == null){
             mMenuList.setVisibility(View.GONE);
-            mNoFavorites.setVisibility(View.VISIBLE);
+            mNoAllFavorites.setVisibility(View.VISIBLE);
+            mNoSearchFavorites.setVisibility(View.GONE);
         }else{
             mMenuList.setVisibility(View.VISIBLE);
-            mNoFavorites.setVisibility(View.GONE);
+            mNoAllFavorites.setVisibility(View.GONE);
+            mNoSearchFavorites.setVisibility(View.GONE);
             mAdapter = new FavoritesMenuAdapter(getActivity(),mRecipePreviews);
             mMenuList.setAdapter(mAdapter);
         }
@@ -159,9 +152,9 @@ public class FavoritesFragment extends BaseToolbarFragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu swipeMenu, int index) {
                 RecipePreview mRecipePreview = mRecipePreviews.get(position);
-                mService.deleteByRecipeId(String.valueOf(mRecipePreview.getRecipeId()));
+                mRecipePreviewService.deleteByRecipeId(String.valueOf(mRecipePreview.getRecipeId()));
                 RecipeUtils.clearRecipeIdInPreference(String.valueOf(mRecipePreview.getRecipeId()));
-                AnimationUtils.deleteListViewItemAnim(mMenuList.getChildAt(position), mAdapter, position, mRecipePreviews, mMenuList, mNoFavorites);
+                AnimationUtils.deleteListViewItemAnim(mMenuList.getChildAt(position), mAdapter, position, mRecipePreviews, mMenuList, mNoAllFavorites);
                 return false;
             }
         });
@@ -175,6 +168,55 @@ public class FavoritesFragment extends BaseToolbarFragment {
                 getActivity().startActivity(intent);
             }
         });
+    }
+
+    /**
+     * 搜索并显示结果
+     */
+    public void searchResult(String value){
+        if("".equals(value) || value == null){
+            noSearchToAll();
+        }else{
+            if(mRecipePreviewService != null) {
+                mRecipePreviews = mRecipePreviewService.findByName(value);
+                if(mRecipePreviews.size() <= 0 || mRecipePreviews == null) {
+                    mMenuList.setVisibility(View.GONE);
+                    mNoAllFavorites.setVisibility(View.GONE);
+                    mNoSearchFavorites.setVisibility(View.VISIBLE);
+                }else {
+                    if (mAdapter != null) {
+                        mMenuList.setVisibility(View.VISIBLE);
+                        mNoAllFavorites.setVisibility(View.GONE);
+                        mNoSearchFavorites.setVisibility(View.GONE);
+                        mAdapter.setData(mRecipePreviews);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 搜索为空时显示所有
+     */
+    public void noSearchToAll(){
+        if(mRecipePreviewService == null) {
+            mRecipePreviewService = new RecipePreviewDao(getActivity());
+        }
+        mRecipePreviews = mRecipePreviewService.findAll();
+        if(mRecipePreviews.size() <= 0 || mRecipePreviews == null){
+            mMenuList.setVisibility(View.GONE);
+            mNoAllFavorites.setVisibility(View.GONE);
+            mNoSearchFavorites.setVisibility(View.VISIBLE);
+        }else{
+            if(mAdapter != null){
+                mMenuList.setVisibility(View.VISIBLE);
+                mNoAllFavorites.setVisibility(View.GONE);
+                mNoSearchFavorites.setVisibility(View.GONE);
+                mAdapter.setData(mRecipePreviews);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     /**
@@ -204,7 +246,7 @@ public class FavoritesFragment extends BaseToolbarFragment {
                 public void onReceive(Context context, Intent intent) {
                     if(intent.getAction().equals(GlobalContants.RECIPE_FINISH)){
                         if(mAdapter!=null ){
-                            mRecipePreviews = mService.findAll();
+                            mRecipePreviews = mRecipePreviewService.findAll();
                             mAdapter.setData(mRecipePreviews);
                             mAdapter.notifyDataSetChanged();
                         }

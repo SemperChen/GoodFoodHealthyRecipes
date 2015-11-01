@@ -4,6 +4,8 @@
         android:id="@+id/action_search"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:visible="false"
         android:icon="@mipmap/ic_search_white_24dp"
         android:title="@string/search" />
 

@@ -1,31 +1,68 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.core.entity;
 
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * Created by Semper on 2015/10/4.
  */
+@DatabaseTable(tableName = "table_recipe")
 public class Recipe {
+    @DatabaseField(generatedId = true)
+    @SerializedName("id")
+    private int id;
+    @DatabaseField(columnName = "recipeId")
+    @SerializedName("recipeId")
+    private int recipeId;
+    @DatabaseField(columnName = "headerImage")
     @SerializedName("headerImage")
     private String headerImage;
+    @DatabaseField(columnName = "title")
     @SerializedName("title")
     private String title;
+    @DatabaseField(columnName = "authorIcon")
     @SerializedName("authorIcon")
     private String authorIcon;
+    @DatabaseField(columnName = "author")
     @SerializedName("author")
     private String author;
+    @DatabaseField(columnName = "time")
     @SerializedName("time")
     private String time;
+    @DatabaseField(columnName = "intro")
     @SerializedName("intro")
     private String intro;
+    @DatabaseField(columnName = "ingredients",dataType = DataType.SERIALIZABLE)
     @SerializedName("ingredients")
-    private List<String> ingredients;
+    private ArrayList<String> ingredients;
     @SerializedName("steps")
     private List<RecipeStep> steps;
+    @DatabaseField(columnName = "tip",dataType = DataType.SERIALIZABLE)
     @SerializedName("tips")
-    private List<String> tip;
+    private ArrayList<String> tip;
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getRecipeId(){
+        return recipeId;
+    }
+
+    public void setRecipeId(int recipeId){
+        this.recipeId = recipeId;
+    }
 
     public String getHeaderImage() {
         return headerImage;
@@ -79,7 +116,7 @@ public class Recipe {
         return ingredients;
     }
 
-    public void setIngredients(List<String> ingredients) {
+    public void setIngredients(ArrayList<String> ingredients) {
         this.ingredients = ingredients;
     }
 
@@ -95,7 +132,7 @@ public class Recipe {
         return tip;
     }
 
-    public void setTip(List<String> tip) {
+    public void setTip(ArrayList<String> tip) {
         this.tip = tip;
     }
 }

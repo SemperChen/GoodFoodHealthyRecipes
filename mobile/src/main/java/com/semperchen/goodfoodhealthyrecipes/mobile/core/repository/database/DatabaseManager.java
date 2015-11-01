@@ -6,10 +6,14 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.Recipe;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreviewData;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipeStep;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>数据库管理器</p>
@@ -29,6 +33,7 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
     private static final int DATABASE_VERSION=1;
 
     private static DatabaseManager instance;
+    private Map<String,Dao> mDaos = new HashMap<>();
 
     public DatabaseManager(Context context, String databaseName, SQLiteDatabase.CursorFactory factory, int databaseVersion) {
         super(context, databaseName, factory, databaseVersion);
@@ -62,8 +67,8 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
         try {
 //            TableUtils.createTable(connectionSource, RecipePreviewData.class);
             TableUtils.createTable(connectionSource, RecipePreview.class);
-//            TableUtils.createTable(connectionSource, Recipe.class);
-            //TableUtils.createTable(connectionSource, RecipeStep.class);
+            TableUtils.createTable(connectionSource, Recipe.class);
+            TableUtils.createTable(connectionSource, RecipeStep.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,8 +79,8 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
         try {
 //            TableUtils.dropTable(connectionSource, RecipePreviewData.class, true);
             TableUtils.dropTable(connectionSource, RecipePreview.class, true);
-            //TableUtils.dropTable(connectionSource, Recipe.class,true);
-           // TableUtils.dropTable(connectionSource, RecipeStep.class,true);
+            TableUtils.dropTable(connectionSource, Recipe.class,true);
+            TableUtils.dropTable(connectionSource, RecipeStep.class,true);
             onCreate(sqLiteDatabase,connectionSource);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -87,13 +92,29 @@ public class DatabaseManager extends OrmLiteSqliteOpenHelper {
      *
      * @return
      */
-    public Dao getDao() throws SQLException {
-        return getDao(RecipePreview.class);
+    public synchronized  Dao getDao(Class clazz){
+        Dao dao = null;
+        String key = clazz.getSimpleName();
+        try {
+            if(mDaos.containsKey(key)){
+                dao = mDaos.get(key);
+            }else {
+                dao = super.getDao(clazz);
+                mDaos.put(clazz.getSimpleName(),dao);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dao;
     }
 
     @Override
     public void close() {
         super.close();
+        for (String key : mDaos.keySet()) {
+            Dao dao = mDaos.get(key);
+            dao = null;
+        }
     }
 
     public void resetTable(Class clazz) {

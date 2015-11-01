@@ -7,12 +7,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         <TextView
-                android:id="@+id/tv_nofavorites"
+                android:id="@+id/tv_noallfavorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="24sp"
                 android:text="你没有关注任何菜谱"
+                android:textColor="@color/theme_primary"
+                android:visibility="gone"/>
+        <TextView
+                android:id="@+id/tv_nosearchfavorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textSize="24sp"
+                android:text="没有搜索到菜谱"
                 android:textColor="@color/theme_primary"
                 android:visibility="gone"/>
 </RelativeLayout>

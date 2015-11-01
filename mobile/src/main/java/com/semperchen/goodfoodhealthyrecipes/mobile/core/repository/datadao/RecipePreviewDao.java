@@ -3,40 +3,38 @@ package com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao;
 import android.content.Context;
 import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.Recipe;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.database.DatabaseManager;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.DataService;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.RecipePreviewService;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by 卡你基巴 on 2015/10/30.
  */
-public class DataDao<T> implements DataService<T>{
+public class RecipePreviewDao implements RecipePreviewService {
     private Context mContext;
-    private Dao mDao;
     private DatabaseManager dbManager;
+    private Dao mDao;
 
-    public DataDao(Context context,Class clazz){
-        try {
-            mContext = context;
-            dbManager = DatabaseManager.getInstance();
-            mDao = dbManager.getDao(clazz);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public RecipePreviewDao(Context context){
+        mContext = context;
+        dbManager = DatabaseManager.getInstance();
+        mDao = dbManager.getDao(RecipePreview.class);
     }
 
     @Override
     public void clearDao(){
-        if(mDao!=null){
-            mDao = null;
-        }
+        dbManager.close();
     }
 
     @Override
-    public boolean add(T data) {
+    public boolean add(RecipePreview data) {
         boolean result = false;
         try {
             mDao.create(data);
@@ -60,7 +58,7 @@ public class DataDao<T> implements DataService<T>{
     }
 
     @Override
-    public boolean delete(T data) {
+    public boolean delete(RecipePreview data) {
         boolean result = false;
         try {
             mDao.delete(data);
@@ -72,14 +70,14 @@ public class DataDao<T> implements DataService<T>{
     }
 
     @Override
-    public boolean updateByRecipeId(String recipeId, T data) {
+    public boolean updateByRecipeId(String recipeId, RecipePreview data) {
         boolean result = false;
         //未实现
         return result;
     }
 
     @Override
-    public boolean update(T data) {
+    public boolean update(RecipePreview data) {
         boolean result = false;
         try {
             mDao.update(data);
@@ -91,10 +89,10 @@ public class DataDao<T> implements DataService<T>{
     }
 
     @Override
-    public T findById(String id) {
-        T result = null;
+    public RecipePreview findById(String id) {
+        RecipePreview result = null;
         try {
-            result = (T) mDao.queryForId(id);
+            result = (RecipePreview) mDao.queryForId(id);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -102,8 +100,24 @@ public class DataDao<T> implements DataService<T>{
     }
 
     @Override
-    public List<T> findAll() {
-        List<T> list = null;
+    public List<RecipePreview> findByName(String name) {
+        List<RecipePreview> recipePreviews = null;
+        try {
+            GenericRawResults<RecipePreview> result =  mDao.queryRaw("select * from table_reciperpreview where title like '%"+name+"%'");
+            Iterator<RecipePreview> iterator = result.iterator();
+            recipePreviews = new ArrayList<>();
+            while(iterator.hasNext()){
+                recipePreviews.add(iterator.next());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return recipePreviews;
+    }
+
+    @Override
+    public List<RecipePreview> findAll() {
+        List<RecipePreview> list = null;
         try {
             list = mDao.queryForAll();
         } catch (SQLException e) {

@@ -1,9 +1,6 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity;
 
-
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -11,19 +8,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.view.*;
 import android.widget.Toast;
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.PreferenceManager;
-import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.JokeAdapter;
-import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.SingleMenuAdapter;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.FavoritesFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.HomeFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.JokeFragment;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment.JokeMoreFragment;
-import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.util.DensityUtil;
-import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.SuperVideoPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
 
     private boolean isJokeItem = true;
+    private boolean isFavorites = false;
     private Intent mBackIntent;
     private AlertDialog mDialog;
 
@@ -51,19 +46,10 @@ public class MainActivity extends AppCompatActivity {
         PreferenceManager.initialize(this);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == 0xFF){
-
-        }
-    }
-
     /**
      * 初始化视图
      */
     private void initializeViews() {
-
         mDrawerLayout= (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
@@ -141,6 +127,13 @@ public class MainActivity extends AppCompatActivity {
         if(!isJokeItem) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menu_main, menu);
+            if (isFavorites) {
+                menu.findItem(R.id.action_search).setVisible(true);
+                SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+                setFavoritesSearc(searchView);
+            }else{
+                menu.findItem(R.id.action_search).setVisible(false);
+            }
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -157,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         isJokeItem = false;
+                        isFavorites = false;
                         switch (menuItem.getItemId()) {
                             case R.id.home:
                                 fragmentTranslationReplace(new HomeFragment(), HomeFragment.class.getSimpleName());
@@ -167,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                                 fragmentTranslationReplace(jokeFragment, JokeFragment.class.getSimpleName());
                                 break;
                             case R.id.favorites:
+                                isFavorites = true;
                                 fragmentTranslationReplace(new FavoritesFragment(), FavoritesFragment.class.getSimpleName());
                                 break;
                         }
@@ -216,6 +211,31 @@ public class MainActivity extends AppCompatActivity {
             mDialog.show();
             mDialog.getWindow().setWindowAnimations(R.style.dialog_anim);
         }
+    }
+
+    /**
+     * 设置搜索
+     */
+    private void setFavoritesSearc(SearchView searchView) {
+        final FavoritesFragment favoritesFragment = (FavoritesFragment) getSupportFragmentManager().findFragmentByTag(FavoritesFragment.class.getSimpleName());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String value) {
+                if(favoritesFragment != null){
+                    favoritesFragment.searchResult(value);
+                }
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String value) {
+                if(favoritesFragment != null) {
+                    if (value == null || value.equals("")) {
+                        favoritesFragment.noSearchToAll();
+                    }
+                }
+                return true;
+            }
+        });
     }
 
     /**

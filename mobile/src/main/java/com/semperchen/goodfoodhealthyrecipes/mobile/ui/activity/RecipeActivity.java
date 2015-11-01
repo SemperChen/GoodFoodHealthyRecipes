@@ -1,6 +1,5 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,8 +27,10 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipeStep;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.global.GlobalContants;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.VolleyWrapper;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao.DataDao;
-import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.DataService;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao.RecipeDao;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.datadao.RecipePreviewDao;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.RecipePreviewService;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.dataservice.RecipeService;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.FontsHelper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.RecipeUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.CustomView;
@@ -49,7 +50,8 @@ public class RecipeActivity extends AppCompatActivity {
     private RotateLoading rotateLoading;
     private CustomView mFloatBtn;
 
-    private DataService<RecipePreview> mService;
+    private RecipePreviewService mRecipePreviewService;
+    private RecipeService mRecipeService;
 
     private LinearLayout mIngredientsList;
     private LinearLayout mStepsList;
@@ -71,7 +73,7 @@ public class RecipeActivity extends AppCompatActivity {
         FontsHelper.initialize(this);
         initView();
         initToolbar();
-        sendNetworkRequest();
+        initData();
         initListener();
     }
 
@@ -97,6 +99,21 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
     /**
+     * 初始化数据
+     */
+    private void initData() {
+        if(mRecipeService == null){
+            mRecipeService = new RecipeDao(this);
+        }
+        recipe = mRecipeService.findByRecipeId(String.valueOf(recipeId));
+        if(recipe == null){
+            sendNetworkRequest();
+        }else{
+            setupDataToView();
+        }
+    }
+
+    /**
      * 请求监听，请求成功后执行onResponse
      */
     private class RequestSuccessListener implements Response.Listener{
@@ -104,16 +121,8 @@ public class RecipeActivity extends AppCompatActivity {
         @Override
         public void onResponse(Object obj) {
             recipe= (Recipe) obj;
-            bindData();
-            setFonts();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    rotateLoading.stop();
-                    coordinatorLayout.setVisibility(View.VISIBLE);
-                }
-            },2000);
-
+            recipe.setRecipeId(recipeId);
+            setupDataToView();
         }
     }
 
@@ -141,6 +150,18 @@ public class RecipeActivity extends AppCompatActivity {
         //添加链接参数
         volleyWrapper.addUrlParameter("recipeId", recipeId);
         volleyWrapper.sendRequest();
+    }
+
+    private void setupDataToView() {
+        bindData();
+        setFonts();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rotateLoading.stop();
+                coordinatorLayout.setVisibility(View.VISIBLE);
+            }
+        },2000);
     }
 
     /**
@@ -208,13 +229,18 @@ public class RecipeActivity extends AppCompatActivity {
      * @param value 添加或删除
      */
     private void setDataToDB(boolean value) {
-        if(mService == null){
-            mService = new DataDao<>(this,RecipePreview.class);
+        if(mRecipePreviewService == null){
+            mRecipePreviewService = new RecipePreviewDao(this);
+        }
+        if(mRecipeService == null){
+            mRecipeService = new RecipeDao(this);
         }
         if(value){
-            mService.add(recipePreview);
+            mRecipePreviewService.add(recipePreview);
+            mRecipeService.add(recipe);
         }else{
-            mService.deleteByRecipeId(String.valueOf(recipePreview.getRecipeId()));
+            mRecipePreviewService.deleteByRecipeId(String.valueOf(recipePreview.getRecipeId()));
+            mRecipeService.deleteByRecipe(recipe);
         }
     }
 
