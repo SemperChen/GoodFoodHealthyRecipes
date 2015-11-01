@@ -13,4 +13,5 @@ public interface DataService<T> {
     public boolean update(T data);
     public T findById(String id);
     public List<T> findAll();
+    public void clearDao();
 }

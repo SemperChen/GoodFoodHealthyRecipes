@@ -29,6 +29,13 @@ public class DataDao<T> implements DataService<T>{
     }
 
     @Override
+    public void clearDao(){
+        if(mDao!=null){
+            mDao = null;
+        }
+    }
+
+    @Override
     public boolean add(T data) {
         boolean result = false;
         try {

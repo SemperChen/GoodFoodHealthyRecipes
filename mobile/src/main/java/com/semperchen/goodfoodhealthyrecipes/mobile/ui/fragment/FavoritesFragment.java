@@ -125,6 +125,7 @@ public class FavoritesFragment extends BaseToolbarFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mService.clearDao();
         if(mBackReceiver != null){
             getActivity().unregisterReceiver(mBackReceiver);
         }

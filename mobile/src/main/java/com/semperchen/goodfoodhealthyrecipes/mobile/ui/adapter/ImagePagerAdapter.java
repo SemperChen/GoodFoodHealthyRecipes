@@ -14,9 +14,11 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import com.semperchen.goodfoodhealthyrecipes.mobile.R;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.IntensionData.Body.Bean.Detail;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.net.ByteValueHttpClient;
+import com.semperchen.goodfoodhealthyrecipes.mobile.core.utils.GifCacheUtils;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.HorizontalProgressBarWithNumber;
 import pl.droidsonroids.gif.GifDrawable;
 import pl.droidsonroids.gif.GifImageView;
+import uk.co.senab.photoview.PhotoView;
 
 import java.io.IOException;
 import java.util.*;
@@ -30,7 +32,7 @@ public class ImagePagerAdapter extends PagerAdapter{
     private OnImagePagerCallbacks mCallbacks;
 
     private Map<Integer,ByteValueHttpClient> mClients;
-    private Map<Integer,GifDrawable> mGifDrawables;
+    private GifCacheUtils mGifDrawables;
 
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
@@ -39,7 +41,7 @@ public class ImagePagerAdapter extends PagerAdapter{
         mIntensionData = intensions;
         mCallbacks = callbacks;
         mClients = new HashMap<>();
-        mGifDrawables = new HashMap<>();
+        mGifDrawables = new GifCacheUtils();
     }
 
     public void addAll(List<Detail> intensions){
@@ -125,12 +127,8 @@ public class ImagePagerAdapter extends PagerAdapter{
                 mClients.get(i).cleanConnection();
             }
         }
-        for(int i=0;i<mGifDrawables.size();i++){
-            if(mGifDrawables.get(i) != null) {
-                if (mGifDrawables.get(i).isRecycled()) {
-                    mGifDrawables.get(i).recycle();
-                }
-            }
+        if(mGifDrawables!=null){
+            mGifDrawables.clearGifFromMemory();
         }
     }
 
@@ -150,7 +148,7 @@ public class ImagePagerAdapter extends PagerAdapter{
     }
 
     private void setupGifView(final GifImageView gifImageView, final HorizontalProgressBarWithNumber pb, final String gifUrl, final int position) {
-        if(mGifDrawables.get(position) == null) {
+        if(mGifDrawables.getGifFromMemory(gifUrl) == null) {
             ByteValueHttpClient client = new ByteValueHttpClient() {
                 @Override
                 protected void onProgressUpdate(Integer... values) {
@@ -165,7 +163,7 @@ public class ImagePagerAdapter extends PagerAdapter{
                             if (gifImageView.getTag().equals(gifUrl)) {
                                 GifDrawable gifDrawable = new GifDrawable(bytes);
                                 gifImageView.setBackground(gifDrawable);
-                                mGifDrawables.put(position, gifDrawable);
+                                mGifDrawables.setGifToMemory(gifUrl, gifDrawable);
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -179,7 +177,7 @@ public class ImagePagerAdapter extends PagerAdapter{
             client.execute(gifUrl);
             mClients.put(position, client);
         }else{
-            gifImageView.setBackground(mGifDrawables.get(position));
+            gifImageView.setBackground(mGifDrawables.getGifFromMemory(gifUrl));
             pb.setVisibility(View.GONE);
         }
     }
