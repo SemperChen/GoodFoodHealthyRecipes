@@ -31,11 +31,13 @@ public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.View
     private Context mContext;
     private List<Detail> mIntensionData;
 
+    private OnVideoPlayerCallbacks mCallbacks;
     private ImageLoadingListener animateFirstListener = new AnimateFirstDisplayListener();
 
-    public VideoMoreAdapter(Context context,List<Detail> intensions){
+    public VideoMoreAdapter(Context context,List<Detail> intensions,OnVideoPlayerCallbacks callbacks){
         mContext = context;
         mIntensionData = intensions;
+        mCallbacks = callbacks;
     }
 
     public void clear(){
@@ -61,69 +63,17 @@ public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.View
         holder.tvContent.setText(mIntensionData.get(position).text.trim());
 
         holder.imgContent.setVisibility(View.VISIBLE);
-        holder.flVideo.setVisibility(View.GONE);
         holder.imgPlay.setVisibility(View.VISIBLE);
         holder.imgPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.imgContent.setVisibility(View.INVISIBLE);
-                holder.flVideo.setVisibility(View.VISIBLE);
-                holder.imgPlay.setVisibility(View.GONE);
-                startVideoPlayer(holder.mPlayer, mIntensionData.get(position).video_uri);
-            }
-        });
-        holder.mPlayer.setVideoPlayCallback(new SuperVideoPlayer.VideoPlayCallbackImpl() {
-            @Override
-            public void onCloseVideo() {
-                holder.mPlayer.stopPlay();
-                holder.imgContent.setVisibility(View.VISIBLE);
-                holder.flVideo.setVisibility(View.GONE);
-                holder.imgPlay.setVisibility(View.VISIBLE);
-                resetPageToPortrait(holder.mPlayer);
-            }
-
-            @Override
-            public void onSwitchPageType() {
-                ((MainActivity) mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                holder.mPlayer.setPageType(com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.MediaController.PageType.EXPAND);
-            }
-
-            @Override
-            public void onPlayFinish() {
-
+                mCallbacks.onVideoPlayer(mIntensionData.get(position).video_uri);
             }
         });
 
         ImageLoader.getInstance().displayImage(mIntensionData.get(position).profile_image, holder.imgAvatar);
         ImageLoader.getInstance().displayImage(mIntensionData.get(position).image3, holder.imgContent, animateFirstListener);
     }
-
-    /***
-     * 恢复屏幕至竖屏
-     */
-    private void resetPageToPortrait(SuperVideoPlayer mVideoPlayer){
-        if (((MainActivity)mContext).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            ((MainActivity)mContext).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            mVideoPlayer.setPageType(MediaController.PageType.SHRINK);
-        }
-    }
-
-    private void startVideoPlayer(SuperVideoPlayer mPlayer, String videoUri) {
-        Video video = new Video();
-        VideoUrl videoUrl = new VideoUrl();
-        videoUrl.setFormatName("原画");
-        videoUrl.setFormatUrl(videoUri);
-        ArrayList<VideoUrl> videoUrlList = new ArrayList<VideoUrl>();
-        videoUrlList.add(videoUrl);
-
-        video.setVideoName("原创视频");
-        video.setVideoUrl(videoUrlList);
-        ArrayList<Video> videos = new ArrayList<Video>();
-        videos.add(video);
-
-        mPlayer.loadMultipleVideo(videos);
-    }
-
 
     @Override
     public int getItemCount() {
@@ -133,9 +83,7 @@ public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder{
         ImageView imgAvatar,imgContent;
         TextView tvName,tvTime,tvLove,tvHate,tvContent;
-        FrameLayout flVideo;
         ImageButton imgPlay;
-        SuperVideoPlayer mPlayer;
         public ViewHolder(View itemView) {
             super(itemView);
             imgAvatar = (ImageView) itemView.findViewById(R.id.img_avatar);
@@ -146,8 +94,6 @@ public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.View
             tvHate = (TextView) itemView.findViewById(R.id.tv_bury);
             tvContent = (TextView) itemView.findViewById(R.id.tv_content);
             imgPlay = (ImageButton) itemView.findViewById(R.id.img_player);
-            mPlayer = (SuperVideoPlayer) itemView.findViewById(R.id.video_player);
-            flVideo = (FrameLayout) itemView.findViewById(R.id.fl_player);
         }
     }
 
@@ -166,4 +112,7 @@ public class VideoMoreAdapter extends RecyclerView.Adapter<VideoMoreAdapter.View
         }
     }
 
+    public interface OnVideoPlayerCallbacks{
+        void onVideoPlayer(String videoUrl);
+    }
 }

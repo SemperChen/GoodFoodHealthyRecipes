@@ -1,6 +1,7 @@
 package com.semperchen.goodfoodhealthyrecipes.mobile.ui.fragment;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,13 +28,17 @@ import com.semperchen.goodfoodhealthyrecipes.mobile.ui.activity.MainActivity;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.adapter.*;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullCallback;
 import com.semperchen.goodfoodhealthyrecipes.mobile.ui.widget.PullToLoadView;
+import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.model.Video;
+import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.model.VideoUrl;
+import com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by 卡你基巴 on 2015/9/29.
  */
-public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAdapter.OnItemCreate,ImagePagerAdapter.OnImagePagerCallbacks{
+public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAdapter.OnItemCreate,ImagePagerAdapter.OnImagePagerCallbacks,VideoMoreAdapter.OnVideoPlayerCallbacks{
     private MainActivity mActivity;
     private Toolbar mToolbar;
 
@@ -44,8 +49,12 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
     private RecyclerView mIntensionContent,mJokeContent,mImageContent,mVideoContent;
 
     private PullToLoadView mJokePullLoad,mIntensionPullLoad,mVideoPullLoad,mImagePullLoad;
+
     private ViewPager mImagePager;
     private ImagePagerAdapter mPagerAdapter;
+    private SuperVideoPlayer mVideoPlayer;
+    private RelativeLayout mFlVideoPlayer;
+    private ImageButton mVideoClose;
 
     private JokeMoreAdapter mJokeMoreAdapter;
     private IntensionMoreAdapter mIntensionMoreAdapter;
@@ -149,6 +158,8 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
                         mVideoContent.setAdapter(mVideoMoreAdapter);
                         mRlNoNet.setVisibility(View.GONE);
                     }
+                }else{
+                    mRlNoNet.setVisibility(View.VISIBLE);
                 }
                 break;
         }
@@ -305,9 +316,13 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             mVideoView.setTag("video");
             mVideoPullLoad = (PullToLoadView) mVideoView.findViewById(R.id.pulltoLoadview);
             setPullLoadToLoad(mVideoPullLoad);
+            mVideoPlayer = (SuperVideoPlayer) mVideoView.findViewById(R.id.video_player);
+            mFlVideoPlayer = (RelativeLayout) mVideoView.findViewById(R.id.fl_video_player);
+            mVideoClose = (ImageButton) mVideoView.findViewById(R.id.btn_close);
 
             mVideoContent = mVideoPullLoad.getRecyclerView();
             setContentTouchListener(mVideoContent);
+            initVideoPlayerAndCloseListener(mVideoPlayer, mVideoClose);
 
             setupRecyclerManager(mVideoContent);
         }
@@ -447,7 +462,7 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
             @Override
             public void onResponse(IntensionData intensionData) {
                 if(mVideoMoreAdapter == null || mVideoMoreAdapter.getItemCount() <= 0) {
-                    mVideoMoreAdapter = new VideoMoreAdapter(mActivity, intensionData.showapi_res_body.pagebean.contentlist);
+                    mVideoMoreAdapter = new VideoMoreAdapter(mActivity, intensionData.showapi_res_body.pagebean.contentlist,JokeMoreFragment.this);
                     buildDataInView(mVideoMoreAdapter);
                     mVideoCuttentPage = 1;
                     mVideoNextPage = 2;
@@ -552,6 +567,54 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
                 return false;
             }
         });
+    }
+
+    /**
+     * 设置视频播放监听
+     * @param mVideoPlayer
+     */
+    private void initVideoPlayerAndCloseListener(final SuperVideoPlayer mVideoPlayer,final ImageButton mVideoClose) {
+        mVideoClose.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mVideoPlayer.stopPlay();
+                mVideoPullLoad.setVisibility(View.VISIBLE);
+                mFlVideoPlayer.setVisibility(View.GONE);
+                actionBar.show();
+                resetPageToPortrait(mVideoPlayer);
+            }
+        });
+        mVideoPlayer.setVideoPlayCallback(new SuperVideoPlayer.VideoPlayCallbackImpl() {
+            @Override
+            public void onCloseVideo() {
+                mVideoPlayer.stopPlay();
+                mVideoPullLoad.setVisibility(View.VISIBLE);
+                mFlVideoPlayer.setVisibility(View.GONE);
+                actionBar.show();
+                resetPageToPortrait(mVideoPlayer);
+            }
+
+            @Override
+            public void onSwitchPageType() {
+                ((MainActivity) mActivity).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                mVideoPlayer.setPageType(com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.MediaController.PageType.EXPAND);
+            }
+
+            @Override
+            public void onPlayFinish() {
+
+            }
+        });
+    }
+
+    /***
+     * 恢复屏幕至竖屏
+     */
+    private void resetPageToPortrait(SuperVideoPlayer mVideoPlayer){
+        if (((MainActivity)mActivity).getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            ((MainActivity)mActivity).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            mVideoPlayer.setPageType(com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.MediaController.PageType.SHRINK);
+        }
     }
 
     /**
@@ -713,6 +776,38 @@ public class JokeMoreFragment extends BaseToolbarFragment implements ImageMoreAd
         mImagePager.setVisibility(View.INVISIBLE);
         mPagerAdapter.destory();
         mPagerAdapter = null;
+    }
+
+    /**
+     * 点击视频播放回调
+     * @param videoUrl 视频地址
+     */
+    @Override
+    public void onVideoPlayer(String videoUrl) {
+        mVideoPullLoad.setVisibility(View.GONE);
+        mFlVideoPlayer.setVisibility(View.VISIBLE);
+        actionBar.hide();
+        startVideoPlayer(videoUrl);
+    }
+
+    /**
+     * 开始播放视频
+     * @param url 视频地址
+     */
+    private void startVideoPlayer(String url) {
+        Video video = new Video();
+        VideoUrl videoUrl = new VideoUrl();
+        videoUrl.setFormatName("原画");
+        videoUrl.setFormatUrl(url);
+        ArrayList<VideoUrl> videoUrlList = new ArrayList<VideoUrl>();
+        videoUrlList.add(videoUrl);
+
+        video.setVideoName("原创视频");
+        video.setVideoUrl(videoUrlList);
+        ArrayList<Video> videos = new ArrayList<Video>();
+        videos.add(video);
+
+        mVideoPlayer.loadMultipleVideo(videos);
     }
 
     /**

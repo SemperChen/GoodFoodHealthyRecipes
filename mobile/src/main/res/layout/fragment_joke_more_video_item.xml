@@ -84,16 +84,6 @@
                                         android:layout_gravity="center"
                                         android:src="@mipmap/biz_video_play"/>
                         </FrameLayout>
-                        <FrameLayout
-                                android:id="@+id/fl_player"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:visibility="gone">
-                                <com.semperchen.goodfoodhealthyrecipes.mobile.wkvideoplayer.view.SuperVideoPlayer
-                                        android:id="@+id/video_player"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"/>
-                        </FrameLayout>
                 </RelativeLayout>
             </LinearLayout>
             <RelativeLayout

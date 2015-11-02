@@ -405,6 +405,7 @@ public class JokeFragment extends BaseToolbarFragment implements JokeAdapter.Jok
     private void checkMore(View view){
         startJokeReplaceAnim((int) view.getTag());
         mSingleMenuView.closeMenuView();
+        isMenuOpen = false;
         if(isVideo) {
             if (mVideoSingleMenuAdapter != null) {
                 mVideoSingleMenuAdapter.closeVideo(mOnePager.getCurrentItem());
