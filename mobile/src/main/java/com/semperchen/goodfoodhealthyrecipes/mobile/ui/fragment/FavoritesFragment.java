@@ -134,13 +134,9 @@ public class FavoritesFragment extends BaseToolbarFragment {
 
     private void initAdapter() {
         if(mRecipePreviews.size() <= 0 || mRecipePreviews == null){
-            mMenuList.setVisibility(View.GONE);
-            mNoAllFavorites.setVisibility(View.VISIBLE);
-            mNoSearchFavorites.setVisibility(View.GONE);
+            showNoAllFavorites();
         }else{
-            mMenuList.setVisibility(View.VISIBLE);
-            mNoAllFavorites.setVisibility(View.GONE);
-            mNoSearchFavorites.setVisibility(View.GONE);
+            showMenuList();
             mAdapter = new FavoritesMenuAdapter(getActivity(),mRecipePreviews);
             mMenuList.setAdapter(mAdapter);
         }
@@ -180,14 +176,10 @@ public class FavoritesFragment extends BaseToolbarFragment {
             if(mRecipePreviewService != null) {
                 mRecipePreviews = mRecipePreviewService.findByName(value);
                 if(mRecipePreviews.size() <= 0 || mRecipePreviews == null) {
-                    mMenuList.setVisibility(View.GONE);
-                    mNoAllFavorites.setVisibility(View.GONE);
-                    mNoSearchFavorites.setVisibility(View.VISIBLE);
+                    showNoSearchFavorites();
                 }else {
                     if (mAdapter != null) {
-                        mMenuList.setVisibility(View.VISIBLE);
-                        mNoAllFavorites.setVisibility(View.GONE);
-                        mNoSearchFavorites.setVisibility(View.GONE);
+                        showMenuList();
                         mAdapter.setData(mRecipePreviews);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -205,14 +197,10 @@ public class FavoritesFragment extends BaseToolbarFragment {
         }
         mRecipePreviews = mRecipePreviewService.findAll();
         if(mRecipePreviews.size() <= 0 || mRecipePreviews == null){
-            mMenuList.setVisibility(View.GONE);
-            mNoAllFavorites.setVisibility(View.GONE);
-            mNoSearchFavorites.setVisibility(View.VISIBLE);
+            showNoSearchFavorites();
         }else{
             if(mAdapter != null){
-                mMenuList.setVisibility(View.VISIBLE);
-                mNoAllFavorites.setVisibility(View.GONE);
-                mNoSearchFavorites.setVisibility(View.GONE);
+                showMenuList();
                 mAdapter.setData(mRecipePreviews);
                 mAdapter.notifyDataSetChanged();
             }
@@ -257,5 +245,23 @@ public class FavoritesFragment extends BaseToolbarFragment {
             intentFilter.addAction(GlobalContants.RECIPE_FINISH);
             getActivity().registerReceiver(mRecipeBackReceiver,intentFilter);
         }
+    }
+
+    private void showMenuList(){
+        mMenuList.setVisibility(View.VISIBLE);
+        mNoAllFavorites.setVisibility(View.GONE);
+        mNoSearchFavorites.setVisibility(View.GONE);
+    }
+
+    private void showNoAllFavorites(){
+        mMenuList.setVisibility(View.GONE);
+        mNoAllFavorites.setVisibility(View.VISIBLE);
+        mNoSearchFavorites.setVisibility(View.GONE);
+    }
+
+    private void showNoSearchFavorites(){
+        mMenuList.setVisibility(View.GONE);
+        mNoAllFavorites.setVisibility(View.GONE);
+        mNoSearchFavorites.setVisibility(View.VISIBLE);
     }
 }

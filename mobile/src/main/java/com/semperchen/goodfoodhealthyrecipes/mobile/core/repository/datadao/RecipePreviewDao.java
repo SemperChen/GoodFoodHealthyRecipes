@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.dao.RawRowMapper;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.Recipe;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.entity.RecipePreview;
 import com.semperchen.goodfoodhealthyrecipes.mobile.core.repository.database.DatabaseManager;
@@ -103,7 +104,21 @@ public class RecipePreviewDao implements RecipePreviewService {
     public List<RecipePreview> findByName(String name) {
         List<RecipePreview> recipePreviews = null;
         try {
-            GenericRawResults<RecipePreview> result =  mDao.queryRaw("select * from table_reciperpreview where title like '%"+name+"%'");
+            GenericRawResults<RecipePreview> result =  mDao.queryRaw("select id,title,author,authorIcon,image,recipeId,isRecommendation from table_reciperpreview where title like '%" + name + "%'",
+                    new RawRowMapper() {
+                        @Override
+                        public Object mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
+                            RecipePreview recipePreview = new RecipePreview();
+                            recipePreview.setId(Integer.parseInt(resultColumns[0]));
+                            recipePreview.setTitle(resultColumns[1]);
+                            recipePreview.setAuthor(resultColumns[2]);
+                            recipePreview.setAuthorIcon(resultColumns[3]);
+                            recipePreview.setImage(resultColumns[4]);
+                            recipePreview.setRecipeId(Integer.parseInt(resultColumns[5]));
+                            recipePreview.setIsRecommendation(Boolean.parseBoolean(resultColumns[6]));
+                            return recipePreview;
+                        }
+                    });
             Iterator<RecipePreview> iterator = result.iterator();
             recipePreviews = new ArrayList<>();
             while(iterator.hasNext()){

@@ -45,6 +45,11 @@ public class RecipePreview implements Serializable{
         this.isRecommendation = isRecommendation;
     }
 
+    @Override
+    public String toString() {
+        return "[id:"+id+",title:"+title+",author:"+author+",authorIcon:"+authorIcon+",image:"+image+",recipeId:"+recipeId+",isRecommendation:"+isRecommendation+"]";
+    }
+
     public int getId() {
         return id;
     }
